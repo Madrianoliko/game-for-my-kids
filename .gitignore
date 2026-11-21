@@ -3,3 +3,6 @@ maly-odkrywca/.openai/
 xcode/**/xcuserdata/
 xcode/DerivedData/
 xcode/build/
+
+# Metadane Findera w dowolnym katalogu
+.DS_Store
