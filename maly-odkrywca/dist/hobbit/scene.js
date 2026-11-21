@@ -3,7 +3,7 @@
   'use strict';
   const T = window.THREE;
   const route = z => 1.45 * Math.sin(z * 0.102) + 0.6 * Math.sin(z * 0.173);
-  const stops = [4, -7, -18, -30];
+  const stops = [4, -7, -18, -30, -42];
 
   function randomGenerator(seed) {
     return () => {
@@ -433,6 +433,11 @@
       const x=route(z)+side*(.65+rand()*1.30);
       ball(root,x,.018,z,.035+rand()*.095,.028,.025+rand()*.09,i%3?'#ba985f':'#e2c391');
     }
+    for (let i=0;i<6;i++) {
+      const z=-31-i*2.4,x=route(z)+(i%2?4.4:-4.4);
+      oak(ctx,root,x,z,3.8,'#6d9c42');
+      for(let j=0;j<5;j++) ball(root,x+Math.sin(j*2)*1.1,2.45+.35*Math.cos(j),z+Math.cos(j*2),.17,.18,.17,'#be3929',1);
+    }
     // Layered mountain slopes encircle the playable area and continue beyond the route.
     for(let row=0;row<2;row++) for(let j=0;j<18;j++){
       const a=(j+rand()*.35)/18*2*Math.PI;
@@ -801,6 +806,21 @@
       }
     }
 
+    orchard(onPick,onArrive) {
+      this.advance(4,onArrive);
+      this.leg.points=[-34,-38,-42].map((z,i)=>{
+        const x=route(z)+[1.6,-1.5,0][i];
+        let fruit;
+        if(this.scene) {
+          fruit=this.ctx.group(this.scene,x,.75,z);
+          this.ctx.ball(fruit,0,0,0,.48,.46,.47,'#e44424',1);
+          this.ctx.box(fruit,.03,.47,0,.08,.28,.08,'#80502d');
+          this.ctx.ball(fruit,.18,.49,0,.22,.09,.1,'#8fc340');
+        }
+        return {x,z,pick:()=>{if(fruit)this.scene.remove(fruit);onPick(i+1);}};
+      });
+    }
+
     advance(stage,onArrive) {
       if(this.dead)return;
       const index=Math.max(1,Math.min(stops.length-1,Math.round(stage)||1));
@@ -827,13 +847,14 @@
       if(this.leg) {
         const leg=this.leg;
         leg.time+=dt;
-        if(this.obstacles && leg.stage) this.obstacles[leg.stage-1](progressBetween(leg.time,0,leg.repairTime));
+        if(this.obstacles && leg.stage) this.obstacles[leg.stage-1]?.(progressBetween(leg.time,0,leg.repairTime));
         const [dx,dy]=this.input;
         const next=leg.points?.[0] || {x:route(leg.to),z:leg.to};
         this.x=Math.max(route(this.z)-3.5,Math.min(route(this.z)+3.5,this.x+dx*dt*4));
         this.z=Math.max(next.z-.45,Math.min(leg.from+1,this.z+dy*dt*4));
         speed=Math.hypot(dx,dy);
         if(Math.hypot(this.x-next.x,this.z-next.z)<1.15) {
+          next.pick?.();
           if(leg.points?.length>1) { leg.points.shift(); }
           else {
           if(this.trace){this.scene.remove(this.trace);this.trace=null;}

@@ -4,7 +4,7 @@ Gra przygodowa 3D na iPhone’a dla pięciolatka. Wspólna mapa prowadzi do osob
 
 ## Etapy
 
-1. **Dolina Hobbitów** — wyprawa przez dolinę. Leo liczy deski, przechodzi po wyznaczonej ścieżce i dodaje latarenki, aby otworzyć bramę. Pierwsza wersja skupia się na tym świecie.
+1. **Dolina Hobbitów** — wyprawa przez dolinę. Leo liczy deski na planie bobra, przechodzi po wyznaczonej ścieżce i dodaje latarenki, aby otworzyć bramę. Za wioską zbiera w sadzie trzy jabłka na placek. Pierwsza wersja skupia się na tym świecie.
 2. **Hot Wheels** — osobna przygoda na pomarańczowym torze z zagadkami związanymi z jazdą. Na razie dostępny jest podgląd świata.
 3. **Harry Potter** — osobna przygoda w szkole magii z własną scenerią i zagadkami. Na razie dostępny jest podgląd świata.
 

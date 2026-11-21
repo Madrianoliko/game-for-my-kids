@@ -22,7 +22,7 @@
     try {
       const v = JSON.parse(localStorage.getItem(key));
       if (!v) return;
-      if (Array.isArray(v.scores)) scores = scores.map((value, i) => Math.max(0, Math.min(3, parseInt(v.scores[i], 10) || 0)));
+      if (Array.isArray(v.scores)) scores = scores.map((value, i) => Math.max(0, Math.min(4, parseInt(v.scores[i], 10) || 0)));
       if (typeof v.sound === 'boolean') sound = v.sound;
     } catch {}
   };
@@ -91,23 +91,23 @@
   window.adventureScores = () => [...scores];
   window.adventureCheckpoint = (i, collected) => {
     if (!Number.isInteger(i) || i < 0 || i >= worlds.length || !Number.isInteger(collected)) return;
-    scores[i] = Math.max(scores[i], Math.min(3, collected));
+    scores[i] = Math.max(scores[i], Math.min(4, collected));
     save();
     updateProgress();
   };
-  window.adventureCompleted = i => window.adventureCheckpoint(i, 3);
+  window.adventureCompleted = i => window.adventureCheckpoint(i, 4);
 
   function starRow(i) {
     if(i) return '<span class="card-stars upcoming">Wkrótce</span>';
-    return '<span class="card-stars" aria-hidden="true">' + [1,2,3].map(n => svg('star', n <= scores[i] ? 'earned' : '')).join('') + '</span>';
+    return '<span class="card-stars" aria-hidden="true">' + [1,2,3,4].map(n => svg('star', n <= scores[i] ? 'earned' : '')).join('') + '</span>';
   }
   function updateProgress() {
     const total = scores.reduce((sum, n) => sum + n, 0);
     get('total').textContent = total;
-    get('open-stars').setAttribute('aria-label', 'Twoje gwiazdki, ' + total + ' z 3');
+    get('open-stars').setAttribute('aria-label', 'Twoje gwiazdki, ' + total + ' z 4');
     [...get('world-grid').children].forEach((button, i) => {
       button.querySelector('.card-stars').outerHTML = starRow(i);
-      button.setAttribute('aria-label', name(i) + ', gwiazdki ' + scores[i] + ' z 3. Wybierz świat.');
+      button.setAttribute('aria-label', name(i) + ', gwiazdki ' + scores[i] + ' z 4. Wybierz świat.');
     });
     if (mode === 'stars') renderStars();
   }
@@ -148,7 +148,7 @@
   });
   const dialog = get('menu-dialog');
   function renderStars() {
-    get('modal-body').innerHTML = worlds.map((w, i) => '<div class="progress-row"><span>' + name(i) + '</span>' + starRow(i) + '<span class="sr-only">' + scores[i] + ' z 3</span></div>').join('');
+    get('modal-body').innerHTML = worlds.map((w, i) => '<div class="progress-row"><span>' + name(i) + '</span>' + starRow(i) + '<span class="sr-only">' + scores[i] + ' z 4</span></div>').join('');
   }
   function showDialog(type) {
     mode = type;
@@ -161,7 +161,7 @@
       '<div class="help-step">' + svg('hand') + '<span>Prowadź Leo jedną gałką. W zadaniach dotknij jednej z czterech liczb.</span></div>' +
       '<div class="help-step">' + svg('prize') + '<span>Za każdą pokonaną przeszkodę zdobędziesz gwiazdkę.</span></div>';
     dialog.showModal();
-    window.adventureVoice(type === 'help' ? 'Wybierz świat i rozpocznij przygodę z Leo. Prowadź Leo jedną gałką. W zadaniach dotknij jednej z czterech liczb. Za każdą pokonaną przeszkodę zdobędziesz gwiazdkę.' : 'Masz ' + scores.reduce((a,b)=>a+b,0) + ' z trzech gwiazdek.');
+    window.adventureVoice(type === 'help' ? 'Wybierz świat i rozpocznij przygodę z Leo. Prowadź Leo jedną gałką. W zadaniach dotknij jednej z czterech liczb. Za każdą pokonaną przeszkodę zdobędziesz gwiazdkę.' : 'Masz ' + scores.reduce((a,b)=>a+b,0) + ' z czterech gwiazdek.');
   }
   get('open-stars').addEventListener('click', () => showDialog('stars'));
   get('help').addEventListener('click', () => showDialog('help'));

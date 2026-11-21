@@ -4,9 +4,9 @@
   const valleyName = 'Dolina Hobbitów';
   const trail = [
     {
-      place: 'Most nad potokiem', question: 'Ile desek ma Leo?',
-      intro: 'Po ulewie zgasły światła w dolinie hobbitów. Leo niesie iskierkę do bramy wioski. Najpierw pomóż mu naprawić most.',
-      instruction: 'Dotykaj desek i wybierz liczbę.',
+      place: 'Most nad potokiem', question: 'Ilu desek potrzeba na most?',
+      intro: 'Bóbr narysował plan mostu. Policz deski na jego rysunku.',
+      instruction: 'Wybierz liczbę desek z planu.',
       token: 'plank', object: 'Deska', done: 'Most gotowy!', story: 'Leo przechodzi na drugi brzeg. Iskierka jedzie w jego plecaku.'
     },
     {
@@ -92,7 +92,6 @@
     let renderer = null;
     let stageIndex = 0;
     let collected = 0;
-    let marked = 0;
     let phase = 'question';
     let paused = false;
     let dismissed = false;
@@ -114,7 +113,7 @@
     function walk(text,method,callback) {
       phase='travel';root.dataset.phase='travel';dock.innerHTML='';
       stickHost.hidden=false;hint.hidden=false;hint.textContent=text;stick.setEnabled(true);
-      voice(text+'. Poruszaj gałką.');
+      voice(text);
       method(()=>{
         stick.setEnabled(false);stickHost.hidden=true;hint.hidden=true;callback();
       });
@@ -144,8 +143,8 @@
       timer = window.setTimeout(() => safeAction(action), ms);
     }
     function updateMeter() {
-      meter.innerHTML = [1, 2, 3].map(n => '<span class="' + (n <= collected ? 'adv-lit' : '') + '">' + svg('star') + '</span>').join('');
-      meter.setAttribute('aria-label', 'Gwiazdki: ' + collected + ' z 3');
+      meter.innerHTML = [1, 2, 3, 4].map(n => '<span class="' + (n <= collected ? 'adv-lit' : '') + '">' + svg('star') + '</span>').join('');
+      meter.setAttribute('aria-label', 'Gwiazdki: ' + collected + ' z 4');
     }
     function readQuestion(full = true) {
       const stage = stages[stageIndex];
@@ -162,22 +161,25 @@
     }
     function buildPieces(n, stage) {
       const items = Array.from({ length: n }, () =>
-        `<button type="button" class="adv-token" data-piece aria-label="${stage.object}, policz" aria-pressed="false">${svg(stage.token)}<span></span></button>`);
+        `<span class="adv-token" role="img" aria-label="${stage.object}">${svg(stage.token)}</span>`);
       return `<div class="adv-set">${wrapBunches(items)}</div>`;
     }
     function showQuestion() {
       if (!present()) return;
-      phase='question';marked=0;root.dataset.phase='question';
+      phase='question';root.dataset.phase='question';
       const stage=stages[stageIndex],isAddition=stageIndex===2;
+      const planks=Array.from({length:stage.total},(_,i)=>`<rect class="drawn-plank" x="${15+i*17}" y="13" width="13" height="40" rx="2"/>`).join('');
+      const width=stage.total*17+27;
+      const plan=`<figure class="bridge-plan"><figcaption>Plan bobra</figcaption><svg role="img" aria-label="Plan mostu, ${stage.total} desek" viewBox="0 0 ${width} 66"><path d="M5 23H${width-5} M5 44H${width-5}" stroke="#bacfc8" stroke-width="3"/>${planks}</svg></figure>`;
       const pieces=stage.sets.map(n=>buildPieces(n,stage)).join('<span class="adv-plus">+</span>');
       dock.innerHTML = `<section class="adv-card" aria-labelledby="adv-question">
         <div class="adv-card-head">
-          <div><div class="adv-place">Przystanek ${stageIndex + 1}/3 <span>·</span> ${stage.place}</div>
+          <div><div class="adv-place">Przystanek ${stageIndex + 1}/4 <span>·</span> ${stage.place}</div>
           <h2 id="adv-question" tabindex="-1">${stage.question}</h2></div>
           <button class="adv-icon-button adv-listen" type="button" aria-label="Posłuchaj zadania" title="Posłuchaj zadania">${svg('speaker')}</button>
         </div>
         ${isAddition ? '<div class="adv-equation" aria-label="Działanie">' + stage.sets[0] + ' <span>+</span> ' + stage.sets[1] + ' <span>=</span> ?</div>' : ''}
-        <div class="adv-pieces ${isAddition ? 'adv-add' : 'adv-count'}">${pieces}</div>
+        ${!isAddition ? plan : `<div class="adv-pieces ${isAddition ? 'adv-add' : 'adv-count'}">${pieces}</div>`}
         <div class="adv-instruction" role="status">${svg('hand')}<span>${stage.instruction}</span></div>
         ${'<div class="adv-options" role="group" aria-label="Wybierz odpowiedź">' + stage.choices.map(num => '<button type="button" data-answer="' + num + '">' + num + '</button>').join('') + '</div>'}
       </section>`;
@@ -188,25 +190,9 @@
         }
         readQuestion();
       });
-      bindPieces(stage);
       dock.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => choose(button, stage)));
       dock.querySelector('h2').focus({ preventScroll: true });
       readQuestion();
-    }
-    function bindPieces(stage) {
-      dock.querySelectorAll('[data-piece]').forEach(button => button.addEventListener('click', () => {
-        if (paused || phase !== 'question') return;
-        if (!button.classList.contains('adv-touched')) {
-          marked++;
-          button.classList.add('adv-touched');
-          button.querySelector('span').textContent = String(marked);
-          button.setAttribute('aria-pressed', 'true');
-          button.setAttribute('aria-label', stage.object + ' ' + marked);
-        }
-        sound('tap');
-        voice(button.querySelector('span').textContent);
-        showHint(marked === stage.total ? 'Wszystkie policzone! Wybierz liczbę.' : 'Policzone: ' + marked);
-      }));
     }
     function showHint(text) {
       const hint = dock.querySelector('.adv-instruction span');
@@ -216,7 +202,7 @@
       if (paused || phase !== 'question' || dock.querySelector('.adv-options').hidden) return;
       if (Number(button.dataset.answer) !== stage.total) {
         sound('tap');
-        const hint = marked === stage.total ? 'Policzone: ' + marked + '. Znajdź tę liczbę.' : 'Dotknij każdego obrazka i spróbuj jeszcze raz.';
+        const hint = stageIndex===0 ? 'Spójrz na plan bobra. Policz deski jeszcze raz.' : 'Policz latarenki w obu grupach i spróbuj jeszcze raz.';
         showHint(hint);
         voice(hint);
         button.classList.remove('adv-try');
@@ -234,12 +220,21 @@
       voice(stage.done + ' ' + stage.story);
       updateMeter();
       root.dataset.phase = 'success';
-      dock.innerHTML = `<section class="adv-success" role="status"><span class="adv-earned-star">${svg('star')}</span><div><div class="adv-place">Gwiazdka ${collected} z 3</div><h2>${stage.done}</h2><p>${stage.story}</p></div></section>`;
+      dock.innerHTML = `<section class="adv-success" role="status"><span class="adv-earned-star">${svg('star')}</span><div><div class="adv-place">Gwiazdka ${collected} z 4</div><h2>${stage.done}</h2><p>${stage.story}</p></div></section>`;
       later(travel, 900);
     }
     function travel() {
       if (collected===2) {stageIndex=2;showQuestion();return;}
-      if (collected===3) {walk('Wejdź do wioski',cb=>renderer.advance(3,cb),finish);return;}
+      if (collected===3) {
+        walk('Przejdź przez bramę do sadu',cb=>renderer.advance(3,cb),()=>{
+          walk('Zbierz trzy jabłka na placek',cb=>renderer.orchard(n=>{
+            hint.textContent='Jabłka w koszyku: '+n+' z 3';
+            sound('correct');
+          },cb),()=>reward({done:'Koszyk pełny!',story:'Leo przyniósł do kuchni trzy jabłka.'}));
+        });
+        return;
+      }
+      if (collected===4) {finish();return;}
       walk('Przejdź przez most do gwiazdki',cb=>renderer.advance(1,cb),()=>{
         stageIndex=1;
         walk('Idź po złotej linii do gwiazdki',cb=>renderer.tracePath(cb),()=>reward(stages[1]));
@@ -251,14 +246,14 @@
       renderer?.setPaused?.(true);
       window.adventureCompleted?.(0);
       sound('complete');
-      voice('Brawo! W dolinie znów jasno. Hobbici zapraszają Leo na placek z jagodami. Dziękujemy za pomoc!');
+      voice('Brawo! W dolinie znów jasno. Hobbici zapraszają Leo na placek z jabłkami. Dziękujemy za pomoc!');
       dock.innerHTML = '';
       pauseButton.hidden = true;
       shade.hidden = false;
       shade.innerHTML = `<section class="adv-modal adv-victory" aria-labelledby="adv-won">
-        <div class="adv-awards" aria-label="Trzy gwiazdki"><span>${svg('star')}</span><span>${svg('star')}</span><span>${svg('star')}</span></div>
+        <div class="adv-awards" aria-label="Cztery gwiazdki"><span>${svg('star')}</span><span>${svg('star')}</span><span>${svg('star')}</span><span>${svg('star')}</span></div>
         <div class="adv-place">${valleyName}</div><h2 id="adv-won">W dolinie znów jasno!</h2>
-        <p>Hobbici zapraszają Leo do ciepłej norki na placek z jagodami. Dziękują Ci za pomoc!</p>
+        <p>Hobbici zapraszają Leo do ciepłej norki na placek z jabłkami. Dziękują Ci za pomoc!</p>
         <button type="button" data-map class="adv-primary">${svg('compass')} Wróć do mapy</button>
         <button type="button" data-restart class="adv-secondary">${svg('retry')} Zagraj jeszcze raz</button></section>`;
       shade.querySelector('[data-map]').addEventListener('click', () => close());

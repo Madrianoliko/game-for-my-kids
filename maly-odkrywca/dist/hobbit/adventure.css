@@ -120,10 +120,7 @@
 .adv-count .adv-set { column-gap: 9px; }
 .adv-game .adv-token { position: relative; width: var(--piece); height: var(--piece); flex: 0 0 auto; border: 1px solid transparent; border-radius: 9px; background: transparent; }
 .adv-token > svg { width: 91%; height: 91%; filter: drop-shadow(0 2px 2px #0d0c1a70); transition: opacity .18s ease; }
-.adv-token.adv-touched { background: #5c86722f; border-color: #86bd961f; }
-.adv-token.adv-touched > svg { opacity: .55; }
 .adv-token span { display: none; }
-.adv-token.adv-touched span { display: flex; justify-content: center; align-items: center; position: absolute; right: -1px; bottom: -2px; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 14px; background: #aee9ae; color: #183e31; font-size: .82rem; font-weight: 900; border: 2px solid var(--adv-panel); }
 .adv-add { gap: 6px; }
 .adv-add .adv-set { flex: 1 1 0; gap: 1px; }
 .adv-add .adv-bunch { flex-wrap: wrap; }
@@ -159,7 +156,6 @@
 @media (hover:hover) {
   .adv-options button:hover, .adv-primary:hover { background: #ffda74; }
   .adv-game .adv-icon-button:hover, .adv-game .adv-secondary:hover { background: #423e56; }
-  .adv-game .adv-token:hover { background: #60597644; }
 }
 /* Keep Leo visible above the puzzle on a portrait phone. */
 @media (max-width:700px) and (orientation:portrait) {
@@ -222,3 +218,6 @@
 .walk-stick{position:absolute;z-index:4;left:max(22px,env(safe-area-inset-left));bottom:max(22px,env(safe-area-inset-bottom))}
 .walk-hint{position:absolute;top:max(80px,calc(env(safe-area-inset-top) + 64px));left:50%;transform:translateX(-50%);width:max-content;max-width:92%;text-align:center;background:#182537df;color:#fff6cd;border-radius:16px;padding:9px 16px;font-weight:900}
 .adv-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.bridge-plan{margin:12px 0;padding:8px 15px;border:1px solid #87adae;border-radius:12px;background-color:#254957;background-image:linear-gradient(#d5ebe512 1px,transparent 1px),linear-gradient(90deg,#d5ebe512 1px,transparent 1px);background-size:14px 14px}
+.bridge-plan figcaption{font-weight:900;color:#e6eecc;font-size:14px}
+.adv-game .bridge-plan svg{width:100%;height:66px}.drawn-plank{fill:#dbaf6e;stroke:#fff2be;stroke-width:1.5}
