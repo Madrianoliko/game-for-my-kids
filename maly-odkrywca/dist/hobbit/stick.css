@@ -1,0 +1,74 @@
+.leo-stick {
+  --leo-stick-size: clamp(100px, 26vmin, 128px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: var(--leo-stick-size);
+  height: var(--leo-stick-size);
+  padding: 0;
+  overflow: visible;
+  box-sizing: border-box;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: grab;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #606a77, #262f40 31%, #202736 77%, #697379);
+  border: 2px solid #b5bcb185;
+  box-shadow: 0 5px 12px #07121865, inset 0 1px 0 #fbebbd52, inset 0 -2px 2px #11162191;
+  outline-offset: 4px;
+  pointer-events: auto;
+}
+.leo-stick:focus-visible { outline: 3px solid #ffe08a; }
+.leo-stick-held { cursor: grabbing; }
+.leo-stick-disabled { opacity: .55; pointer-events: none; }
+.leo-stick-ring {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 6%;
+  pointer-events: none;
+  border: 1px solid #c8c3ad40;
+  border-radius: 50%;
+  background: radial-gradient(circle at 47% 40%, #475162, #2d3648 61%, #1a2232 86%);
+  box-shadow: inset 1px 2px 4px #0f142688;
+}
+.leo-stick-tick {
+  display: block;
+  position: absolute;
+  width: 10%;
+  height: 7%;
+  background: #d3c6a4;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  opacity: .84;
+}
+.leo-stick-up { top: 7%; left: 45%; }
+.leo-stick-down { bottom: 7%; left: 45%; transform: rotate(180deg); }
+.leo-stick-right { right: 5%; top: 46.5%; transform: rotate(90deg); }
+.leo-stick-left { left: 5%; top: 46.5%; transform: rotate(-90deg); }
+.leo-stick-thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 47%;
+  height: 47%;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #778398 0%, #57647a 40%, #435269 78%, #394558);
+  border: 1.5px solid #b8c0cc9c;
+  box-shadow: inset 1px 2px 3px #e9ece93b, inset -1px -4px 3px #27324585, 0 3px 0 #1e2939, 0 6px 8px #08121c73;
+  will-change: transform;
+}
+.leo-stick-grip {
+  width: 37%;
+  height: 37%;
+  border: 1px solid #dce1db61;
+  border-radius: 50%;
+  background: radial-gradient(circle at 43% 35%, #97a3b48a, #616f8596 57%, #4a56699c);
+  box-shadow: inset 0 1px 2px #202c3d8c, 0 1px 0 #c1cad045;
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .leo-stick { --leo-stick-size: clamp(84px, 24vh, 103px); }
+}

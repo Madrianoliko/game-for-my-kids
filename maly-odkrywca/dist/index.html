@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10162a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mały Odkrywca">
+  <meta name="description" content="Wybierz się z Leo na matematyczną wyprawę przez trzy światy 3D. Policz skarby, napraw most i dojedź do mety.">
+  <title>Mały Odkrywca · Gra przygodowa</title>
+  <link rel="icon" type="image/svg+xml" href="assets/compass.svg">
+  <link rel="apple-touch-icon" href="assets/touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" as="image" href="assets/valley.webp">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/nunito-latin-wght-normal.woff2">
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="hobbit/adventure.css">
+  <script defer src="assets/three.min.js"></script>
+  <link rel="stylesheet" href="hobbit/stick.css"><script defer src="hobbit/stick.js"></script><script defer src="hobbit/scene.js"></script>
+  <script defer src="hobbit/adventure.js"></script>
+  <script defer src="home.js"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true">
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.05 6.17 6.81 1-4.93 4.8 1.16 6.78L12 17.55l-6.09 3.2 1.16-6.78-4.93-4.8 6.81-1Z"/></symbol>
+    <symbol id="i-prize" viewBox="0 0 24 24"><path fill="#ffca50" stroke="#ffdc77" stroke-width="1.1" stroke-linejoin="round" d="m12 1.8 3.08 6.24 6.89 1-4.98 4.86 1.17 6.86L12 17.53l-6.16 3.23 1.17-6.86-4.98-4.86 6.89-1Z"/><path fill="#ffad31" d="m12 12.3 6.16 8.46-1.17-6.86 4.98-4.86Z"/><path fill="#ffe89c" d="m12 1.8.02 10.5-3.1-4.26Z"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5.2 6.5 9H3.4v6h3.1l4.5 3.8z"/><path d="M15 8.4a5 5 0 0 1 0 7.2M18 5.5a9 9 0 0 1 0 13"/></g></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5.2 6.5 9H3.4v6h3.1l4.5 3.8zM16 9l5 6m0-6-5 6"/></g></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.4 9a2.7 2.7 0 0 1 5.2.8c0 2-2.7 2.1-2.7 4"/><path d="M12 16.7h.01" stroke-width="2.8"/></g></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M6.5 3.8c0-1 1.1-1.6 2-1l13 8.2a1.2 1.2 0 0 1 0 2l-13 8.2c-.9.6-2 0-2-1z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="m2 5 6.8-2.3 6.4 2.5L22 3v16l-6.8 2.3-6.4-2.5L2 21zM8.8 3v15.8M15.2 5.2v16.1"/></g></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M20 3c.5 9-3.3 15-9.2 15-4.8 0-7-4.8-4.8-8.4C8.4 5.6 14 6.2 20 3Z"/><path d="M4 21 15.5 9.5"/></g></symbol>
+    <symbol id="i-tent" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="m2 20 11-17m9 17L11 3M3 20h18l-9-14zM8.3 20 12 13.8l3.7 6.2"/></g></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4c5-4 9 3 15-1v11c-6 4-10-3-15 1"/><path d="M9 4v9m5-8v9M5 9c5-3 9 3 14-1"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5.5 12.5 4.2 4.2 8.7-9" fill="none" stroke="currentColor" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 13.5V5a2 2 0 0 1 4 0v6l1-.5c2-.6 6.5.4 6.5 3.3v2.4c0 3.4-2 5.2-5.1 5.2h-2.5c-1.8 0-3.1-.8-4.3-2.3l-4.4-5.7c-.9-1.7.9-3.2 2.4-2.1z"/></g></symbol>
+  </svg>
+  <header class="topbar">
+    <div class="bar-inner">
+      <div class="brand"><img src="assets/compass.svg" alt="" width="48" height="48"><span>Mały Odkrywca</span></div>
+      <div class="top-actions">
+        <button class="total-stars" id="open-stars" aria-label="Twoje gwiazdki, 0 z 3"><svg class="icon" aria-hidden="true"><use href="#i-prize"/></svg><span id="total">0</span><span class="star-maximum">/ 3</span></button>
+        <span class="action-divider" aria-hidden="true"></span>
+        <button class="round-btn" id="sound" aria-label="Wyłącz dźwięk" aria-pressed="true" title="Dźwięk"><svg class="icon" aria-hidden="true"><use href="#i-sound"/></svg></button>
+        <button class="round-btn" id="help" aria-label="Jak grać?" title="Jak grać?"><svg class="icon" aria-hidden="true"><use href="#i-help"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main class="world-menu" id="world-menu">
+    <section class="hero" id="hero" aria-labelledby="world-title" data-world="0">
+      <img class="hero-art" id="hero-art" src="assets/valley.webp" alt="" fetchpriority="high">
+      <div class="hero-shade"></div>
+      <div class="hero-copy">
+        <div class="hero-label"><svg class="icon" aria-hidden="true"><use id="hero-symbol" href="#i-leaf"/></svg><span id="hero-kicker">Świat 01</span></div>
+        <h1 id="world-title"><span id="title-one">Dolina</span><strong id="title-two">Hobbitów</strong></h1>
+        <p id="world-story">Pomóż Leo naprawić most i odnaleźć<br class="desktop-break"> gwiazdki ukryte w dolinie.</p>
+        <button class="play-button" id="play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><span>Rozpocznij przygodę</span></button>
+      </div>
+      <div class="hero-pages" id="hero-pages" aria-label="Podgląd światów"></div>
+    </section>
+    <section class="atlas" aria-labelledby="atlas-title">
+      <div class="atlas-heading"><div class="atlas-title"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg><h2 id="atlas-title">Wybierz świat</h2></div><span class="atlas-rule" aria-hidden="true"></span></div>
+      <div class="world-grid" id="world-grid"></div>
+    </section>
+  </main>
+  <dialog class="info-dialog" id="menu-dialog" aria-labelledby="modal-title">
+    <div class="dialog-top"><h2 id="modal-title"></h2><button class="round-btn" id="modal-close" aria-label="Zamknij"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div id="modal-body"></div><button id="modal-done" class="play-button">Rozumiem</button>
+  </dialog>
+</body>
+</html>
