@@ -25,3 +25,11 @@ Otwórz `http://localhost:8080`. Na komputerze strzałki lub klawisze WASD zast�
 ## Punkty zapisu pracy
 
 Po ukończeniu grywalnego odcinka sprawdź przejście od wyboru świata do nagrody, zrób commit i wypchnij go do repozytorium. Przed końcem sesji porównaj identyfikatory lokalnego i zdalnego commitu. Każdy kolejny świat dostaje własny katalog i własny punkt zapisu.
+
+## Natywna wersja na iPhone’a
+
+Projekt w katalogu `iphone/` korzysta z Godota 4.7.2, renderera Mobile i zasobów dołączonych do aplikacji. Gra działa w poziomie. Postęp zapisuje lokalnie, a polski głos pochodzi z systemu iOS.
+
+Gotową paczkę Xcode rozpakuj na Macu. Otwórz `MalyOdkrywca.xcodeproj`, wybierz target aplikacji, a w **Signing & Capabilities** zaznacz automatyczne podpisywanie i wybierz swój zespół. W razie potrzeby zmień Bundle Identifier na własny. Wybierz podłączonego iPhone’a z iOS 16 lub nowszym i naciśnij **Run**.
+
+Aby ponownie wygenerować projekt z repozytorium, otwórz `iphone/project.godot` w Godocie 4.7.2, zainstaluj zgodne szablony eksportu i wybierz preset **iPhone**. Wpisz swój Apple Team ID zamiast technicznego znacznika `XXXXXXXXXX` używanego przy generowaniu niepodpisanego projektu. Eksportuj do folderu poza katalogiem źródeł. Do kompilacji, podpisania i dystrybucji potrzebny jest Xcode na macOS.
