@@ -30,6 +30,13 @@ Po ukończeniu grywalnego odcinka sprawdź przejście od wyboru świata do nagro
 
 Projekt w katalogu `iphone/` korzysta z Godota 4.7.2, renderera Mobile i zasobów dołączonych do aplikacji. Gra działa w poziomie. Postęp zapisuje lokalnie, a polski głos pochodzi z systemu iOS.
 
-Gotową paczkę Xcode rozpakuj na Macu. Otwórz `MalyOdkrywca.xcodeproj`, wybierz target aplikacji, a w **Signing & Capabilities** zaznacz automatyczne podpisywanie i wybierz swój zespół. W razie potrzeby zmień Bundle Identifier na własny. Wybierz podłączonego iPhone’a z iOS 16 lub nowszym i naciśnij **Run**.
+W sklonowanym repozytorium otwórz `xcode/MalyOdkrywca.xcodeproj`. Z katalogu repozytorium na Macu możesz wykonać:
+
+```sh
+git pull --ff-only
+open xcode/MalyOdkrywca.xcodeproj
+```
+
+Projekt zawiera wyeksportowaną grę oraz biblioteki dla urządzenia i symulatora. Xcode podczas kompilacji rozpakowuje właściwą bibliotekę Godota z katalogu `Engine`. W **Signing & Capabilities** zaznacz automatyczne podpisywanie i wybierz swój zespół. W razie potrzeby zmień Bundle Identifier na własny. Wybierz podłączonego iPhone’a z iOS 16 lub nowszym i naciśnij **Run**.
 
 Aby ponownie wygenerować projekt z repozytorium, otwórz `iphone/project.godot` w Godocie 4.7.2, zainstaluj zgodne szablony eksportu i wybierz preset **iPhone**. Wpisz swój Apple Team ID zamiast technicznego znacznika `XXXXXXXXXX` używanego przy generowaniu niepodpisanego projektu. Eksportuj do folderu poza katalogiem źródeł. Do kompilacji, podpisania i dystrybucji potrzebny jest Xcode na macOS.

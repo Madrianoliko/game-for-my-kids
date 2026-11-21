@@ -1,2 +1,5 @@
 # Identyfikator prywatnej publikacji Sites nie jest potrzebny do uruchomienia gry.
 maly-odkrywca/.openai/
+xcode/**/xcuserdata/
+xcode/DerivedData/
+xcode/build/
