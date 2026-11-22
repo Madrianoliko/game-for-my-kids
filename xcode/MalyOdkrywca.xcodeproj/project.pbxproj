@@ -146,7 +146,6 @@
 				ORGANIZATIONNAME = GodotEngine;
 				TargetAttributes = {
 					D0BCFE3318AEBDA2004A7AAE = {
-						DevelopmentTeam = "";
 						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -356,7 +355,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 59NXDZM7N9;
 				EXECUTABLE_NAME = MalyOdkrywca;
 				INFOPLIST_FILE = "MalyOdkrywca/MalyOdkrywca-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Mały Odkrywca";
@@ -367,6 +366,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(DERIVED_FILE_DIR)",
 					"$(PROJECT_DIR)/**",
 				);
 				MARKETING_VERSION = 0.1.0;
@@ -392,7 +392,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 59NXDZM7N9;
 				EXECUTABLE_NAME = MalyOdkrywca;
 				INFOPLIST_FILE = "MalyOdkrywca/MalyOdkrywca-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Mały Odkrywca";
@@ -403,6 +403,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(DERIVED_FILE_DIR)",
 					"$(PROJECT_DIR)/**",
 				);
 				MARKETING_VERSION = 0.1.0;

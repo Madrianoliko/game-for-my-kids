@@ -29,3 +29,16 @@
 /**************************************************************************/
 
 import Foundation
+
+// The bundled Godot archive calls these SDL platform hooks.
+import UIKit
+
+@_cdecl("SDL_IsIPad")
+func sdlIsIPad() -> Bool {
+    return UIDevice.current.userInterfaceIdiom == .pad
+}
+
+@_cdecl("SDL_IsAppleTV")
+func sdlIsAppleTV() -> Bool {
+    return UIDevice.current.userInterfaceIdiom == .tv
+}

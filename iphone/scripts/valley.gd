@@ -1,6 +1,6 @@
 extends Node3D
 
-enum State { HOME, WALK, MATH, END }
+enum State { HOME, WALK, STORY, MATH, FIGHT, INSIDE, END }
 var state := State.HOME
 var stage := 0
 var best := 0
@@ -10,7 +10,7 @@ var paused := false
 var targets: Array[Vector3] = []
 var answer := 0
 var step_time := 0.0
-var bridge_count := 5
+const BridgeRepair := preload("res://scripts/bridge_repair.gd")
 var groups := Vector2i(2,3)
 var apples: Array[Node3D] = []
 var boards: Array[Node3D] = []
@@ -25,9 +25,31 @@ var ui := Control.new()
 var panel := VBoxContainer.new()
 var overlay := ColorRect.new()
 var hud := Label.new()
+var cottage := preload("res://scripts/cottage.gd").new()
+var action_button: Button
 var pause_button := Button.new()
 var stick = preload("res://scripts/stick.gd").new()
-var title_art := TextureRect.new()
+var bystra := preload("res://scripts/river_story.gd").new()
+var beaver := Node3D.new()
+var atlas := preload("res://scripts/atlas.gd").new()
+var narrator := AudioStreamPlayer.new()
+var chime := AudioStreamPlayer.new()
+const Icons := preload("res://scripts/river_icons.gd")
+const VOICE_CLIPS := {
+	"Jesteśmy w chatce. Połóż jabłka na stole.": "inside",
+	"Orkowie uciekli! Podejdź do okrągłych drzwi": "door",
+	"Orkowie na ścieżce! Dotknij miecza, żeby ich przepłoszyć.": "orcs",
+	"Zanieś jabłka do chatki": "deliver",
+	"W wiosce zapada zmrok. Pomóż mi policzyć latarenki, żebyśmy mogli je zapalić!": "fox",
+	"Przejdź przez most": "crossing",
+	"Przejdź po kamieniach": "stones",
+	"Wejdź do wioski": "village",
+	"Zbierz trzy jabłka na placek": "apples",
+	"Ile desek potrzeba na most?": "planks",
+	"Ile jest razem latarenek?": "lanterns",
+	"Spójrz jeszcze raz i policz.": "retry",
+	"Brawo! Hobbici zapraszają Leo na placek z jabłkami.": "feast",
+}
 var hint: Label
 var save := ConfigFile.new()
 
@@ -80,6 +102,8 @@ func _ready() -> void:
 		if limb: limbs.append(limb)
 	atmosphere()
 	populate()
+	add_child(cottage)
+	cottage.build(self)
 	add_child(camera)
 	camera.fov = 54
 	add_child(marker)
@@ -91,11 +115,14 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
 	layer.add_child(ui)
-	ui.add_child(title_art)
-	title_art.texture = preload("res://art/title.webp")
-	title_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	title_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	title_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(narrator)
+	add_child(chime)
+	ui.add_child(atlas)
+	atlas.play_requested.connect(open_story)
+	atlas.resume_requested.connect(func(): bystra.begin(true))
+	atlas.classic_requested.connect(start)
+	atlas.sound_requested.connect(toggle_sound)
+	atlas.exit_requested.connect(exit_game)
 	ui.add_child(hud)
 	hud.add_theme_stylebox_override("normal",plate(Color("#1a2c40df")))
 	pause_button.add_theme_stylebox_override("normal",plate(Color("#1a2c40e8")))
@@ -107,6 +134,8 @@ func _ready() -> void:
 	pause_button.text = "Pauza"
 	pause_button.custom_minimum_size = Vector2(96,50)
 	pause_button.pressed.connect(pause_game)
+	action_button = button(ui,"Miecz",act)
+	action_button.hide()
 	ui.add_child(overlay)
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.color = Color("#0c192baf")
@@ -122,6 +151,8 @@ func _ready() -> void:
 	center.add_child(card)
 	card.add_child(panel)
 	panel.add_theme_constant_override("separation",9)
+	add_child(bystra)
+	bystra.setup(self)
 	ui.resized.connect(layout)
 	layout()
 	home()
@@ -133,6 +164,9 @@ func layout() -> void:
 		var safe := DisplayServer.get_display_safe_area()
 		if display.x>0 and display.y>0:
 			inset += Vector2(maxi(safe.position.x,int(display.x)-safe.end.x),maxi(safe.position.y,int(display.y)-safe.end.y))*ui.size/display
+	if action_button:
+		action_button.position = ui.size-inset-action_button.size
+	atlas.set_insets(inset)
 	hud.position = inset
 	stick.position = Vector2(inset.x,ui.size.y-inset.y-136)
 	pause_button.position = Vector2(ui.size.x-inset.x-96,inset.y)
@@ -165,7 +199,6 @@ func atmosphere() -> void:
 
 func populate() -> void:
 	# The bridge builder waits on the bank with the rolled plan.
-	var beaver := Node3D.new()
 	add_child(beaver)
 	beaver.position=point(.75,-2.45)
 	beaver.rotation.y=.58
@@ -296,45 +329,79 @@ func button(parent: Control, text: String, action: Callable) -> Button:
 	return b
 
 func say(text: String) -> void:
-	if not sound or OS.get_name() not in ["iOS","macOS"]: return
-	var voices := DisplayServer.tts_get_voices_for_language("pl")
-	if not voices.is_empty(): DisplayServer.tts_speak(text,voices[0],85,1.0,.91,0,true)
+	if sound and VOICE_CLIPS.has(text):
+		play_clip(narrator, VOICE_CLIPS[text])
+
+func play_clip(player: AudioStreamPlayer, clip: String) -> void:
+	var path := "res://audio/%s.mp3" % clip
+	player.stream = AudioStreamMP3.load_from_file(path)
+	player.play()
+
+func toggle_sound() -> void:
+	sound = not sound
+	save.set_value("valley","sound",sound)
+	save.save("user://valley.cfg")
+	if sound:
+		play_clip(chime,"chime")
+	else:
+		narrator.stop()
+		chime.stop()
+	atlas.update_status(best,sound)
+
+func exit_game() -> void:
+	narrator.stop()
+	chime.stop()
+	if OS.get_name()=="iOS":
+		# The embedded iOS renderer ignores the quit result of Main::iteration().
+		# Checkpoints are written synchronously before a new step opens.
+		OS.kill(OS.get_process_id())
+	else:
+		get_tree().quit()
+
+func open_story() -> void:
+	if not bystra.saved:
+		bystra.begin(false)
+		return
+	var confirm := ConfirmationDialog.new()
+	confirm.title="Nowa wyprawa"
+	confirm.dialog_text="Zacząć od norki Bilba i zastąpić zapis tej wyprawy?"
+	confirm.ok_button_text="Zacznij od nowa"
+	confirm.cancel_button_text="Wróć"
+	ui.add_child(confirm)
+	confirm.confirmed.connect(func(): confirm.queue_free(); bystra.begin(false))
+	confirm.canceled.connect(confirm.queue_free)
+	confirm.popup_centered()
 
 func home() -> void:
+	bystra.stop()
+	atlas.can_resume=bystra.saved
+	cottage.reset()
+	action_button.hide()
 	state=State.HOME
 	paused=false
+	narrator.stop()
 	stick.reset()
-	title_art.show()
 	stick.hide()
 	pause_button.hide()
 	hud.hide()
-	clear_panel()
-	label_line("Mały Odkrywca",20)
-	label_line("Dolina Hobbitów",38)
-	label_line("Twoje gwiazdki: %d / 4"%best,20)
-	button(panel,"Rozpocznij przygodę",start)
-	var vol := Button.new()
-	panel.add_child(vol)
-	vol.text="Dźwięk: włączony" if sound else "Dźwięk: wyłączony"
-	vol.custom_minimum_size.y=48
-	vol.pressed.connect(func():
-		sound=not sound
-		save.set_value("valley","sound",sound)
-		save.save("user://valley.cfg")
-		home())
+	overlay.hide()
+	atlas.select_world(0)
+	atlas.update_status(best,sound)
+	atlas.show()
 
-func start() -> void:
+func prepare_valley() -> void:
+	cottage.reset()
+	action_button.hide()
 	stage=0
 	stars=0
-	bridge_count=15 if best>=3 else randi_range(3,6+best)
 	groups=Vector2i(randi_range(1,3+mini(best,3)),randi_range(1,4+mini(best,3)))
 	for item in boards+lanterns: item.queue_free()
 	boards.clear()
 	lanterns.clear()
 	for fruit in apples: fruit.show()
 	for mark in trail_marks: mark.hide()
-	for i in bridge_count:
-		var plank := box(self,point(-2)+Vector3(0,.23,1.76-(i+.5)*3.52/bridge_count),Vector3(4.1,.2,3.4/bridge_count),Color("#c39760"))
+	for i in BridgeRepair.SPANS:
+		var plank := box(self,point(-2)+Vector3(0,.23,1.76-(i+.5)*3.52/BridgeRepair.SPANS),Vector3(4.1,.2,3.4/BridgeRepair.SPANS),Color("#c39760"))
 		boards.append(plank)
 		plank.hide()
 	for i in groups.x+groups.y:
@@ -342,9 +409,13 @@ func start() -> void:
 		var rank := i if side<0 else i-groups.x
 		var p := point(-24+rank*.82,side*2.1)+Vector3.UP*1.5
 		box_lantern(p)
+
+func start() -> void:
+	prepare_valley()
 	leo.position=point(9)
 	camera.position=leo.position+Vector3(0,3.05,5.9)
-	title_art.hide()
+	atlas.hide()
+	if sound: play_clip(chime,"chime")
 	hud.show()
 	pause_button.show()
 	walk([point(4)],"Podejdź do mostu")
@@ -369,12 +440,16 @@ func move_marker() -> void:
 	marker.visible=true
 
 func give_star() -> void:
+	if sound: play_clip(chime,"chime")
 	stars+=1
 	best=maxi(best,stars)
 	save.set_value("valley","stars",best)
 	save.save("user://valley.cfg")
 
 func arrive() -> void:
+	if bystra.active:
+		bystra.arrived()
+		return
 	if stage==4: apples[3-targets.size()].hide()
 	targets.pop_front()
 	if not targets.is_empty():
@@ -382,7 +457,8 @@ func arrive() -> void:
 		return
 	marker.hide()
 	match stage:
-		0,2: quiz()
+		0: repair_bridge()
+		2: fox_intro()
 		1:
 			stage=2
 			for mark in trail_marks: mark.show()
@@ -396,22 +472,101 @@ func arrive() -> void:
 			walk(fruit_path,"Zbierz trzy jabłka na placek")
 		4:
 			give_star()
-			end_game()
+			stage=5
+			walk([point(-46)],"Zanieś jabłka do chatki")
+		5:
+			state=State.FIGHT
+			stick.hide()
+			cottage.ambush()
+			set_action("Machnij mieczem")
+			hud.text="Przepłosz orków!"
+			say("Orkowie na ścieżce! Dotknij miecza, żeby ich przepłoszyć.")
+		6:
+			state=State.INSIDE
+			stick.hide()
+			cottage.enter()
+			hud.text="Chatka hobbitów"
+			set_action("Połóż jabłka na stole")
+			say("Jesteśmy w chatce. Połóż jabłka na stole.")
 
-func quiz() -> void:
-	if stage==2: give_star()
+func set_action(text: String) -> void:
+	Icons.apply(action_button,text)
+	action_button.disabled=false
+	action_button.reset_size()
+	action_button.show()
+	layout()
+
+func act() -> void:
+	if paused or action_button.disabled: return
+	if state==State.INSIDE:
+		cottage.basket.show()
+		state=State.END
+		pause_button.hide()
+		hud.text="Placek dla całej doliny!   ★ %d/4" % stars
+		set_action("Ekran startowy")
+		say("Brawo! Hobbici zapraszają Leo na placek z jabłkami.")
+	elif state==State.END:
+		home()
+	elif state==State.FIGHT:
+		action_button.disabled=true
+		cottage.strike()
+		if sound: play_clip(chime,"swoosh")
+		cottage.swing.finished.connect(strike_finished,CONNECT_ONE_SHOT)
+
+func strike_finished() -> void:
+	if state!=State.FIGHT: return
+	if cottage.remaining>0:
+		action_button.disabled=false
+		return
+	stage=6
+	cottage.sword.hide()
+	action_button.hide()
+	walk([point(-50.7)],"Orkowie uciekli! Podejdź do okrągłych drzwi")
+
+func fox_intro() -> void:
+	state=State.STORY
+	stick.reset()
+	stick.hide()
+	give_star()
+	clear_panel()
+	label_line("Lis przy bramie",30)
+	label_line("W wiosce zapada zmrok. Pomóż mi policzyć latarenki,\nżebyśmy mogli je zapalić!",23)
+	Icons.apply(button(panel,"Pomogę!",quiz),"Pomogę!")
+	say("W wiosce zapada zmrok. Pomóż mi policzyć latarenki, żebyśmy mogli je zapalić!")
+
+func repair_bridge() -> void:
 	state=State.MATH
 	stick.reset()
 	stick.hide()
 	clear_panel()
-	var prompt := "Ilu desek potrzeba na most?" if stage==0 else "Ile jest razem latarenek?"
-	label_line("Plan bobra" if stage==0 else "Brama wioski",20)
+	label_line("Bóbr nad Bystrą Wodą",30)
+	var repair := BridgeRepair.new()
+	repair.voice.connect(func(clip):
+		if sound: play_clip(narrator,clip))
+	repair.hammer_hit.connect(func():
+		if sound: play_clip(chime,"wood_tap"))
+	repair.repaired.connect(func():
+		if stage!=0 or state!=State.MATH: return
+		for board in boards: board.show()
+		give_star()
+		stage=1
+		walk([point(-7)],"Przejdź przez most"))
+	panel.add_child(repair)
+
+func quiz() -> void:
+	if paused: return
+	state=State.MATH
+	stick.reset()
+	stick.hide()
+	clear_panel()
+	var prompt := "Ile jest razem latarenek?"
+	label_line("Brama wioski",20)
 	label_line(prompt,30)
 	var diagram = preload("res://scripts/diagram.gd").new()
-	diagram.counts = Vector2i(bridge_count,0) if stage==0 else groups
-	diagram.custom_minimum_size=Vector2(540,91)
+	diagram.counts = groups
+	diagram.custom_minimum_size=Vector2(720,180)
 	panel.add_child(diagram)
-	answer=bridge_count if stage==0 else groups.x+groups.y
+	answer=groups.x+groups.y
 	hint=label_line("Wybierz liczbę.",19)
 	var row := HBoxContainer.new()
 	row.alignment=BoxContainer.ALIGNMENT_CENTER
@@ -423,7 +578,9 @@ func quiz() -> void:
 			if n>=1 and n<=15 and picks.size()<4: picks.append(n)
 		distance+=1
 	picks.shuffle()
-	for n in picks: button(row,str(n),choose.bind(n))
+	for n in picks: Icons.apply(button(row,str(n),choose.bind(n)),str(n))
+	var listen:=button(row,"Posłuchaj",say.bind(prompt))
+	Icons.apply(listen,"Posłuchaj")
 	say(prompt)
 
 func choose(n:int) -> void:
@@ -433,31 +590,19 @@ func choose(n:int) -> void:
 		say(hint.text)
 		return
 	give_star()
-	if stage==0:
-		for board in boards: board.show()
-		stage=1
-		walk([point(-7)],"Przejdź przez most")
-	else:
-		for lamp in lanterns: lamp.show()
-		stage=3
-		walk([point(-30)],"Wejdź do wioski")
-
-func end_game() -> void:
-	state=State.END
-	clear_panel()
-	stick.hide()
-	pause_button.hide()
-	hud.hide()
-	label_line("★  ★  ★  ★",34)
-	label_line("Placek dla całej doliny!",36)
-	label_line("Leo zaniósł jabłka do norki. Czas na ucztę!",20)
-	button(panel,"Jeszcze raz",start)
-	button(panel,"Ekran startowy",home)
-	say("Brawo! Hobbici zapraszają Leo na placek z jabłkami.")
+	for lamp in lanterns: lamp.show()
+	stage=3
+	walk([point(-30)],"Wejdź do wioski")
 
 func pause_game() -> void:
-	if paused or state not in [State.WALK,State.MATH]: return
+	if paused or state not in [State.WALK,State.STORY,State.MATH,State.FIGHT,State.INSIDE]: return
 	paused=true
+	if bystra.active:
+		bystra.blocking=false
+		bystra.show_controls()
+		if bystra.busy: bystra.anim.pause()
+	if state==State.FIGHT and cottage.swing: cottage.swing.pause()
+	action_button.hide()
 	stick.reset()
 	stick.hide()
 	pause_button.hide()
@@ -467,15 +612,23 @@ func pause_game() -> void:
 	menu.dialog_text="Leo poczeka tutaj."
 	menu.ok_button_text="Graj dalej"
 	menu.add_button("Mapa",true,"map")
+	menu.add_button("Wyjdź",true,"exit")
 	ui.add_child(menu)
 	var resume := func():
 		menu.queue_free()
 		paused=false
+		if bystra.active and bystra.busy: bystra.anim.play()
+		action_button.visible=state in [State.FIGHT,State.INSIDE]
+		if state==State.FIGHT and cottage.swing and cottage.swing.is_valid(): cottage.swing.play()
 		stick.visible=state==State.WALK
+		if bystra.active: bystra.show_controls()
 		pause_button.show()
 	menu.confirmed.connect(resume)
 	menu.canceled.connect(resume)
-	menu.custom_action.connect(func(_id): menu.queue_free();home())
+	menu.custom_action.connect(func(id):
+		menu.queue_free()
+		if id == "exit": exit_game()
+		else: home())
 	menu.popup_centered()
 
 func _notification(what:int) -> void:
