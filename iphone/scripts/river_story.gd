@@ -52,6 +52,9 @@ var guarding:=true
 var fingers:Dictionary={}
 var declined:=false
 var traveling:=false
+const GUARD_CUES := ["guard","guard_side","guard_sword"]
+var ingredient_list := HBoxContainer.new()
+var ingredient_ticks := {}
 var voice:=""
 var origin:=Vector3.ZERO
 
@@ -79,7 +82,9 @@ func setup(game) -> void:
 	field.offset_top=64
 	field.anchor_bottom=1
 	field.offset_bottom=-162
-	field.instruction.connect(prompt)
+	field.instruction.connect(func(clip:String, words:String):
+		if id()=="range" and clip=="enc_aim_cone": say("drawstring")
+		else: prompt(clip,words))
 	field.progressed.connect(func(n):
 		part=n
 		if id()=="mill": actors[0].hide()
@@ -117,6 +122,22 @@ func setup(game) -> void:
 	outside.tooltip_text="Wyjdź na plac"
 	outside.custom_minimum_size=Vector2(76,72)
 	outside.pressed.connect(leave_room)
+	host.ui.add_child(ingredient_list)
+	ingredient_list.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	for food in Square.FOOD.values():
+		var icon:=TextureRect.new()
+		icon.texture=Icons.picture(food)
+		icon.custom_minimum_size=Vector2(62,62)
+		icon.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		ingredient_list.add_child(icon)
+		var tick:=TextureRect.new()
+		tick.texture=Icons.picture("Zebrane")
+		tick.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		tick.position=Vector2(33,32)
+		tick.size=Vector2(30,30)
+		tick.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		icon.add_child(tick)
+		ingredient_ticks[food]=tick
 	host.ui.add_child(actions)
 	hand=control_button("Ręka",interact)
 	sword=control_button("Machnij mieczem",strike)
@@ -244,7 +265,7 @@ func stop() -> void:
 	fingers.clear()
 	host.camera.attributes=null
 	bank.leave()
-	for node in [square,outside,scene,props,field,dock,actions,replay,held_shield,equipped_bow,arc]: node.hide()
+	for node in [ingredient_list,square,outside,scene,props,field,dock,actions,replay,held_shield,equipped_bow,arc]: node.hide()
 	host.cottage.sword.hide()
 	host.cottage.slit.hide()
 	host.cottage.sword.position=Vector3(.45,.92,.16)
@@ -275,6 +296,10 @@ func show_controls() -> void:
 	shield.disabled="Tarcza" not in items
 
 func render() -> void:
+	ingredient_list.visible=id() in ["invitation","village","mill","coop","dairy","delivery"] and not (id()=="delivery" and part==1)
+	ingredient_list.position=host.hud.position+Vector2(0,host.hud.size.y+6)
+	for food in ingredient_ticks:
+		ingredient_ticks[food].visible=food in items
 	bank.leave()
 	square.hide()
 	outside.hide()
@@ -410,7 +435,7 @@ func render() -> void:
 			foe=actor("shield",Vector3(.45,0,-.45))
 			foe_shield=foe.prop.get_child(-1)
 			foe_sword=host.box(foe,Vector3(-.6,.85,.25),Vector3(.14,1,.12),Color("#c8d6dc"))
-			say("guard")
+			say(GUARD_CUES[clampi(marks,0,2)])
 		"invitation":
 			var porch:Vector3=Square.DOORS.delivery
 			actor("squirrel",porch+Vector3(-.85,0,.62),1.1)
@@ -753,9 +778,18 @@ func _physics_process(dt:float) -> void:
 			attack_fired=true
 			if host.leo.position.distance_to(foe.global_position)<2:
 				effect("wood_tap")
-				if not blocking:
+				if blocking and marks==0:
+					marks=1
+					checkpoint()
+					say("guard_side")
+				elif not blocking:
 					var push:Vector3=(host.leo.position-foe.global_position).normalized()
 					host.leo.position+=push*.95
+		var offset:Vector3=host.leo.position-foe.global_position
+		if marks==1 and offset.length()<1.88 and (absf(offset.x)>absf(offset.z) or offset.z<0):
+			marks=2
+			checkpoint()
+			say("guard_sword")
 
 func _input(event:InputEvent) -> void:
 	if not active or host.paused or not actions.visible or not event is InputEventScreenTouch: return

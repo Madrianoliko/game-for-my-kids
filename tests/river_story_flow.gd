@@ -175,6 +175,7 @@ func tap_action(b:Button) -> void:
 func shoot_pair() -> bool:
 	if not check(not story.field.visible and story.bow.visible,"Bow already aiming"): return false
 	await tap_action(story.bow)
+	if story.id()=="range" and not check(story.voice=="route_drawstring","Missing bow instruction"): return false
 	for shot in 2:
 		var field=story.field
 		var src:Vector2=field.source_point()
@@ -270,6 +271,7 @@ func run() -> void:
 		var protected_position:Vector3=game.leo.position
 		await create_timer(2.1).timeout
 		if not check(story.blocking and game.leo.position.distance_to(protected_position)<.12,"Blocked attack moved Bilbo"): return
+		if not check(story.voice=="route_guard_side","Missing flanking instruction"): return
 		touch(game.ui,shield_pos,false)
 		await create_timer(2.25).timeout
 		game.leo.position=story.foe.global_position+Vector3(0,0,1.1)
@@ -277,6 +279,7 @@ func run() -> void:
 	await create_timer(2.2).timeout
 	if not check(game.leo.position.distance_to(before)>.6,"No knockback"): return
 	await move_to(story.foe.global_position+Vector3(.8,0,.1))
+	if variant==1 and not check(story.voice=="route_guard_sword","Missing sword instruction"): return
 	await tap_action(story.sword)
 	await create_timer(.45).timeout
 	if not check(story.id()=="chief","Cannot hit exposed orc"): return
@@ -302,6 +305,7 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	if not check(story.id()=="invitation","No birthday invitation"): return
 	await click(story.options.get_child(0))
+	if not check(story.ingredient_list.visible,"Missing ingredient list"): return
 	await visit_door("delivery")
 	if not check(story.id()=="delivery" and story.voice=="route_need_mill","Started baking with empty bag"): return
 	await click(story.outside)
@@ -324,6 +328,7 @@ func run() -> void:
 				await create_timer(.6).timeout
 			await move_to(story.origin+Vector3(.9,0,-.75))
 			await tap_action(story.hand)
+		if not check(story.ingredient_ticks[story.Square.FOOD[place]].visible,"Missing ingredient tick"): return
 		if not check(story.id()==place,"Unexpected teleport after collecting"): return
 		await move_to(story.origin+Vector3(0,0,2.13))
 		await tap_action(story.hand)
@@ -337,6 +342,7 @@ func run() -> void:
 	await tap_action(story.hand)
 	if not check(story.id()=="delivery" and story.part==1,"Food not delivered"): return
 	await reopen()
+	if not check(not story.ingredient_list.visible,"List visible after delivery"): return
 	await click(story.options.get_child(0))
 	for stage in ["recipe","eggs","milk"]:
 		if not check(story.id()==stage,"Missing kitchen "+stage): return
