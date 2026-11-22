@@ -56,6 +56,7 @@ var voice:=""
 var origin:=Vector3.ZERO
 
 func id() -> String: return Data.ROUTE[index]
+
 func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and "Mleko" in items) or (id()=="door" and declined)
 
 func setup(game) -> void:
@@ -802,7 +803,7 @@ func draw_bow() -> void:
 	if id() in ["range","mill"] and part<2:
 		dock.show()
 		if options.get_child_count()==0: button("Posłuchaj",func(): prompt(voice,caption.text))
-		field.begin(self,"pine",0,part)
+		field.begin(self,"pine",part)
 		host.stick.reset()
 		host.stick.hide()
 		actions.hide()

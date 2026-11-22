@@ -13,7 +13,6 @@ const MARKS := {
 	"Ręka": '<path fill="#ffd39d" stroke="#865338" stroke-width="1.5" stroke-linejoin="round" d="M12 23V10q0-5 4-3l1 12V5q2-4 5 0v13l1-13q3-3 5 1v13l1-9q3-4 5 1v14q-1 11-10 12-6 1-10-3L4 23q-2-5 3-5Z"/>',
 	"Tarcza": '<path fill="#91c8e4" stroke="#e0efeb" stroke-width="2" d="m20 3 14 5v11q-1 12-14 18Q7 31 6 19V8Z"/><path fill="#4e7998" d="M20 8v23q9-6 9-14v-6Z"/>',
 	"Łuk": '<path fill="none" stroke="#e9b867" stroke-width="4" d="M7 4q30 5 29 29"/><path fill="none" stroke="#d6e5e8" d="m7 4 29 29"/><path fill="none" stroke="#e7ecec" stroke-width="3" d="m6 34 23-24m-9 2 9-2-2 9"/>',
-	"Kocyk": '<path fill="#de8790" d="m3 13 24-8 10 21-24 9Z"/><path fill="none" stroke="#ffe5bd" stroke-width="3" d="m8 15 20-6m-16 21 20-7"/>',
 	"Jabłko": '<path fill="#eb7457" d="M19 10C4 2 1 22 10 32q5 6 10 2 8 4 13-8 8-22-12-16Z"/><path fill="#91b865" d="M19 12Q19 1 31 2q-1 9-12 10"/>',
 	"Ser": '<path fill="#f5bb53" d="m3 18 23-13 11 10v17L3 36Z"/><path fill="#ffe293" d="m3 18 23-13 11 10Z"/><g fill="#ce883e"><circle cx="11" cy="25" r="3"/><circle cx="26" cy="22" r="3"/><circle cx="29" cy="30" r="2"/></g>',
 	"Ciastko": '<circle cx="20" cy="20" r="17" fill="#cd8c56"/><g fill="#71472f"><circle cx="14" cy="13" r="3"/><circle cx="27" cy="19" r="3"/><circle cx="17" cy="28" r="3"/></g>',
@@ -21,7 +20,6 @@ const MARKS := {
 	"Pień": '<path fill="#885835" d="m8 15 25-1 3 21H5Z"/><ellipse cx="20" cy="14" rx="13" ry="8" fill="#e5b574"/><ellipse cx="20" cy="14" rx="7" ry="4" fill="none" stroke="#a57546" stroke-width="2"/>',
 	"Liść": '<path fill="#74a65a" d="M5 32Q0 5 36 3q0 29-31 29"/><path stroke="#e8ce7e" stroke-width="2" d="m5 34 24-24"/>',
 	"Łapka": '<g fill="#98643e"><ellipse cx="20" cy="27" rx="11" ry="8"/><circle cx="8" cy="17" r="4"/><circle cx="16" cy="10" r="4"/><circle cx="25" cy="10" r="4"/><circle cx="33" cy="17" r="4"/></g>',
-	"Kaczka": '<ellipse cx="19" cy="26" rx="16" ry="9" fill="#e5a63d"/><circle cx="28" cy="16" r="8" fill="#ffd367"/><path d="m33 16 7 3-8 2" fill="#cd7836"/><circle cx="30" cy="14" r="1.6"/>',
 	"Machnij mieczem": '<path fill="#a9d5df" d="m10 25 18-21 8-2-1 9-21 18Z"/><path stroke="#916533" stroke-width="5" d="m6 23 12 12m-6-6-8 9"/>'
 }
 const ACTIONS := {
@@ -30,7 +28,7 @@ const ACTIONS := {
 	"Odskocz": "Dalej", "Obejdź tarczę": "Dalej", "Do słomy!": "Dalej",
 	"Zablokuj": "Tarcza", "Przetnij nić": "Machnij mieczem",
 	"Strzel do szyszki": "Łuk", "Strzel w szpulkę": "Łuk",
-	"O kałużę": "Kałuża", "O pień": "Pień", "Oddaj kaczkę": "Kaczka", "Zapytaj o deski": "Deska", "Zapytaj o kocyk": "Kocyk"
+	"O kałużę": "Kałuża", "O pień": "Pień", "Zapytaj o deski": "Deska"
 }
 
 static var textures := {}

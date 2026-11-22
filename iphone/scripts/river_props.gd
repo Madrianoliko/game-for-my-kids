@@ -2,15 +2,8 @@ extends Node3D
 
 var host
 var prop := Node3D.new()
-var scenery := Node3D.new()
-var tracks: Array[Node3D] = []
 var moving: Node3D
 var tool: Node3D
-var helmet: Node3D
-var beam: Node3D
-var net: Node3D
-var hoof: Node3D
-var wool: MeshInstance3D
 const WOOD := Color("#ab784b")
 const GOLD := Color("#f7c85f")
 const WHITE := Color("#f5dfb4")
@@ -19,7 +12,6 @@ const GREEN := Color("#709d70")
 func setup(game) -> void:
 	host=game
 	add_child(prop)
-	add_child(scenery)
 
 func ball(p: Vector3, radius: float, color: Color, stretch:=Vector3.ONE) -> MeshInstance3D:
 	var obj: MeshInstance3D=host.orb(prop,p,radius,color)
@@ -31,13 +23,7 @@ func block(p: Vector3, dims: Vector3, color: Color) -> MeshInstance3D:
 
 func clear_props() -> void:
 	tool=null
-	helmet=null
-	beam=null
-	net=null
-	hoof=null
-	wool=null
-	tracks.clear()
-	for child in prop.get_children()+scenery.get_children():
+	for child in prop.get_children():
 		child.get_parent().remove_child(child)
 		child.queue_free()
 	prop.position=Vector3.ZERO
@@ -51,30 +37,17 @@ func eyes(y:float,z:float,separation:float) -> void:
 
 func critter(kind: String) -> void:
 	var fur := GREEN
-	if kind=="badger": fur=Color("#696d79")
-	if kind=="ram": fur=Color("#939887")
 	if kind=="troll": fur=Color("#709eab")
-	wool=ball(Vector3(0,.6,0),.57,fur,Vector3(1.1,1,.8))
+	ball(Vector3(0,.6,0),.57,fur,Vector3(1.1,1,.8))
 	ball(Vector3(0,1.38,.05),.49,fur)
 	eyes(1.44,.49,.19)
 	for side in [-1,1]:
 		ball(Vector3(side*.29,.13,.12),.2,fur)
 		ball(Vector3(side*.51,1.48,.05),.16,fur)
-	if kind=="ram":
-		for side in [-1,1]:
-			var horn:=TorusMesh.new()
-			horn.inner_radius=.14
-			horn.outer_radius=.29
-			var obj=host.mesh(prop,horn,Vector3(side*.44,1.61,.16),WOOD)
-			obj.rotation.x=PI/2
-		tool=ball(Vector3(0,.87,.49),.15,GOLD)
-		hoof=ball(Vector3(.4,.36,.3),.15,Color("#686753"),Vector3(1,1,1.4))
-	elif kind=="badger":
-		ball(Vector3(0,1.4,.46),.18,WHITE,Vector3(.55,1.7,.6))
-	elif kind=="troll":
+	if kind=="troll":
 		ball(Vector3(0,1.27,.54),.19,Color("#a7c2ae"))
 	else:
-		helmet=ball(Vector3(0,1.75,.02),.46,GOLD if kind=="chief" else Color("#68758b"),Vector3(1,.5,1))
+		ball(Vector3(0,1.75,.02),.46,GOLD if kind=="chief" else Color("#68758b"),Vector3(1,.5,1))
 		if kind=="shield":
 			ball(Vector3(.48,.87,.42),.44,WOOD,Vector3(1,1,.3))
 
@@ -138,7 +111,7 @@ func build(kind:String) -> void:
 		"beaver":
 			prop.add_child(host.beaver.duplicate())
 			prop.get_child(0).position=Vector3.ZERO
-		"orc","chief","shield","badger","troll","ram": critter(kind)
+		"orc","chief","shield","troll": critter(kind)
 		"spider":
 			ball(Vector3(0,.65,0),.49,Color("#684d70"))
 			eyes(.76,.43,.15)
@@ -232,76 +205,3 @@ func react(id:String) -> Tween:
 		tween.tween_property(moving,"scale",moving.scale*1.12,.14)
 		tween.tween_property(moving,"scale",moving.scale,.15)
 	return tween
-
-func fixed_block(at:Vector3, dimensions:Vector3, color:Color) -> MeshInstance3D:
-	return host.box(scenery,at,dimensions,color)
-
-func stage_encounter(id:String) -> void:
-	if id in ["orc1","orc2","orc3","hit1","hit2","hit3","riddle","solve"]:
-		for x in [-1.6,1.6]: fixed_block(Vector3(x,.68,-.66),Vector3(.16,1.36,.17),WOOD)
-		beam=fixed_block(Vector3(0,1.06,-.62),Vector3(3.45,.21,.22),Color("#bf9157"))
-		if id=="solve":
-			ball(Vector3(-1.7,.055,.8),.62,Color("#64adc0"),Vector3(1,.12,.66))
-			var stump:=CylinderMesh.new()
-			stump.top_radius=.36
-			stump.bottom_radius=.43
-			stump.height=.62
-			host.mesh(prop,stump,Vector3(1.7,.31,.8),WOOD)
-		if id not in ["riddle","solve"]:
-			tool=block(Vector3(-.59,1.01,.29),Vector3(.13,.85,.1),Color("#abbac8"))
-	elif id in ["spool","free"]:
-		net=Node3D.new()
-		prop.add_child(net)
-		for i in 6:
-			host.box(net,Vector3(i*.28-.7,0,0),Vector3(.025,1.44,.025),WHITE)
-			host.box(net,Vector3(0,i*.28-.7,0),Vector3(1.44,.025,.025),WHITE)
-		net.position=Vector3(0,.76 if id=="free" else 2.65,.54)
-	elif id in ["ram","bell"]:
-		host.orb(scenery,Vector3(-1.25,.36,.15),.39,WHITE).scale=Vector3(1,1.3,.82)
-		fixed_block(Vector3(-1.25,.77,.15),Vector3(.29,.14,.25),WOOD)
-		for j in 5:
-			fixed_block(Vector3(1.23+j*.09,.31,.15),Vector3(.10,.62,.48),GOLD).rotation.z=(j-2)*.09
-		for i in 6:
-			var track:Node3D=host.orb(scenery,Vector3(-1.2+i*.45,.04,.5+.14*(i%2)),.1,WHITE)
-			track.scale=Vector3(.8,.18,1.2)
-			tracks.append(track)
-			track.visible=id=="bell"
-		if id=="bell": wool.material_override.albedo_color=WHITE
-
-func pose_encounter(mode:String, age:float, reacting:bool, feedback:float, secret:bool) -> void:
-	var impact:=clampf(1-feedback/.42,0,1) if reacting else 0.0
-	if mode in ["dodge","sword","circle","block","helmet"]:
-		if tool:
-			tool.rotation.z=-.3-1.25*minf(age/.75,1)
-			if mode=="block": tool.rotation.z+=.46*sin(age*7)
-			if age>3.6: tool.rotation.z=lerpf(-1.55,.65,minf((age-3.6)*4,1))
-		if mode=="helmet" and helmet:
-			helmet.position.y=1.75-.26*minf(age/.75,1)
-			helmet.rotation.z=.27*sin(age*5)
-		if mode=="circle": prop.rotation.y=-.65*impact
-		if mode=="dodge":
-			prop.rotation.x=-.1*minf(age/.75,1)+impact*.35
-			prop.position.z=.55*impact
-		if reacting and mode in ["sword","helmet"]:
-			prop.rotation.z=.36*impact
-			prop.position.y=-.22*impact
-	elif mode=="riddle" and beam:
-		beam.position.y=1.06-impact*.9
-		beam.rotation.z=impact*.15
-	elif mode=="aim_spool" and net:
-		net.position.y=lerpf(2.65,.76,impact)
-	elif mode=="aim_cone":
-		moving.position.x=.29+.12*sin(age*2)-impact*1.75
-		moving.position.y=1.65+.42*sin(PI*impact)-.38*impact
-	elif mode in ["flour","straw"]:
-		prop.rotation.x=.1*sin(minf(age,.75)*15)
-		prop.position.x=impact*(.85 if mode=="straw" else -.85)
-		prop.position.z=impact*.55
-		for i in tracks.size():
-			tracks[i].visible=mode=="straw" or impact>(i+1)*.14
-		if mode=="straw" or impact>.7: wool.material_override.albedo_color=WHITE
-	elif mode in ["ring","hoof"]:
-		tool.rotation.z=.52*sin(age*12) if reacting else 0.0
-		if mode=="hoof":
-			prop.scale.y=.76
-			hoof.position.y=.83 if secret else .36
