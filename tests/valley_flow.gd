@@ -15,6 +15,12 @@ func require(ok: bool, message: String) -> bool:
 		quit(1)
 	return ok
 
+func numeric_button(row:Container, answer:int, correct:bool) -> Button:
+	for button:Button in row.get_children():
+		if button.text.is_valid_int() and (button.text == str(answer)) == correct:
+			return button
+	return null
+
 func click(control: Button) -> void:
 	await process_frame
 	var position := control.get_global_transform_with_canvas() * (control.size * .5)
@@ -73,9 +79,9 @@ func check_flow() -> void:
 	if not require(repair.counted.size()==1,"Counted one gap twice"): return
 	for i in [0,4,2,1]: await click(repair.slots[i])
 	if not require(repair.choices.visible,"Five gaps counted"): return
-	await click(repair.choices.get_child(0))
+	await click(numeric_button(repair.choices, 3, false))
 	if not require(repair.choices.visible and game.stars==0,"Incorrect board count advanced"): return
-	await click(repair.choices.get_child(1))
+	await click(numeric_button(repair.choices, 3, true))
 	for i in [2,2,0,4,1]: await click(repair.slots[i])
 	if not require(repair.fixed.size()==4 and not repair.cross.visible,"Duplicate peg"): return
 	await click(repair.slots[3])

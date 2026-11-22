@@ -446,7 +446,7 @@ func render() -> void:
 			light_filter.exposure_multiplier=.30 if part==0 else 1.0
 			host.camera.attributes=light_filter
 			if part==0:
-				for n in [4,5,6]: button(str(n),lantern_answer.bind(n))
+				for n in Data.number_choices(5): button(str(n),lantern_answer.bind(n))
 				say("lanterns")
 			else:
 				button("Dalej",advance)
@@ -489,7 +489,7 @@ func render() -> void:
 		"chief":
 			actor("chief",Vector3(0,0,-1))
 			for x in [-1.8,-1.23,1.5]: host.orb(scene,Vector3(x,.35,0),.30,Color("#d2543c"))
-			for n in [2,3,4]: button(str(n),answer.bind(n))
+			for n in Data.number_choices(3): button(str(n),answer.bind(n))
 			say("chief")
 		"tobo":
 			actor("troll",Vector3(1,0,-1))

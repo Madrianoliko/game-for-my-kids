@@ -13,6 +13,12 @@ func check(ok:bool,message:String) -> bool:
 		quit(1)
 	return ok
 
+func numeric_button(row:Container, answer:int, correct:bool) -> Button:
+	for button:Button in row.get_children():
+		if button.text.is_valid_int() and (button.text == str(answer)) == correct:
+			return button
+	return null
+
 func click(b:Button) -> void:
 	await process_frame
 	var pos:=b.get_global_transform_with_canvas()*(b.size*.5)
@@ -196,6 +202,17 @@ func run() -> void:
 	await scene_changed
 	game=current_scene
 	story=game.bystra
+	seed(179)
+	var positions := {}
+	for i in 30:
+		var choices:Array[int] = story.Data.number_choices(3)
+		if not check(choices.size()==3 and choices[0]>=1 and choices[1]==choices[0]+1 and choices[2]==choices[1]+1 and 3 in choices,"Invalid number choices"): return
+		positions[choices.find(3)] = true
+		for small in [1,2]:
+			var low:Array[int] = story.Data.number_choices(small)
+			if not check(low.min()>=1 and small in low,"Invalid small answer"): return
+	if not check(positions.size()==3,"Missing answer position"): return
+	randomize()
 	await click(game.atlas.play)
 	await click(story.options.get_child(1))
 	await move_to(story.origin+Vector3(-2.1,0,1.3))
@@ -263,24 +280,24 @@ func run() -> void:
 	await tap_action(story.sword)
 	await create_timer(.45).timeout
 	if not check(story.id()=="chief","Cannot hit exposed orc"): return
-	await click(story.options.get_child(0))
+	await click(numeric_button(story.options, 3, false))
 	if not check(story.id()=="chief","Incorrect addition accepted"): return
-	await click(story.options.get_child(1))
+	await click(numeric_button(story.options, 3, true))
 	await walk()
 	await click(story.options.get_child(0))
 	if not await riverbank(): return
 	var repair=game.panel.get_child(-1)
 	if not check(not repair.choices.visible,"Answers before count"): return
 	for slot in repair.slots: await click(slot)
-	await click(repair.choices.get_child(0))
+	await click(numeric_button(repair.choices, 3, false))
 	if not check(not story.bank.visible,"Wrong board count accepted"): return
-	await click(repair.choices.get_child(1))
+	await click(numeric_button(repair.choices, 3, true))
 	if not await riverbank(): return
 	await walk()
 	if not check(story.id()=="lanterns","Missing dark village"): return
-	await click(story.options.get_child(0))
+	await click(numeric_button(story.options, 5, false))
 	if not check(story.part==0,"Wrong lantern sum accepted"): return
-	await click(story.options.get_child(1))
+	await click(numeric_button(story.options, 5, true))
 	if not check(story.part==1,"Lamps did not light"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="invitation","No birthday invitation"): return

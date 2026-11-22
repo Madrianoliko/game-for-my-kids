@@ -8,6 +8,7 @@ signal voice(clip: String)
 signal hammer_hit
 
 const Icons := preload("res://scripts/river_icons.gd")
+const Data := preload("res://scripts/river_story_data.gd")
 const SPANS := 5
 const ON_HAND := 2
 enum Step { COUNT, CHOOSE, FASTEN, DONE }
@@ -43,7 +44,7 @@ func _ready() -> void:
 	layout_slots()
 	choices.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(choices)
-	for n in [2,3,4]:
+	for n in Data.number_choices(SPANS - ON_HAND):
 		var pick := Button.new()
 		Icons.apply(pick,str(n))
 		choices.add_child(pick)

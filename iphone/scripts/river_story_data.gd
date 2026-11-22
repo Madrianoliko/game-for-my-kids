@@ -42,3 +42,7 @@ const WORDS := {
 	"trail_tobo":"Za orkami czeka Tobo. Podejdź do niego. Ma deski dla bobra!",
 	"homecoming":"Sto lat, Tygrysku! Wiewiórka stawia tort na stole. Tygrysek uśmiecha się. Dziękuję za mój urodzinowy tort, Bilbo!"
 }
+
+static func number_choices(answer:int) -> Array[int]:
+	var first := answer - randi_range(0, mini(2, answer - 1))
+	return [first, first + 1, first + 2]
