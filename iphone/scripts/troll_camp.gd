@@ -167,7 +167,7 @@ func build_camp() -> void:
 	add_child(flood)
 	flood.rotation_degrees=Vector3(-68,15,0)
 	flood.light_color=Color("#ff842e")
-	flood.light_energy=3.8
+	flood.light_energy=2.6
 	watching(false)
 	var gold:=Color("#ffbe5b")
 	host.orb(gapa,Vector3(.6,1,.36),.24,gold,true)
@@ -222,14 +222,22 @@ func add_stack(at:Vector3) -> void:
 	bale.bottom_radius=HAY_RADIUS
 	bale.top_radius=HAY_RADIUS
 	bale.height=.95
-	var straw:=Color("#f2be4b")
+	var straw:=Color("#dca83b")
 	host.mesh(stack,bale,Vector3.UP*.48,straw)
 	host.orb(stack,Vector3.UP*.96,HAY_RADIUS,straw.lightened(.12)).scale.y=.38
+		var binding:=TorusMesh.new()
+	binding.inner_radius=.965
+	binding.outer_radius=1.025
+	host.mesh(stack,binding,Vector3.UP*.51,Color("#a87939"))
 	for i in 22:
 		var angle:=TAU*i/22
-		var stalk:MeshInstance3D=host.box(stack,Vector3(sin(angle)*.94,.78,cos(angle)*.94),Vector3(.035,1.05,.035),Color("#ffdf84"))
+		var stalk:MeshInstance3D=host.box(stack,Vector3(sin(angle)*1.01,.68,cos(angle)*1.01),Vector3(.035,1.05,.035),Color("#efca78") if i%3 else Color("#ac7c37"))
 		stalk.rotation.z=.16*sin(angle)
 		stalk.rotation.x=.16*cos(angle)
+		var tip:=Vector3(sin(angle)*.67,1.19,cos(angle)*.67)
+		var tuft:MeshInstance3D=host.box(stack,tip,Vector3(.05,.48,.05),straw.darkened(.13))
+		tuft.rotation.z=-.68*sin(angle)
+		tuft.rotation.x=.68*cos(angle)
 
 func watching(enabled:bool) -> void:
 	eyes.visible=enabled
@@ -260,6 +268,7 @@ func build_controls() -> void:
 	# Pokazuje światło rzeczywistej latarni przy krawędzi ekranu, gdy Gapa jest poza kadrem.
 	var gradient:=Gradient.new()
 	gradient.colors=PackedColorArray([Color.WHITE,Color(1,.72,.24,.75),Color(1,.5,.15,0)])
+	gradient.offsets=PackedFloat32Array([0,.32,1])
 	var glow:=GradientTexture2D.new()
 	glow.gradient=gradient
 	glow.fill=GradientTexture2D.FILL_RADIAL
