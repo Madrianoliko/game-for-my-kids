@@ -43,7 +43,11 @@ static func apply(b:Button, label:String) -> void:
 	b.custom_minimum_size=Vector2(116,82)
 	if label.is_valid_int():
 		b.text=label
-		b.add_theme_font_size_override("font_size",38)
+		b.custom_minimum_size=Vector2(116,90)
+		b.add_theme_font_size_override("font_size",32)
+		b.icon=number_dots(int(label))
+		b.icon_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		b.vertical_icon_alignment=VERTICAL_ALIGNMENT_BOTTOM
 		return
 	var key:String=ACTIONS.get(label,label)
 	if not MARKS.has(key): key="Ręka"
@@ -58,6 +62,18 @@ static func apply(b:Button, label:String) -> void:
 		box.set_border_width_all(2)
 		box.set_corner_radius_all(16)
 		b.add_theme_stylebox_override(kind,box)
+
+static func number_dots(number:int) -> Texture2D:
+	var key:=str(number)
+	if not textures.has(key):
+		var dots:=""
+		for i in number:
+			var columns:=mini(5,number)
+			dots+='<circle cx="%d" cy="%d" r="4.5" fill="#fff1b5" stroke="#4f3926" stroke-width="1.5"/>' % [38+(i%5)*14-(columns-1)*7,6+floori(i/5.0)*13]
+		var image:=Image.new()
+		image.load_svg_from_string('<svg xmlns="http://www.w3.org/2000/svg" width="76" height="%d">%s</svg>' % [maxi(2,ceili(number/5.0))*13,dots])
+		textures[key]=ImageTexture.create_from_image(image)
+	return textures[key]
 
 static func picture(key:String) -> Texture2D:
 	if not textures.has(key):
