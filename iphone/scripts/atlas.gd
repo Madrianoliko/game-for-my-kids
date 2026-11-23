@@ -1,6 +1,7 @@
 extends ColorRect
 
 signal resume_requested
+signal camp_requested
 signal classic_requested
 signal play_requested
 signal sound_requested
@@ -20,6 +21,7 @@ var heading := Label.new()
 var story := Label.new()
 var selected_world := 0
 var resume := Button.new()
+var camp_trial := Button.new()
 var classic := Button.new()
 var can_resume := false
 var play := Button.new()
@@ -122,6 +124,12 @@ func _ready() -> void:
 	actions.add_child(play)
 	play.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	format_button(play,true)
+	actions.add_child(camp_trial)
+	camp_trial.text="Obóz trolli (próba)"
+	camp_trial.icon=preload("res://scripts/river_icons.gd").picture("Troll")
+	camp_trial.add_theme_constant_override("icon_max_width",42)
+	format_button(camp_trial)
+	camp_trial.pressed.connect(func(): camp_requested.emit())
 	actions.add_child(classic)
 	classic.text="Wyprawa Leo"
 	format_button(classic)
@@ -155,6 +163,7 @@ func select_world(index: int) -> void:
 	heading.text = TITLES[index]
 	story.text = STORIES[index]
 	resume.visible=index==0 and can_resume
+	camp_trial.visible=index==0
 	classic.visible=index==0
 	play.text = "Nowa przygoda" if index == 0 else "W przygotowaniu"
 	play.disabled = index != 0

@@ -121,6 +121,10 @@ func _ready() -> void:
 	atlas.play_requested.connect(open_story)
 	atlas.resume_requested.connect(func(): bystra.begin(true))
 	atlas.classic_requested.connect(start)
+	atlas.camp_requested.connect(func():
+		var camp:=preload("res://scripts/troll_camp.gd").new()
+		add_child(camp)
+		camp.begin(self))
 	atlas.sound_requested.connect(toggle_sound)
 	atlas.exit_requested.connect(exit_game)
 	ui.add_child(hud)
