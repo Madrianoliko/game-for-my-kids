@@ -251,7 +251,6 @@ func begin(resume:bool) -> void:
 	host.atlas.hide()
 	host.hud.show()
 	host.pause_button.show()
-	for fruit in host.apples: fruit.hide()
 	checkpoint()
 	render()
 
@@ -267,7 +266,6 @@ func stop() -> void:
 	bank.leave()
 	for node in [ingredient_list,square,outside,scene,props,field,dock,actions,replay,held_shield,equipped_bow,arc]: node.hide()
 	host.cottage.sword.hide()
-	host.cottage.slit.hide()
 	host.cottage.sword.position=Vector3(.45,.92,.16)
 	host.cottage.sword.rotation=Vector3.ZERO
 
@@ -312,7 +310,6 @@ func render() -> void:
 	field.hide()
 	host.overlay.hide()
 	host.marker.hide()
-	host.action_button.hide()
 	host.stick.reset()
 	host.narrator.stop()
 	host.state=host.State.STORY
@@ -320,7 +317,6 @@ func render() -> void:
 	fingers.clear()
 	held_shield.hide()
 	host.cottage.sword.hide()
-	host.cottage.slit.hide()
 	hand.modulate=Color.WHITE
 	busy=false
 	age=0
@@ -726,7 +722,6 @@ func _physics_process(dt:float) -> void:
 		if cooldown<=0:
 			arc.hide()
 			host.cottage.sword.hide()
-			host.cottage.slit.hide()
 	if traveling or not roaming() or busy or (id()=="delivery" and part==1): return
 	show_controls()
 	var motion:Vector2=host.stick.vector

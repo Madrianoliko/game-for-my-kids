@@ -1,22 +1,13 @@
 extends Node3D
 
-enum State { HOME, WALK, STORY, MATH, FIGHT, INSIDE, END }
+enum State { HOME, WALK, STORY }
 var state := State.HOME
-var stage := 0
-var best := 0
-var stars := 0
 var sound := true
 var paused := false
 var targets: Array[Vector3] = []
-var answer := 0
 var step_time := 0.0
 const BridgeRepair := preload("res://scripts/bridge_repair.gd")
-var groups := Vector2i(2,3)
-var apples: Array[Node3D] = []
 var boards: Array[Node3D] = []
-var lanterns: Array[Node3D] = []
-var stones: Array[Node3D] = []
-var trail_marks: Array[Node3D] = []
 var limbs: Array[Node3D] = []
 var leo: Node3D
 var camera := Camera3D.new()
@@ -26,7 +17,6 @@ var panel := VBoxContainer.new()
 var overlay := ColorRect.new()
 var hud := Label.new()
 var cottage := preload("res://scripts/cottage.gd").new()
-var action_button: Button
 var pause_button := Button.new()
 var stick = preload("res://scripts/stick.gd").new()
 var bystra := preload("res://scripts/river_story.gd").new()
@@ -34,23 +24,6 @@ var beaver := Node3D.new()
 var atlas := preload("res://scripts/atlas.gd").new()
 var narrator := AudioStreamPlayer.new()
 var chime := AudioStreamPlayer.new()
-const Icons := preload("res://scripts/river_icons.gd")
-const VOICE_CLIPS := {
-	"Jesteśmy w chatce. Połóż jabłka na stole.": "inside",
-	"Orkowie uciekli! Podejdź do okrągłych drzwi": "door",
-	"Orkowie na ścieżce! Dotknij miecza, żeby ich przepłoszyć.": "orcs",
-	"Zanieś jabłka do chatki": "deliver",
-	"W wiosce zapada zmrok. Pomóż mi policzyć latarenki, żebyśmy mogli je zapalić!": "fox",
-	"Przejdź przez most": "crossing",
-	"Przejdź po kamieniach": "stones",
-	"Wejdź do wioski": "village",
-	"Zbierz trzy jabłka na placek": "apples",
-	"Ile desek potrzeba na most?": "planks",
-	"Ile jest razem latarenek?": "lanterns",
-	"Spójrz jeszcze raz i policz.": "retry",
-	"Brawo! Hobbici zapraszają Leo na placek z jabłkami.": "feast",
-}
-var hint: Label
 var save := ConfigFile.new()
 
 func route(z: float) -> float: return 1.45*sin(z*.102)+.6*sin(z*.173)
@@ -86,7 +59,9 @@ func orb(parent: Node3D,pos: Vector3,r: float,color: Color,glow := false) -> Mes
 
 func _ready() -> void:
 	save.load("user://valley.cfg")
-	best = int(save.get_value("valley","stars",0))
+	if save.has_section_key("valley","stars"):
+		save.erase_section_key("valley","stars")
+		save.save("user://valley.cfg")
 	sound = bool(save.get_value("valley","sound",true))
 	var landscape := preload("res://art/valley.glb").instantiate()
 	add_child(landscape)
@@ -120,7 +95,6 @@ func _ready() -> void:
 	ui.add_child(atlas)
 	atlas.play_requested.connect(open_story)
 	atlas.resume_requested.connect(func(): bystra.begin(true))
-	atlas.classic_requested.connect(start)
 	atlas.camp_requested.connect(func():
 		var camp:=preload("res://scripts/troll_camp.gd").new()
 		add_child(camp)
@@ -138,8 +112,6 @@ func _ready() -> void:
 	pause_button.text = "Pauza"
 	pause_button.custom_minimum_size = Vector2(96,50)
 	pause_button.pressed.connect(pause_game)
-	action_button = button(ui,"Miecz",act)
-	action_button.hide()
 	ui.add_child(overlay)
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.color = Color("#0c192baf")
@@ -168,8 +140,6 @@ func layout() -> void:
 		var safe := DisplayServer.get_display_safe_area()
 		if display.x>0 and display.y>0:
 			inset += Vector2(maxi(safe.position.x,int(display.x)-safe.end.x),maxi(safe.position.y,int(display.y)-safe.end.y))*ui.size/display
-	if action_button:
-		action_button.position = ui.size-inset-action_button.size
 	atlas.set_insets(inset)
 	hud.position = inset
 	stick.position = Vector2(inset.x,ui.size.y-inset.y-136)
@@ -275,27 +245,6 @@ func populate() -> void:
 	ripple.shader = preload("res://art/stream.gdshader")
 	stream.material_override = ripple
 	add_child(stream)
-	for i in 6:
-		var pos := point(-7.0-(i+1)*11.0/6,1.35*sin((i+1)*PI/3))
-		var stone := orb(self,pos+Vector3.UP*.08,.65,Color("#b7af8e"))
-		stone.scale.y = .32
-		stones.append(stone)
-		var previous := point(-7) if i==0 else stones[i-1].position
-		var segment := pos-previous
-		var rail := box(self,(pos+previous)*.5+Vector3.UP*.15,Vector3(.12,.055,segment.length()),Color("#ffcd52"))
-		rail.rotation.y=atan2(segment.x,segment.z)
-		trail_marks.append(rail)
-	for side in [-1,1]:
-		box(self,point(-24,2.05*side)+Vector3.UP*1.55,Vector3(.35,3.1,.35),Color("#875b36"))
-	box(self,point(-24)+Vector3.UP*3.1,Vector3(4.5,.32,.45),Color("#b98852"))
-	for i in 3:
-		var fruit := Node3D.new()
-		add_child(fruit)
-		fruit.position = point(-34-i*4,[1.6,-1.5,0][i])+Vector3.UP*.64
-		orb(fruit,Vector3.ZERO,.44,Color("#eb4228"))
-		box(fruit,Vector3(.03,.47,0),Vector3(.08,.27,.08),Color("#684127"))
-		orb(fruit,Vector3(.18,.5,0),.17,Color("#85bc38")).scale.y=.45
-		apples.append(fruit)
 
 func clear_panel() -> void:
 	for child in panel.get_children():
@@ -332,10 +281,6 @@ func button(parent: Control, text: String, action: Callable) -> Button:
 	b.pressed.connect(action)
 	return b
 
-func say(text: String) -> void:
-	if sound and VOICE_CLIPS.has(text):
-		play_clip(narrator, VOICE_CLIPS[text])
-
 func play_clip(player: AudioStreamPlayer, clip: String) -> void:
 	var path := "res://audio/%s.mp3" % clip
 	player.stream = AudioStreamMP3.load_from_file(path)
@@ -350,7 +295,7 @@ func toggle_sound() -> void:
 	else:
 		narrator.stop()
 		chime.stop()
-	atlas.update_status(best,sound)
+	atlas.update_status(sound)
 
 func exit_game() -> void:
 	narrator.stop()
@@ -380,7 +325,6 @@ func home() -> void:
 	bystra.stop()
 	atlas.can_resume=bystra.saved
 	cottage.reset()
-	action_button.hide()
 	state=State.HOME
 	paused=false
 	narrator.stop()
@@ -390,44 +334,17 @@ func home() -> void:
 	hud.hide()
 	overlay.hide()
 	atlas.select_world(0)
-	atlas.update_status(best,sound)
+	atlas.update_status(sound)
 	atlas.show()
 
 func prepare_valley() -> void:
 	cottage.reset()
-	action_button.hide()
-	stage=0
-	stars=0
-	groups=Vector2i(randi_range(1,3+mini(best,3)),randi_range(1,4+mini(best,3)))
-	for item in boards+lanterns: item.queue_free()
+	for item in boards: item.queue_free()
 	boards.clear()
-	lanterns.clear()
-	for fruit in apples: fruit.show()
-	for mark in trail_marks: mark.hide()
 	for i in BridgeRepair.SPANS:
 		var plank := box(self,point(-2)+Vector3(0,.23,1.76-(i+.5)*3.52/BridgeRepair.SPANS),Vector3(4.1,.2,3.4/BridgeRepair.SPANS),Color("#c39760"))
 		boards.append(plank)
 		plank.hide()
-	for i in groups.x+groups.y:
-		var side := -1 if i<groups.x else 1
-		var rank := i if side<0 else i-groups.x
-		var p := point(-24+rank*.82,side*2.1)+Vector3.UP*1.5
-		box_lantern(p)
-
-func start() -> void:
-	prepare_valley()
-	leo.position=point(9)
-	camera.position=leo.position+Vector3(0,3.05,5.9)
-	atlas.hide()
-	if sound: play_clip(chime,"chime")
-	hud.show()
-	pause_button.show()
-	walk([point(4)],"Podejdź do mostu")
-
-func box_lantern(pos: Vector3) -> void:
-	var lamp := orb(self,pos,.22,Color("#ffd56a"),true)
-	lanterns.append(lamp)
-	lamp.hide()
 
 func walk(points: Array, objective: String) -> void:
 	state=State.WALK
@@ -435,185 +352,28 @@ func walk(points: Array, objective: String) -> void:
 	overlay.hide()
 	stick.reset()
 	stick.show()
-	hud.text="★ %d/4   %s"%[stars,objective]
-	say(objective)
+	hud.text=objective
+	if sound and objective=="Przejdź przez most": play_clip(narrator,"crossing")
 	move_marker()
 
 func move_marker() -> void:
 	marker.position=targets[0]+Vector3.UP*.39
 	marker.visible=true
 
-func give_star() -> void:
-	if sound: play_clip(chime,"chime")
-	stars+=1
-	best=maxi(best,stars)
-	save.set_value("valley","stars",best)
-	save.save("user://valley.cfg")
-
-func arrive() -> void:
-	if bystra.active:
-		bystra.arrived()
-		return
-	if stage==4: apples[3-targets.size()].hide()
-	targets.pop_front()
-	if not targets.is_empty():
-		move_marker()
-		return
-	marker.hide()
-	match stage:
-		0: repair_bridge()
-		2: fox_intro()
-		1:
-			stage=2
-			for mark in trail_marks: mark.show()
-			var path: Array=[]
-			for item in stones: path.append(item.position)
-			walk(path,"Przejdź po kamieniach")
-		3:
-			stage=4
-			var fruit_path:Array=[]
-			for fruit in apples: fruit_path.append(fruit.position)
-			walk(fruit_path,"Zbierz trzy jabłka na placek")
-		4:
-			give_star()
-			stage=5
-			walk([point(-46)],"Zanieś jabłka do chatki")
-		5:
-			state=State.FIGHT
-			stick.hide()
-			cottage.ambush()
-			set_action("Machnij mieczem")
-			hud.text="Przepłosz orków!"
-			say("Orkowie na ścieżce! Dotknij miecza, żeby ich przepłoszyć.")
-		6:
-			state=State.INSIDE
-			stick.hide()
-			cottage.enter()
-			hud.text="Chatka hobbitów"
-			set_action("Połóż jabłka na stole")
-			say("Jesteśmy w chatce. Połóż jabłka na stole.")
-
-func set_action(text: String) -> void:
-	Icons.apply(action_button,text)
-	action_button.disabled=false
-	action_button.reset_size()
-	action_button.show()
-	layout()
-
-func act() -> void:
-	if paused or action_button.disabled: return
-	if state==State.INSIDE:
-		cottage.basket.show()
-		state=State.END
-		pause_button.hide()
-		hud.text="Placek dla całej doliny!   ★ %d/4" % stars
-		set_action("Ekran startowy")
-		say("Brawo! Hobbici zapraszają Leo na placek z jabłkami.")
-	elif state==State.END:
-		home()
-	elif state==State.FIGHT:
-		action_button.disabled=true
-		cottage.strike()
-		if sound: play_clip(chime,"swoosh")
-		cottage.swing.finished.connect(strike_finished,CONNECT_ONE_SHOT)
-
-func strike_finished() -> void:
-	if state!=State.FIGHT: return
-	if cottage.remaining>0:
-		action_button.disabled=false
-		return
-	stage=6
-	cottage.sword.hide()
-	action_button.hide()
-	walk([point(-50.7)],"Orkowie uciekli! Podejdź do okrągłych drzwi")
-
-func fox_intro() -> void:
-	state=State.STORY
-	stick.reset()
-	stick.hide()
-	give_star()
-	clear_panel()
-	label_line("Lis przy bramie",30)
-	label_line("W wiosce zapada zmrok. Pomóż mi policzyć latarenki,\nżebyśmy mogli je zapalić!",23)
-	Icons.apply(button(panel,"Pomogę!",quiz),"Pomogę!")
-	say("W wiosce zapada zmrok. Pomóż mi policzyć latarenki, żebyśmy mogli je zapalić!")
-
-func repair_bridge() -> void:
-	state=State.MATH
-	stick.reset()
-	stick.hide()
-	clear_panel()
-	label_line("Bóbr nad Bystrą Wodą",30)
-	var repair := BridgeRepair.new()
-	repair.voice.connect(func(clip):
-		if sound: play_clip(narrator,clip))
-	repair.hammer_hit.connect(func():
-		if sound: play_clip(chime,"wood_tap"))
-	repair.repaired.connect(func():
-		if stage!=0 or state!=State.MATH: return
-		for board in boards: board.show()
-		give_star()
-		stage=1
-		walk([point(-7)],"Przejdź przez most"))
-	panel.add_child(repair)
-
-func quiz() -> void:
-	if paused: return
-	state=State.MATH
-	stick.reset()
-	stick.hide()
-	clear_panel()
-	var prompt := "Ile jest razem latarenek?"
-	label_line("Brama wioski",20)
-	label_line(prompt,30)
-	var diagram = preload("res://scripts/diagram.gd").new()
-	diagram.counts = groups
-	diagram.custom_minimum_size=Vector2(720,180)
-	panel.add_child(diagram)
-	answer=groups.x+groups.y
-	hint=label_line("Wybierz liczbę.",19)
-	var row := HBoxContainer.new()
-	row.alignment=BoxContainer.ALIGNMENT_CENTER
-	panel.add_child(row)
-	var picks := [answer]
-	var distance := 1
-	while picks.size()<4:
-		for n in [answer-distance,answer+distance]:
-			if n>=1 and n<=15 and picks.size()<4: picks.append(n)
-		distance+=1
-	picks.shuffle()
-	for n in picks: Icons.apply(button(row,str(n),choose.bind(n)),str(n))
-	var listen:=button(row,"Posłuchaj",say.bind(prompt))
-	Icons.apply(listen,"Posłuchaj")
-	say(prompt)
-
-func choose(n:int) -> void:
-	if state!=State.MATH or paused: return
-	if n!=answer:
-		hint.text="Spójrz jeszcze raz i policz."
-		say(hint.text)
-		return
-	give_star()
-	for lamp in lanterns: lamp.show()
-	stage=3
-	walk([point(-30)],"Wejdź do wioski")
-
 func pause_game() -> void:
-	if paused or state not in [State.WALK,State.STORY,State.MATH,State.FIGHT,State.INSIDE]: return
+	if paused or state not in [State.WALK,State.STORY]: return
 	paused=true
 	if bystra.active:
 		bystra.blocking=false
 		bystra.show_controls()
 		if bystra.busy: bystra.anim.pause()
-	if state==State.FIGHT and cottage.swing: cottage.swing.pause()
-	action_button.hide()
 	stick.reset()
 	stick.hide()
 	pause_button.hide()
 	# Keep the current puzzle and its random answer choices underneath the pause layer.
 	var menu := AcceptDialog.new()
 	menu.title="Przerwa w wyprawie"
-	menu.dialog_text="Leo poczeka tutaj."
+	menu.dialog_text="Bilbo poczeka tutaj."
 	menu.ok_button_text="Graj dalej"
 	menu.add_button("Mapa",true,"map")
 	menu.add_button("Wyjdź",true,"exit")
@@ -622,8 +382,6 @@ func pause_game() -> void:
 		menu.queue_free()
 		paused=false
 		if bystra.active and bystra.busy: bystra.anim.play()
-		action_button.visible=state in [State.FIGHT,State.INSIDE]
-		if state==State.FIGHT and cottage.swing and cottage.swing.is_valid(): cottage.swing.play()
 		stick.visible=state==State.WALK
 		if bystra.active: bystra.show_controls()
 		pause_button.show()
@@ -651,7 +409,7 @@ func _physics_process(dt:float) -> void:
 	var to := targets[0]
 	leo.position.z=clampf(leo.position.z+motion.y*dt*4.2,to.z-.65,10)
 	leo.position.x=clampf(leo.position.x+motion.x*dt*4.2,route(leo.position.z)-3.7,route(leo.position.z)+3.7)
-	leo.position.y=.31 if absf(leo.position.z+2)<1.9 else .19 if stage==2 else .035
+	leo.position.y=.31 if absf(leo.position.z+2)<1.9 else .035
 	if motion.length()>.05:
 		leo.rotation.y=lerp_angle(leo.rotation.y,atan2(-motion.x,-motion.y),1-exp(-12*dt))
 		step_time+=dt*12*motion.length()
@@ -659,4 +417,4 @@ func _physics_process(dt:float) -> void:
 		limbs[i].rotation.x=sin(step_time)*(1 if i in [0,3] else -1)*.48*motion.length()
 	camera.position=camera.position.lerp(leo.position+Vector3(0,3.05,5.9),1-exp(-8*dt))
 	camera.look_at(leo.position+Vector3(0,1.42,-1.8))
-	if Vector2(leo.position.x-to.x,leo.position.z-to.z).length()<.86: arrive()
+	if Vector2(leo.position.x-to.x,leo.position.z-to.z).length()<.86: bystra.arrived()

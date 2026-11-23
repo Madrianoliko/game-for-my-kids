@@ -2,7 +2,6 @@ extends ColorRect
 
 signal resume_requested
 signal camp_requested
-signal classic_requested
 signal play_requested
 signal sound_requested
 signal exit_requested
@@ -22,10 +21,8 @@ var story := Label.new()
 var selected_world := 0
 var resume := Button.new()
 var camp_trial := Button.new()
-var classic := Button.new()
 var can_resume := false
 var play := Button.new()
-var stars := Label.new()
 var volume := Button.new()
 var illustrations: Array[Texture2D] = []
 var cards: Array[Button] = []
@@ -74,9 +71,6 @@ func _ready() -> void:
 	brand.add_theme_font_size_override("font_size",29)
 	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(brand)
-	bar.add_child(stars)
-	stars.add_theme_font_size_override("font_size",22)
-	stars.modulate = GOLD
 	bar.add_child(volume)
 	format_button(volume)
 	volume.pressed.connect(func(): sound_requested.emit())
@@ -130,10 +124,6 @@ func _ready() -> void:
 	camp_trial.add_theme_constant_override("icon_max_width",42)
 	format_button(camp_trial)
 	camp_trial.pressed.connect(func(): camp_requested.emit())
-	actions.add_child(classic)
-	classic.text="Wyprawa Leo"
-	format_button(classic)
-	classic.pressed.connect(func(): classic_requested.emit())
 	play.pressed.connect(func(): play_requested.emit())
 
 	var choose := Label.new()
@@ -164,7 +154,6 @@ func select_world(index: int) -> void:
 	story.text = STORIES[index]
 	resume.visible=index==0 and can_resume
 	camp_trial.visible=index==0
-	classic.visible=index==0
 	play.text = "Nowa przygoda" if index == 0 else "W przygotowaniu"
 	play.disabled = index != 0
 	for i in cards.size():
@@ -172,8 +161,7 @@ func select_world(index: int) -> void:
 		for kind in ["normal","hover","pressed"]:
 			cards[i].add_theme_stylebox_override(kind,skin)
 
-func update_status(best: int, sound: bool) -> void:
-	stars.text = "Rekord: ★ %d / 4   " % best
+func update_status(sound: bool) -> void:
 	volume.text = "Dźwięk: wł." if sound else "Dźwięk: wył."
 
 func frame_illustration() -> void:
