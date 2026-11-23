@@ -1,10 +1,10 @@
 # Mały Odkrywca
 
-Gra przygodowa 3D na iPhone’a dla pięciolatka. Wspólna mapa prowadzi do osobnych przygód. W każdej z nich Leo porusza się jedną gałką, a kamera podąża za nim automatycznie. Przy zadaniach matematycznych dziecko dotyka jednej z czterech odpowiedzi.
+Gra przygodowa 3D na iPhone’a dla pięciolatka. Wspólna mapa prowadzi do osobnych przygód. W głównej przygodzie gracz steruje Bilbem: gałka po lewej, a po prawej dłoń, miecz, łuk i tarcza. Kamera podąża za nim automatycznie. Przy zadaniach matematycznych dziecko dotyka jednej z kilku odpowiedzi.
 
 ## Etapy
 
-1. **Dolina Hobbitów** — wyprawa przez dolinę. Przy bobrze dziecko liczy pięć luk, dobiera trzy deski do dwóch gotowych i wbija pięć kołków. Potem samo prowadzi Leo przez naprawiony most, przechodzi po kamieniach i liczy latarenki przy bramie. Za wioską zbiera w sadzie trzy jabłka na placek. Pierwsza wersja skupia się na tym świecie.
+1. **Dolina Hobbitów** — rozdział 1 „Most nad Bystrą Wodą”: bóbr prosi o naprawę mostu, Bilbo pakuje sprzęt, ćwiczy z łukiem i mieczem, mija orka, pomaga Tobowi, naprawia most, zapala latarenki i zbiera składniki na tort dla Tygryska. Szczegóły niżej. Plan rozdziału 2 jest w `docs/ROZDZIAL_2_TROLLE.md`. Stara trasa „Wyprawa Leo” (lis, sad, placek) to wcześniejsza wersja.
 2. **Hot Wheels** — osobna przygoda na pomarańczowym torze z zagadkami związanymi z jazdą. Na razie dostępny jest podgląd świata.
 3. **Harry Potter** — osobna przygoda w szkole magii z własną scenerią i zagadkami. Na razie dostępny jest podgląd świata.
 
