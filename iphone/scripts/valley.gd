@@ -95,10 +95,7 @@ func _ready() -> void:
 	ui.add_child(atlas)
 	atlas.play_requested.connect(open_story)
 	atlas.resume_requested.connect(func(): bystra.begin(true))
-	atlas.camp_requested.connect(func():
-		var camp:=preload("res://scripts/troll_camp.gd").new()
-		add_child(camp)
-		camp.begin(self))
+	atlas.chapter_two_requested.connect(open_story.bind("stable"))
 	atlas.sound_requested.connect(toggle_sound)
 	atlas.exit_requested.connect(exit_game)
 	ui.add_child(hud)
@@ -307,23 +304,24 @@ func exit_game() -> void:
 	else:
 		get_tree().quit()
 
-func open_story() -> void:
+func open_story(start_step:="door") -> void:
 	if not bystra.saved:
-		bystra.begin(false)
+		bystra.begin(false,start_step)
 		return
 	var confirm := ConfirmationDialog.new()
 	confirm.title="Nowa wyprawa"
-	confirm.dialog_text="Zacząć od norki Bilba i zastąpić zapis tej wyprawy?"
+	confirm.dialog_text="Zacząć wybrany rozdział od początku i zastąpić bieżący zapis?"
 	confirm.ok_button_text="Zacznij od nowa"
 	confirm.cancel_button_text="Wróć"
 	ui.add_child(confirm)
-	confirm.confirmed.connect(func(): confirm.queue_free(); bystra.begin(false))
+	confirm.confirmed.connect(func(): confirm.queue_free(); bystra.begin(false,start_step))
 	confirm.canceled.connect(confirm.queue_free)
 	confirm.popup_centered()
 
 func home() -> void:
 	bystra.stop()
 	atlas.can_resume=bystra.saved
+	atlas.unlocked_chapter_two=bystra.chapters>=1
 	cottage.reset()
 	state=State.HOME
 	paused=false

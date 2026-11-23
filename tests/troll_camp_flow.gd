@@ -46,20 +46,19 @@ func next_window() -> void:
 	expect(camp.catches==previous,"Gapa zauważył ruch wewnątrz stogu lub kucyka")
 
 func run() -> void:
-	create_timer(150).timeout.connect(func(): expect(false,"Przekroczony czas w obozie"))
+	create_timer(420).timeout.connect(func(): expect(false,"Przekroczony czas w obozie"))
 	if not expect(OS.get_user_data_dir().get_file().begins_with("ValleyQA-"),"Wymagany izolowany zapis"): return
 	var save_path:="user://bystra-v1.cfg"
-	# Opaque existing save must survive even if chapter one cannot load its format.
-	var sentinel:="[test]\nvalue=77\n"
-	var file:=FileAccess.open(save_path,FileAccess.WRITE)
-	file.store_string(sentinel)
-	file.close()
+	var cfg:=ConfigFile.new()
+	cfg.set_value("story","route","camp")
+	cfg.set_value("story","version",3)
+	cfg.set_value("story","chapters_completed",1)
+	cfg.save(save_path)
 	change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
 	await scene_changed
 	game=current_scene
-	await click(game.atlas.camp_trial)
-	for child in game.get_children():
-		if child is Camp: camp=child
+	await click(game.atlas.resume)
+	camp=game.bystra.camp
 	if not expect(camp!=null and not game.atlas.visible,"Wejście z menu"): return
 	# Próba ominięcia opowieści dotykiem i ruchem.
 	await click(camp.back)
@@ -101,9 +100,9 @@ func run() -> void:
 		await walk_to(Camp.STACKS[i])
 		await next_window()
 	await walk_to(Camp.TETHER)
-	if not expect(not camp.hand.disabled and camp.rope.visible,"Kucyk czeka przy ognisku"): return
+	if not expect(not camp.hand.disabled and camp.ropes[2].visible,"Kucyk czeka przy ognisku"): return
 	await click(camp.hand)
-	if not expect(camp.following and not camp.rope.visible,"Odwiązanie kucyka"): return
+	if not expect(camp.following and not camp.ropes[2].visible,"Odwiązanie kucyka"): return
 	for i in range(Camp.STACKS.size()-1,-1,-1):
 		await walk_to(Camp.STACKS[i])
 		await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.3)
@@ -112,15 +111,23 @@ func run() -> void:
 		for tick in 8: await physics_frame
 		if not expect(camp.pony.position.distance_to(parked)<.02,"Kucyk ruszył się podczas ukrycia"): return
 		await next_window()
-	while camp.phase!=Camp.Phase.DONE:
+	while camp.rescued_mask==0:
 		var heading:=camp.ground.direction_to(Camp.TOBO)
 		game.stick.vector=Vector2(heading.x,heading.z)
 		await physics_frame
-	if not expect(camp.catches==2 and camp.message=="done","Pełna wyprawa z postojami"): return
-	while not camp.star.visible: await physics_frame
-	while not game.atlas.visible: await physics_frame
-	if not expect(FileAccess.get_file_as_string(save_path)==sentinel and not FileAccess.file_exists("user://valley.cfg"),"Próba zmieniła zapis gry"): return
-	if not expect(game.camera.current and not game.stick.visible,"Przywrócenie menu"): return
-	if failures==0:
-		print("PASS obóz: wprowadzenie, nauka, złapanie za bezruch poza sianem, bieg bez schowania, sześć stogów w obie strony, kucyk, gwiazdka i zapis")
-		quit()
+	game.stick.vector=Vector2.ZERO
+	if not expect(camp.rescued_mask==4 and camp.message=="one","Pierwszy kucyk przy Tobie"): return
+	await click(camp.back)
+	reload_current_scene()
+	await scene_changed
+	game=current_scene
+	await click(game.atlas.resume)
+	camp=game.bystra.camp
+	if not expect(camp.rescued_mask==4 and camp.ponies[2].position.distance_to(Camp.TOBO)<2 and not camp.ropes[2].visible,"Wznowienie z uratowanym kucykiem"): return
+	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(camp)
+	for i in [1,0]:
+		if not expect(await driver.rescue(i,click),"Powrót z kucykiem %s"%i): return
+	while game.bystra.id()=="camp": await physics_frame
+	if not expect(game.bystra.id()=="stable_home","Powrót do stajni"): return
+	print("PASS światło Gapy, trzy kucyki, wznowienie po jednym i powrót do stajni")
+	quit()

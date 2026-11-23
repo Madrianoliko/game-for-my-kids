@@ -10,6 +10,12 @@ var host
 var props:=Props.new()
 const Square := preload("res://scripts/village_square.gd")
 var square:=Square.new()
+var stable:=preload("res://scripts/pony_stable.gd").new()
+var camp
+var chapters:=0
+var reward:=Label.new()
+var curtain:=ColorRect.new()
+var transition_time:=0.0
 var village_pos:=Square.ENTRY
 var room_saves:Dictionary={}
 var outside:=Button.new()
@@ -66,6 +72,19 @@ func setup(game) -> void:
 	host=game
 	add_child(square)
 	square.setup(game)
+	square.add_child(stable)
+	stable.setup(game)
+	stable.counted.connect(count_pen)
+	host.ui.add_child(reward)
+	reward.text="★"
+	reward.modulate=Color.GOLD
+	reward.add_theme_font_size_override("font_size",80)
+	reward.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	reward.hide()
+	host.ui.add_child(curtain)
+	curtain.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	curtain.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	curtain.color=Color(0,0,0,0)
 	add_child(scene)
 	add_child(props)
 	props.setup(host)
@@ -186,17 +205,21 @@ func say(key:String) -> void:
 func effect(clip:String) -> void:
 	if host.sound: host.play_clip(host.chime,clip)
 
-func checkpoint() -> void:
+func checkpoint(ended:=false) -> void:
 	var cfg:=ConfigFile.new()
 	cfg.set_value("story","version",3)
 	cfg.set_value("story","route",id())
+	cfg.set_value("story","chapters_completed",chapters)
+	cfg.set_value("story","ended",ended)
 	for key in ["part","marks","items","declined","traveling","village_pos","room_saves"]: cfg.set_value("story",key,get(key))
 	if cfg.save(FILE+".tmp")==OK:
-		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK
+		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK and not ended
 
 func read_save() -> bool:
 	var cfg:=ConfigFile.new()
 	if cfg.load(FILE)!=OK: return false
+	chapters=int(cfg.get_value("story","chapters_completed",0))
+	if cfg.get_value("story","ended",false): return false
 	village_pos=Square.ENTRY
 	room_saves={}
 	index=Data.ROUTE.find(cfg.get_value("story","route",""))
@@ -234,11 +257,11 @@ func read_save() -> bool:
 			marks=0
 	return true
 
-func begin(resume:bool) -> void:
+func begin(resume:bool, start_step:="door") -> void:
 	if resume:
 		if not read_save(): return
 	else:
-		index=0
+		index=Data.ROUTE.find(start_step)
 		part=0
 		marks=0
 		items.clear()
@@ -255,6 +278,11 @@ func begin(resume:bool) -> void:
 	render()
 
 func stop() -> void:
+	stable.set_pens(false,0,false)
+	curtain.color.a=0
+	reward.hide()
+	if is_instance_valid(camp) and not camp.is_queued_for_deletion(): camp.dispose()
+	camp=null
 	if active and id()=="village": checkpoint()
 	active=false
 	host.camera.projection=Camera3D.PROJECTION_PERSPECTIVE
@@ -279,11 +307,15 @@ func actor(kind:String,at:Vector3,amount:=1.0) -> Node3D:
 	return a
 
 func button(label:String,fn:Callable) -> Button:
+	if label.is_valid_int(): dock.offset_top=-206
 	var b:Button=host.button(options,label,fn)
 	Icons.apply(b,label)
 	return b
 
 func show_controls() -> void:
+	if active and id()=="camp" and is_instance_valid(camp):
+		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
+		return
 	host.stick.visible=active and (roaming() or traveling or id()=="cross") and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=actions.visible and id()!="cross"
@@ -294,6 +326,9 @@ func show_controls() -> void:
 	shield.disabled="Tarcza" not in items
 
 func render() -> void:
+	stable.set_pens(false,0,false)
+	curtain.color.a=0
+	reward.hide()
 	ingredient_list.visible=id() in ["invitation","village","mill","coop","dairy","delivery"] and not (id()=="delivery" and part==1)
 	ingredient_list.position=host.hud.position+Vector2(0,host.hud.size.y+6)
 	for food in ingredient_ticks:
@@ -338,7 +373,7 @@ func render() -> void:
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
 	if id()=="tobo": origin=host.point(1.25,-1.5)
-	if id() in ["lanterns","invitation","village"]:
+	if id() in ["lanterns","invitation","village","stable","stable_home"]:
 		origin=square.position
 		square.show()
 		square.lit_lanterns.visible=id()!="lanterns" or part==1
@@ -530,13 +565,34 @@ func render() -> void:
 			actor("beaver",host.point(-6,-1)-origin)
 			host.walk([host.point(-6)],"Przejdź przez most")
 			show_controls()
+		"stable","stable_home":
+			render_stable()
+		"camp":
+			dock.hide()
+			host.hud.hide()
+			host.pause_button.hide()
+			camp=preload("res://scripts/troll_camp.gd").new()
+			add_child(camp)
+			camp.rescued.connect(func(mask): marks=mask; checkpoint())
+			camp.closed.connect(func(complete):
+				camp=null
+				if complete:
+					host.hud.show()
+					host.pause_button.show()
+					advance()
+				else: host.home())
+			camp.begin(host,marks)
 		"homecoming":
 			actor("squirrel",Vector3(1.55,0,-.7))
 			host.hud.text="Urodziny Tygryska"
 			actor("tiger",Vector3(-1.12,.22,-.64),1.10)
 			actor("birthday_cake",Vector3(.35,.92,0))
-			button("Wróć do mapy",finish)
-			say("homecoming")
+			if part==0:
+				button("Dalej",func():
+					chapters=maxi(chapters,1)
+					go_to("homecoming",1))
+			else: dock.hide()
+			if part==0: say("homecoming")
 	if Square.FOOD.has(id()) or id()=="delivery":
 		outside.show()
 		outside.position=host.pause_button.position+Vector2(0,host.pause_button.size.y+8)
@@ -581,10 +637,74 @@ func answer(n:int) -> void:
 	if n==3: advance()
 	else: effect("story/again")
 
-func finish() -> void:
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(FILE))
-	saved=FileAccess.file_exists(FILE)
-	host.home()
+func render_stable() -> void:
+	var home:=id()=="stable_home"
+	var focus:=stable.global_position
+	host.leo.global_position=focus+Vector3(-4.3,0,2.5)
+	visitor=actor("troll",stable.position+Vector3(4.4,0,1.1),.9)
+	host.camera.projection=Camera3D.PROJECTION_ORTHOGONAL
+	host.camera.size=maxf(8.8,12.8/host.ui.size.aspect())
+	host.camera.look_at_from_position(focus+Vector3(0,6.2,9),focus+Vector3(0,.1,1.2),Vector3.UP)
+	host.hud.text="Stajnia Toba"
+	var counting:=part==0 if home else part==1
+	stable.set_pens(home,marks,counting)
+	if home:
+		if part==0: say("stable_home")
+		else:
+			reward.show()
+			say("stable_thanks")
+	elif part==0:
+		say("evening")
+		curtain.color.a=.88
+	elif part==1:
+		if marks==stable.EMPTY_MASK:
+			for n in Data.number_choices(3): button(str(n),stable_answer.bind(n))
+		say("stable" if marks==0 or marks==stable.EMPTY_MASK else "empty_pens")
+	elif part==2:
+		stable.smoke.show()
+		visitor.look_at(stable.smoke.global_position,Vector3.UP,true)
+		var smoke_focus:=focus.lerp(stable.smoke.global_position,.62)
+		host.camera.look_at_from_position(smoke_focus+Vector3(0,5.5,9),smoke_focus,Vector3.UP)
+		say("stable_ok")
+	else:
+		button("Dalej",advance)
+		say("stable_go")
+	transition_time=(host.narrator.stream.get_length() if host.sound and host.narrator.stream else 2.0)+.4
+
+func count_pen(i:int) -> void:
+	if host.paused or not active or marks & (1<<i): return
+	var home:=id()=="stable_home"
+	if not ((home and part==0) or (id()=="stable" and part==1 and (stable.EMPTY_MASK & (1<<i)) != 0)): return
+	marks|=1<<i
+	checkpoint()
+	var total:=0
+	for bit in 5:
+		if marks & (1<<bit): total+=1
+	stable.set_pens(home,marks,true)
+	if host.sound: host.play_clip(host.narrator,"count_%d"%total)
+	if marks==(stable.FULL_MASK if home else stable.EMPTY_MASK):
+		age=0
+		transition_time=1.1
+
+func stable_answer(n:int) -> void:
+	if n!=3:
+		effect("story/again")
+		return
+	go_to("stable",2,marks)
+
+func stable_tick() -> void:
+	if id()=="stable" and part==0: curtain.color.a=.88*(1-smoothstep(.4,transition_time,age))
+	if age<transition_time: return
+	if id()=="stable":
+		if part==0: go_to("stable",1)
+		elif part==1 and marks==stable.EMPTY_MASK and options.get_child_count()==1: render()
+		elif part==1 and marks==0 and voice=="route_stable": say("empty_pens")
+		elif part==2: go_to("stable",3,marks)
+	elif part==0 and marks==stable.FULL_MASK: go_to("stable_home",1,marks)
+	elif part==1:
+		chapters=2
+		checkpoint(true)
+		host.home()
 
 func advance() -> void:
 	if id()=="invitation": village_pos=Square.DOORS.delivery+Vector3.BACK*.95
@@ -714,6 +834,13 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="homecoming" and part==1:
+		curtain.color.a=clampf(age/.65,0,1)
+		if age>=.65: advance()
+		return
+	if id() in ["stable","stable_home"]:
+		stable_tick()
+		return
 	if cooldown>0:
 		cooldown-=dt
 		host.cottage.sword.rotation.y=lerpf(1.1,-1.1,1-cooldown/.36)

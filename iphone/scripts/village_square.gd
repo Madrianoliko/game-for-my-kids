@@ -17,6 +17,7 @@ func setup(host) -> void:
 	position=Vector3(310,0,0)
 	host.box(self,Vector3(0,-.24,0),Vector3(56,.46,38),GREEN)
 	path_between(Vector3(0,0,-4),Vector3(0,0,8),2.1)
+	path_between(Vector3(0,0,.45),Vector3(14,0,.45),1.55)
 	for key in DOORS:
 		var door:Vector3=DOORS[key]
 		path_between(Vector3(0,0,door.z+.55),door+Vector3.BACK*.55,1.55)
@@ -60,6 +61,7 @@ func setup(host) -> void:
 	for i in 28:
 		var x:float=(-1 if i%2==0 else 1)*(9.45+sin(i*1.3)*.68)
 		var z:float=-8.3+(i/2)*1.14
+		if x>0 and absf(z-.45)<1.1: continue
 		host.box(self,Vector3(x,.52,z),Vector3(.28,1.05,.24),Stops.WOOD)
 		if i<26: host.box(self,Vector3(x,.68,z+.55),Vector3(.11,.13,1.26),Stops.WOOD)
 	for i in 22:

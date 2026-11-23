@@ -1,7 +1,7 @@
 extends ColorRect
 
 signal resume_requested
-signal camp_requested
+signal chapter_two_requested
 signal play_requested
 signal sound_requested
 signal exit_requested
@@ -20,7 +20,8 @@ var heading := Label.new()
 var story := Label.new()
 var selected_world := 0
 var resume := Button.new()
-var camp_trial := Button.new()
+var chapter_two := Button.new()
+var unlocked_chapter_two:=false
 var can_resume := false
 var play := Button.new()
 var volume := Button.new()
@@ -118,12 +119,12 @@ func _ready() -> void:
 	actions.add_child(play)
 	play.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	format_button(play,true)
-	actions.add_child(camp_trial)
-	camp_trial.text="Obóz trolli (próba)"
-	camp_trial.icon=preload("res://scripts/river_icons.gd").picture("Troll")
-	camp_trial.add_theme_constant_override("icon_max_width",42)
-	format_button(camp_trial)
-	camp_trial.pressed.connect(func(): camp_requested.emit())
+	actions.add_child(chapter_two)
+	chapter_two.text="Rozdział 2"
+	chapter_two.icon=preload("res://scripts/river_icons.gd").picture("Troll")
+	chapter_two.add_theme_constant_override("icon_max_width",42)
+	format_button(chapter_two)
+	chapter_two.pressed.connect(func(): chapter_two_requested.emit())
 	play.pressed.connect(func(): play_requested.emit())
 
 	var choose := Label.new()
@@ -153,8 +154,10 @@ func select_world(index: int) -> void:
 	heading.text = TITLES[index]
 	story.text = STORIES[index]
 	resume.visible=index==0 and can_resume
-	camp_trial.visible=index==0
-	play.text = "Nowa przygoda" if index == 0 else "W przygotowaniu"
+	chapter_two.visible=index==0 and unlocked_chapter_two
+	play.icon=preload("res://scripts/river_icons.gd").picture("Most") if index==0 else null
+	play.add_theme_constant_override("icon_max_width",42)
+	play.text = "Rozdział 1" if index == 0 else "W przygotowaniu"
 	play.disabled = index != 0
 	for i in cards.size():
 		var skin := style(NAVY,GOLD if i == index else Color("#46506a"))

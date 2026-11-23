@@ -196,7 +196,7 @@ func visit_door(key:String) -> void:
 	await process_frame
 
 func run() -> void:
-	create_timer(300).timeout.connect(func(): check(false,"Timeout at "+story.id()))
+	create_timer(540).timeout.connect(func(): check(false,"Timeout at "+story.id()))
 	if not check(OS.get_user_data_dir().get_file().begins_with("ValleyQA-") and not FileAccess.file_exists("user://bystra-v1.cfg"),"Use isolated directory"): return
 	variant=int(OS.get_environment("QA_SNACK"))
 	change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene"))
@@ -349,12 +349,35 @@ func run() -> void:
 		if not await riverbank(): return
 	if not check(story.id()=="homecoming","No reunion"): return
 	await click(story.options.get_child(0))
-	if not check(game.state==game.State.HOME and not story.saved,"Save not closed"): return
+	while story.id()=="homecoming": await physics_frame
+	if not check(story.id()=="stable" and story.chapters==1,"Ukończenie rozdziału 1"): return
+	while story.part==0: await physics_frame
+	for i in [2,1,4]: await click(story.stable.targets[i])
+	while story.options.get_child_count()<3: await physics_frame
+	await click(numeric_button(story.options,3,false))
+	if not check(story.part==1,"Błędna odpowiedź w stajni"): return
+	await click(numeric_button(story.options,3,true))
+	while story.part==2: await physics_frame
+	await click(story.options.get_child(0))
+	if not check(story.id()=="camp","Brak obozu"): return
+	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(story.camp)
+	var order_ponies:Array=[0,2,1] if variant==0 else [1,0,2]
+	for i in order_ponies:
+		if not check(await driver.rescue(i,click),"Nie udało się odprowadzić kucyka %s"%i): return
+	while story.id()=="camp": await physics_frame
+	if not check(story.id()=="stable_home","Brak finału w stajni"): return
+	for i in [3,1,4,0,2]: await click(story.stable.targets[i])
+	while not game.atlas.visible: await physics_frame
+	var cfg:=ConfigFile.new()
+	cfg.load(story.FILE)
+	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
+	await click(game.atlas.chapter_two)
+	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
 	game.narrator.stop()
 	game.chime.stop()
 	for i in 18:
 		OS.delay_msec(12)
 		await process_frame
-	print("PASS repair trip, controls, combat, resume, stones, boards and cooking")
+	print("PASS oba rozdziały, boksy, trzy ratunki, finał i odblokowanie rozdziału")
 	quit()
