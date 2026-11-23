@@ -225,7 +225,7 @@ func add_stack(at:Vector3) -> void:
 	var straw:=Color("#dca83b")
 	host.mesh(stack,bale,Vector3.UP*.48,straw)
 	host.orb(stack,Vector3.UP*.96,HAY_RADIUS,straw.lightened(.12)).scale.y=.38
-		var binding:=TorusMesh.new()
+	var binding:=TorusMesh.new()
 	binding.inner_radius=.965
 	binding.outer_radius=1.025
 	host.mesh(stack,binding,Vector3.UP*.51,Color("#a87939"))
