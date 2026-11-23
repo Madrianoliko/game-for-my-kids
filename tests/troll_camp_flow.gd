@@ -26,21 +26,24 @@ func click(button:Button) -> void:
 		root.push_input(event,true)
 	await process_frame
 
-func position_in_camp() -> Vector3:
-	return camp.to_local(game.leo.global_position)
-
 func wait_phase(phase:Camp.Phase, after:=0.0) -> void:
 	while camp.phase!=phase or camp.elapsed<after: await physics_frame
 
-func walk_to(target:Vector3, sneak:=true) -> void:
-	for tick in 1800:
-		var offset:=target-position_in_camp()
-		if offset.length()<.09: break
-		var moving:=not sneak or camp.phase==Camp.Phase.BACK
-		game.stick.vector=Vector2(offset.x,offset.z).normalized() if moving else Vector2.ZERO
+func walk_to(target:Vector3) -> void:
+	for tick in 400:
+		var offset:=target-camp.ground
+		if offset.length()<.08: break
+		game.stick.vector=Vector2(offset.x,offset.z).normalized()
 		await physics_frame
 	game.stick.vector=Vector2.ZERO
-	expect(position_in_camp().distance_to(target)<.12,"Nie udało się dojść do "+str(target))
+	expect(camp.ground.distance_to(target)<.1,"Nie udało się dojść do "+str(target))
+
+func next_window() -> void:
+	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.1)
+	var previous:=camp.catches
+	if not expect(camp.inside>=0 and camp.flood.visible,"Brak osłony podczas spojrzenia"): return
+	await wait_phase(Camp.Phase.BACK)
+	expect(camp.catches==previous,"Gapa zauważył ruch wewnątrz stogu lub kucyka")
 
 func run() -> void:
 	create_timer(150).timeout.connect(func(): expect(false,"Przekroczony czas w obozie"))
@@ -58,57 +61,66 @@ func run() -> void:
 	for child in game.get_children():
 		if child is Camp: camp=child
 	if not expect(camp!=null and not game.atlas.visible,"Wejście z menu"): return
-	await wait_phase(Camp.Phase.BACK)
-	await walk_to(Camp.BUSHES[0])
-	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.05)
-	var hides_at:=position_in_camp()
-	game.stick.vector=Vector2.RIGHT
-	for i in 8: await physics_frame
+	# Próba ominięcia opowieści dotykiem i ruchem.
+	await click(camp.back)
+	game.stick.vector=Vector2.UP
+	await click(camp.replay)
+	for line in ["intro_stolen","intro_there","intro_run","intro_hide","intro_first"]:
+		while camp.message!=line: await physics_frame
 	game.stick.vector=Vector2.ZERO
-	if not expect(camp.in_light(hides_at) and position_in_camp().distance_to(hides_at)>.1 and camp.catches==0,"Ruch w krzaku"): return
-	var exposed:Vector3=Camp.BUSHES[0]+Vector3.RIGHT*(Camp.HIDE_RADIUS+.35)
-	await walk_to(exposed)
-	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.05)
-	for i in 16: await physics_frame
-	if not expect(camp.in_light(exposed) and camp.cover(exposed)<0 and camp.catches==0,"Stanie w świetle"): return
-	game.stick.vector=Vector2.RIGHT
+	if not expect(camp.ground.distance_to(Camp.START)<.1,"Ruch podczas opowieści"): return
+	await create_timer(7).timeout
+	if not expect(camp.phase==Camp.Phase.FIRST and not camp.flood.visible,"Gapa zaczął liczyć przed nauką"): return
+	game.stick.vector=Vector2.UP
+	await wait_phase(Camp.Phase.DEMO_LOOK)
+	game.stick.vector=Vector2.ZERO
+	if not expect(camp.inside==0 and camp.message=="intro_safe" and camp.flood.visible,"Pokaz pierwszego schowania"): return
+	await wait_phase(Camp.Phase.BACK)
+	await walk_to(Camp.STACKS[0]+Vector3.RIGHT*2)
 	await wait_phase(Camp.Phase.CAUGHT)
-	game.stick.vector=Vector2.ZERO
+	if not expect(camp.catches==1 and game.stick.vector==Vector2.ZERO,"Stojący poza stogiem uniknął złapania"): return
 	await wait_phase(Camp.Phase.BACK)
-	if not expect(camp.catches==1 and position_in_camp().distance_to(Camp.BUSHES[0])<.02,"Powrót do pierwszego krzaka"): return
-	await walk_to(Camp.BUSHES[1])
-	await walk_to(Camp.TETHER)
-	if not expect(not camp.hand.disabled and camp.rope.visible,"Kucyk czeka przy drzewie"): return
-	await click(camp.hand)
-	if not expect(camp.following and not camp.rope.visible and camp.hay.visible,"Uwolnienie kucyka dłonią"): return
-	var near_edge:Vector3=Camp.BUSHES[1]+Camp.BUSHES[1].direction_to(Camp.TETHER)*.85
-	await walk_to(near_edge)
-	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.05)
-	var pony_pos:=camp.pony.position
-	if not expect(camp.in_light(pony_pos) and camp.cover(pony_pos)<0,"Kucyk powinien wystawać zza krzaka"): return
-	for i in 12: await physics_frame
-	if not expect(camp.pony.position.is_equal_approx(pony_pos),"Kucyk rusza się przy stojącym Bilbie"): return
-	game.stick.vector=Vector2.LEFT
-	for i in 8: await physics_frame
-	game.stick.vector=Vector2.ZERO
-	if not expect(camp.catches==1,"Odkryty kucyk zdradził schowanego Bilba"): return
-	await walk_to(Camp.BUSHES[1]+Vector3.LEFT*(Camp.HIDE_RADIUS+.4))
-	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.05)
-	game.stick.vector=Vector2.LEFT
-	await wait_phase(Camp.Phase.CAUGHT)
-	await wait_phase(Camp.Phase.BACK)
-	if not expect(camp.catches==2 and camp.following and camp.pony.position.distance_to(Camp.BUSHES[1])<=Camp.FOLLOW_DISTANCE+.02,"Powrót razem z kucykiem"): return
-	while camp.message!="hint": await physics_frame
-	await walk_to(Camp.BUSHES[0])
-	# Enter the return zone, then let the thank-you and the star finish.
-	while camp.phase!=Camp.Phase.DONE:
-		var offset:=Camp.TOBO-position_in_camp()
-		game.stick.vector=Vector2(offset.x,offset.z).normalized() if camp.phase==Camp.Phase.BACK else Vector2.ZERO
+	if not expect(camp.ground.distance_to(Camp.STACKS[0])<.02,"Powrót do stogu"): return
+	# Bieg przez środek polany najkrótszą drogą, bez postojów.
+	while camp.phase!=Camp.Phase.CAUGHT:
+		var heading:=camp.ground.direction_to(Camp.TETHER)
+		game.stick.vector=Vector2(heading.x,heading.z)
 		await physics_frame
+	game.stick.vector=Vector2.ZERO
+	if not expect(camp.catches==2 and not camp.following and camp.message=="caught_again","Bieg prosto do kucyka"): return
+	await wait_phase(Camp.Phase.BACK)
+	while camp.message!="hint": await physics_frame
+	await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.1)
+	var before:=camp.ground
+	game.stick.vector=Vector2.RIGHT
+	for i in 6: await physics_frame
+	game.stick.vector=Vector2.ZERO
+	if not expect(camp.inside==0 and camp.ground.distance_to(before)>.1 and camp.catches==2,"Ruch wewnątrz stogu"): return
+	await wait_phase(Camp.Phase.BACK)
+	for i in range(1,Camp.STACKS.size()):
+		await walk_to(Camp.STACKS[i])
+		await next_window()
+	await walk_to(Camp.TETHER)
+	if not expect(not camp.hand.disabled and camp.rope.visible,"Kucyk czeka przy ognisku"): return
+	await click(camp.hand)
+	if not expect(camp.following and not camp.rope.visible,"Odwiązanie kucyka"): return
+	for i in range(Camp.STACKS.size()-1,-1,-1):
+		await walk_to(Camp.STACKS[i])
+		await wait_phase(Camp.Phase.LOOK,Camp.GRACE+.3)
+		if not expect(camp.cover(camp.pony.position)<0 and camp.inside==i,"Kucyk ma czekać poza stogiem"): return
+		var parked:=camp.pony.position
+		for tick in 8: await physics_frame
+		if not expect(camp.pony.position.distance_to(parked)<.02,"Kucyk ruszył się podczas ukrycia"): return
+		await next_window()
+	while camp.phase!=Camp.Phase.DONE:
+		var heading:=camp.ground.direction_to(Camp.TOBO)
+		game.stick.vector=Vector2(heading.x,heading.z)
+		await physics_frame
+	if not expect(camp.catches==2 and camp.message=="done","Pełna wyprawa z postojami"): return
 	while not camp.star.visible: await physics_frame
 	while not game.atlas.visible: await physics_frame
 	if not expect(FileAccess.get_file_as_string(save_path)==sentinel and not FileAccess.file_exists("user://valley.cfg"),"Próba zmieniła zapis gry"): return
 	if not expect(game.camera.current and not game.stick.visible,"Przywrócenie menu"): return
 	if failures==0:
-		print("PASS obóz: stożek, bezruch, krzaki, dwa powroty, kucyk, podpowiedź, gwiazdka i zapis")
+		print("PASS obóz: wprowadzenie, nauka, złapanie za bezruch poza sianem, bieg bez schowania, sześć stogów w obie strony, kucyk, gwiazdka i zapis")
 		quit()
