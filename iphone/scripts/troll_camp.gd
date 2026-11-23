@@ -33,9 +33,9 @@ const Z_MIN := -5.2
 const Z_MAX := 5.5
 const CAMERA_AT := Vector3(0,.5,-.6)
 const CAMERA_FROM := Vector3(0,14,12)
-const VIEW_HEIGHT := 12.8
+const VIEW_HEIGHT := 15.0
 const BUSH_SIZE := 1.35
-const EXPOSURE := .30
+const EXPOSURE := .55
 const WORDS := {
 	"start":"Ciii… To Gapa. Kiedy troll się odwraca, idź. Kiedy patrzy, stój jak posąg!",
 	"count":"Raz… dwa… trzy…",
@@ -94,6 +94,13 @@ func begin(game) -> void:
 	var night:=CameraAttributesPractical.new()
 	night.exposure_multiplier=EXPOSURE
 	camera.attributes=night
+	var sky:=Environment.new()
+	sky.background_mode=Environment.BG_COLOR
+	sky.background_color=Color("#142643")
+	sky.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR
+	sky.ambient_light_color=Color("#a0bfea")
+	sky.ambient_light_energy=.85
+	camera.environment=sky
 	camera.make_current()
 	add_child(cue)
 	build_controls()
@@ -109,7 +116,13 @@ func troll(at:Vector3, amount:float) -> Node3D:
 	return actor
 
 func build_camp() -> void:
-	host.box(self,Vector3.DOWN*.23,Vector3(42,.44,32),Color("#557465"))
+	host.box(self,Vector3.DOWN*.23,Vector3(42,.44,32),Color("#36554f"))
+	# Ciemna linia lasu obramowuje jaśniejszą, grywalną polanę.
+	for side in [-1,1]:
+		for z in range(-9,10,3):
+			var edge:=Vector3(side*(6.8+.45*cos(z)),0,z)
+			host.box(self,edge+Vector3.UP,Vector3(.38,2,.42),Color("#654a43"))
+			host.orb(self,edge+Vector3.UP*2.2,1.25,Color("#274c4d")).scale.y=1.35
 	for at:Vector3 in BUSHES:
 		var leaves:MeshInstance3D=host.orb(self,at+Vector3.UP*.9,BUSH_SIZE,Color("#598357"))
 		leaves.scale=Vector3(1,.96,.92)
@@ -128,6 +141,11 @@ func build_camp() -> void:
 		host.box(self,FIRE+Vector3(0,.15,0),Vector3(1.3,.2,.22),Color.SADDLE_BROWN).rotation.y=side*.65
 		host.orb(self,FIRE+Vector3(side*.23,.39,0),.34,gold,true).scale.y=1.6
 	host.orb(self,FIRE+Vector3.UP*.96,.52,Color("#464659")).scale.y=.73
+	var rim:=TorusMesh.new()
+	rim.inner_radius=.37
+	rim.outer_radius=.47
+	host.mesh(self,rim,FIRE+Vector3.UP*1.18,Color("#818191"))
+	host.orb(self,FIRE+Vector3.UP*1.18,.39,Color("#9c8055")).scale.y=.10
 	var light:=OmniLight3D.new()
 	add_child(light)
 	light.position=FIRE+Vector3.UP*1.4
@@ -138,9 +156,11 @@ func build_camp() -> void:
 	host.orb(self,TREE+Vector3.UP*2.45,1.08,Color("#658858"))
 	add_child(pony)
 	pony.position=TETHER
+	pony.rotation.y=-1.1
 	var coat:=Color("#cb945c")
 	host.orb(pony,Vector3(0,.67,0),.52,coat).scale=Vector3(.74,.86,1.28)
 	host.orb(pony,Vector3(0,1.12,.43),.36,coat)
+	host.orb(pony,Vector3(0,1.08,.24),.21,Color("#805039")).scale.y=1.72
 	host.orb(pony,Vector3(0,1,.66),.24,Color("#efd8af"))
 	host.orb(pony,Vector3(0,.58,-.64),.19,Color("#78523e")).scale.y=1.6
 	for side in [-1,1]:
@@ -200,8 +220,8 @@ func layout() -> void:
 	back.position=inset
 	replay.position=Vector2(controls.size.x-inset.x-replay.size.x,inset.y)
 	hand.position=controls.size-inset-hand.size
-	caption.position=Vector2(inset.x+back.size.x+8,inset.y)
-	caption.size=Vector2(replay.position.x-caption.position.x-8,back.size.y)
+	caption.position=Vector2(host.stick.position.x+host.stick.size.x+8,controls.size.y-inset.y-back.size.y)
+	caption.size=Vector2(hand.position.x-caption.position.x-8,back.size.y)
 	star.position=(controls.size-star.get_minimum_size())*.5
 
 func speak(key:String) -> void:
@@ -215,7 +235,8 @@ func speak(key:String) -> void:
 		speech_left=0
 
 func cycle_voice(key:String) -> void:
-	if host.sound and speech_left<=0:
+	if host.sound:
+		cue.volume_db=-12 if speech_left>0 else 0
 		host.play_clip(cue,"story/camp_"+key)
 
 func begin_back() -> void:
