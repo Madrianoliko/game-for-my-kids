@@ -39,7 +39,7 @@ Plan: `ROZDZIAL_2_TROLLE.md`, sceny 3 i 4. Wstaw między `stable` a `camp`.
 - Krok `chief_sad`: na trakcie siedzi herszt orków z pustym koszem. Bilbo ma w plecaku 3 jabłka (dostaje je od Toba w stajni: „Weź jabłka na drogę.”). Herszt: „Trolle zabrały mi wszystkie jabłka!”. Zagadka: „Mam pusty kosz. Dasz mi jabłka? Ile ich masz?” — dziecko podaje jabłka dłonią po jednym, gra liczy na głos, potem herszt pyta „Ile mi dałeś?” (przyciski z kropkami). Herszt: „Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!”.
 - Zapis po każdym kroku, test przejścia i test wznowienia.
 
-### [ ] Z02 — Rozdział 2: wybór drogi
+### [x] Z02 — Rozdział 2: wybór drogi (2026-11-25)
 Plan: scena 5. Wstaw między `chief_sad` a `camp`.
 - Krok `fork`: rozwidlenie z dwiema widocznymi ścieżkami. Dziecko wybiera, idąc w jedną z nich.
 - Droga krótka: śpiący troll Chrapek leży przy ścieżce i głośno chrapie. Gdy Bilbo podejdzie za blisko (widoczny krąg na ziemi), Chrapek przewraca się na drugi bok, mruczy i Bilbo wraca kilka kroków. Trzeba obejść krąg. To rozgrzewka przed obozem.

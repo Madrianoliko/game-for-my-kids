@@ -1,3 +1,13 @@
+## 2026-11-25 — Z02. Dwie drogi do obozu
+
+Po spotkaniu z hersztem nowy krok `fork` prowadzi do obozu. Dziecko wybiera ścieżkę, idąc w nią Bilbem.
+Na krótkiej drodze Chrapek chrapie. Wejście w jasne koło budzi trolla i cofa Bilba przed krąg. Po drugiej próbie Tobo podpowiada, jak go obejść.
+Długa droga wykorzystuje skoki po kamieniach z rozdziału 1. Po przejściu na drugi brzeg dziecko dochodzi do krzaków przy obozie.
+Zapis pamięta wybraną drogę i ukończone skoki. Do strojenia po teście z dzieckiem: promień koła 1,4 m, prędkość Bilba 3,6 m/s, powrót 1 s, odstęp między chrapnięciami 3,3 s.
+Cztery nowe kwestie Zosi, chrapanie i mruczenie są w pakiecie. Przeprawa używa istniejącej instrukcji głosowej. Brak brakujących nagrań i pytań.
+Pakiet iPhone ma 8 249 188 bajtów. Wszystkie trzy testy przy 60 kl./s przeszły, w tym obie drogi do obozu, cofnięcie przed krąg, wznowienie na kamieniu i zapis herszta sprzed Z02.
+Przy zamykaniu testów obozu i doliny Godot zgłosił pozostające obiekty. Czytelność ścieżek i głośność chrapania czekają na próbę na iPhonie.
+
 ## 2026-11-25 — Z01 ukończone. Nocny most i jabłka dla herszta
 
 Po stajni dodano kroki `night_bridge` i `chief_sad`. Tobo daje trzy jabłka i towarzyszy Bilbowi na moście. Z wody macha bóbr.
