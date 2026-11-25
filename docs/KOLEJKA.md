@@ -26,7 +26,7 @@ Plany fabuły, z których korzystają zadania:
 
 ## Kolejka
 
-### [ ] Z00 — Porządek w dokumentach
+### [x] Z00 — Porządek w dokumentach (2026-11-25)
 - Dodaj do repozytorium katalog `docs/` (plany i stare zlecenia są nieśledzone).
 - Utwórz puste pliki `docs/RAPORTY.md` i `docs/UWAGI_Z_TESTOW.md` (w tym drugim krótka instrukcja: „Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następnym zadaniem.”).
 - Przenieś stare zlecenia `ZLECENIE_CODEX_01–04.md` do `docs/archiwum/`.
