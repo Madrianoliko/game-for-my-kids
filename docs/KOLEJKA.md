@@ -54,7 +54,7 @@ Plan: scena 7. Wstaw po `camp`, przed `stable_home`.
 - Po trzeciej: wschód słońca, trolle zastygają w śmiesznych pozach i zamieniają się w kamień („chrup… chrup… chrup”).
 - Kwestie z planu (sekcja „Kwestie” przy scenie 7).
 
-### [ ] Z04 — Rozdział 2: jaskinia trolli i powrót przez trakt
+### [x] Z04 — Rozdział 2: jaskinia trolli i powrót przez trakt (2026-11-25)
 Plan: sceny 8 i 9.
 - Krok `troll_cave`: dziecko otwiera skrzynię dłonią. W środku jabłka herszta i zwinięta mapa z górą, nad którą unosi się dymek. Mapa trafia do plecaka (będzie potrzebna w rozdziale 3).
 - Krok `chief_happy` przed `stable_home`: Bilbo z kucykami spotyka herszta na trakcie i oddaje mu jabłka dłonią. „Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!”.

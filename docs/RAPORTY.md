@@ -1,3 +1,12 @@
+## 2026-11-25 — Z04. Jaskinia trolli i powrót przez trakt
+
+Po świcie krok `troll_cave` prowadzi do skrzyni. Dotknięcie dłoni odsłania jabłka i zwiniętą mapę z dymiącą górą. Oba znaleziska trafiają do plecaka.
+W kroku `chief_happy` dziecko oddaje hersztowi jabłka i prowadzi trzy kucyki gałką przez znajomy most. Gra liczy na głos w chwili, gdy kolejny kucyk wchodzi na deski.
+W stajni Pestka siedzi na kucyku. Kamienne trolle widać na wzgórzu i na ilustracji doliny w menu. Mapa pozostaje w zapisie po zakończeniu rozdziału.
+Do strojenia po próbie na telefonie: odstęp między kucykami 1,8 m i tempo marszu 2,65 m/s. Wszystkie kwestie są nagrane głosem Zosi. Brak otwartych pytań.
+Pakiet iPhone ma 8 914 332 bajty. Wszystkie trzy testy na pakiecie przy 60 kl./s przeszły. Sprawdzono wznowienie po otwarciu skrzyni, oddaniu jabłek i wejściu pierwszego kucyka na most oraz wczytanie wcześniejszego zapisu stajni.
+Godot przy zamknięciu testów obozu i doliny zgłosił pozostające obiekty. Rozpoznawalność rysunku na mapie i prowadzenie kucyków czekają na próbę na iPhonie.
+
 ## 2026-11-25 — Z03. Kłótnia trolli do świtu
 
 Po trzecim kucyku Gapa chwyta Bilba. Krok `troll_dawn` między obozem a stajnią obejmuje zakład i trzy zagadki z kamykami, kiełbaskami i szyszkami.
