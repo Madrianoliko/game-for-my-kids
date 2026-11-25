@@ -1,3 +1,12 @@
+## 2026-11-25 — Z03. Kłótnia trolli do świtu
+
+Po trzecim kucyku Gapa chwyta Bilba. Krok `troll_dawn` między obozem a stajnią obejmuje zakład i trzy zagadki z kamykami, kiełbaskami i szyszkami.
+Przedmioty można policzyć dotykiem. Burczyk zjada jedną z czterech kiełbasek. Dobra odpowiedź wywołuje sprzeczkę i rozjaśnia niebo, pomyłka wywołuje śmiech. Po dwóch pomyłkach głos liczy podświetlane przedmioty.
+Po trzeciej odpowiedzi wschodzi słońce i trzy trolle kolejno kamienieją. W tle widać jaskinię. Jej zwiedzanie jest osobnym zadaniem Z04.
+Do strojenia z dzieckiem: 0,78 s między liczbami w podpowiedzi i 0,45 s między przemianami trolli. Wszystkie kwestie są nagrane głosem Zosi. Brak otwartych pytań.
+Pakiet iPhone ma 8 680 084 bajty. Wszystkie trzy testy przy 60 kl./s przeszły, w tym dotykanie przedmiotów, ubycie kiełbaski, pomoc, świt, wznowienie zagadki i przejście ze starszego zapisu obozu.
+Godot przy zamykaniu testów obozu i doliny zgłosił pozostające obiekty. Próba na fizycznym iPhonie pozostaje do wykonania.
+
 ## 2026-11-25 — Z02. Dwie drogi do obozu
 
 Po spotkaniu z hersztem nowy krok `fork` prowadzi do obozu. Dziecko wybiera ścieżkę, idąc w nią Bilbem.

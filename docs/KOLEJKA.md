@@ -46,7 +46,7 @@ Plan: scena 5. Wstaw między `chief_sad` a `camp`.
 - Droga długa: strumień przechodzi się po kamieniach (wykorzystaj mechanikę kamieni z rozdziału 1).
 - Obie drogi kończą się na skraju obozu. Zapis pamięta wybraną drogę.
 
-### [ ] Z03 — Rozdział 2: kłótnia trolli do świtu
+### [x] Z03 — Rozdział 2: kłótnia trolli do świtu (2026-11-25)
 Plan: scena 7. Wstaw po `camp`, przed `stable_home`.
 - Po uratowaniu trzeciego kucyka obóz się nie kończy. Gapa „łapie” Bilba (scena, nie porażka), budzą się Burczyk i Chrapek. Trolle są śmieszne, nie straszne.
 - Bilbo: „Założę się, że nie umiecie liczyć!”. Trzy zagadki z przedmiotami widocznymi na ekranie: 2 + 2 kamyki, 4 kiełbaski minus 1 zjedzona na oczach dziecka, 3 + 3 szyszki. Przyciski z kropkami.
