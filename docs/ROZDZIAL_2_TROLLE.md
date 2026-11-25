@@ -60,11 +60,13 @@ Każdą scenę opisuję w ten sam sposób: **kto**, **co widać i słychać**, *
 
 ### Scena 4. Herszt bez jabłek — około 1,5 min
 - **Kto:** herszt orków z rozdziału 1 siedzi smutny na trakcie z pustym koszem.
-- **Dziecko:** podaje mu jabłko dłonią. To prosty, miły gest zamiast walki.
-- **Dalej, bo:** herszt mówi, gdzie są trolle, i pokazuje dwie drogi.
+- **Dziecko:** Tobo dał Bilbowi w stajni 3 jabłka na drogę. Dziecko podaje hersztowi jabłka dłonią po jednym, a gra liczy na głos. Potem herszt pyta „Ile mi dałeś?” i dziecko odpowiada przyciskiem z kropkami.
+- **Dalej, bo:** herszt mówi, gdzie są trolle, i ostrzega przed Gapą. Zaraz potem zaczyna się wybór drogi.
 
-> Herszt: „Ty znowu? Trolle zabrały mi wszystkie jabłka! Jedno? Dla mnie? …Dziękuję.”
-> Herszt: „Trolle siedzą przy ognisku. Możesz iść obok śpiącego trolla albo przez strumień.”
+> Herszt: „Ty znowu? Trolle zabrały mi wszystkie jabłka!”
+> Herszt: „Mam pusty kosz. Dasz mi jabłka?”
+> Herszt: „Ile mi dałeś?”
+> Herszt (po dobrej odpowiedzi): „Trzy! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!”
 
 ### Scena 5. Dwie drogi (wybór drogi) — około 2 min
 - **Krótka droga:** obok śpiącego trolla Chrapka. Trzeba przejść cicho, a jeśli Bilbo podejdzie zbyt blisko, Chrapek przewraca się na drugi bok i mruczy. To łagodna rozgrzewka przed nową mechaniką.

@@ -21,6 +21,7 @@ Plany fabuły, z których korzystają zadania:
 9. **Commity:** osobny commit na każdy etap, opis po polsku. Na koniec zadania: eksport `.pck`, testy, commit i `git push`.
 10. **Kiedy nie wiesz — zatrzymaj się.** Jeśli coś jest niejasne, sprzeczne z planem albo testy nie przechodzą i nie wiesz dlaczego, nie zgaduj. Zapisz pytanie w `docs/RAPORTY.md` pod nagłówkiem „PYTANIE”, zostaw zadanie jako `[ ]` i zakończ sesję.
 11. **Raport** w `docs/RAPORTY.md` (najnowszy na górze): numer zadania, co zrobiono, co pominięto i dlaczego, nowe kroki ROUTE, wartości do strojenia, wyniki testów, brakujące nagrania, rozmiar `.pck`. Maksymalnie 15 linijek.
+12. **Kolejka ma pierwszeństwo przed planem.** Jeśli opis zadania w kolejce różni się od planu fabuły w `docs/`, rób według kolejki, a w raporcie zapisz, czym się różniły. Pytaj tylko wtedy, gdy kolejka sama jest niejasna albo sprzeczna.
 
 ---
 
@@ -32,7 +33,7 @@ Plany fabuły, z których korzystają zadania:
 - Przenieś stare zlecenia `ZLECENIE_CODEX_01–04.md` do `docs/archiwum/`.
 - Commit i push. Bez zmian w grze.
 
-### [ ] Z01 — Rozdział 2: nocny most i herszt bez jabłek
+### [x] Z01 — Rozdział 2: nocny most i herszt bez jabłek (2026-11-25)
 Plan: `ROZDZIAL_2_TROLLE.md`, sceny 3 i 4. Wstaw między `stable` a `camp`.
 - Krok `night_bridge`: Bilbo z Tobem idą wieczorem przez most z rozdziału 1 (ten sam most, przyciemniony filtr jak przy latarenkach). Bóbr macha z wody: „Twoje deski trzymają się świetnie, Bilbo! Uważaj w lesie!”. Dziecko samo przeprowadza Bilba.
 - Krok `chief_sad`: na trakcie siedzi herszt orków z pustym koszem. Bilbo ma w plecaku 3 jabłka (dostaje je od Toba w stajni: „Weź jabłka na drogę.”). Herszt: „Trolle zabrały mi wszystkie jabłka!”. Zagadka: „Mam pusty kosz. Dasz mi jabłka? Ile ich masz?” — dziecko podaje jabłka dłonią po jednym, gra liczy na głos, potem herszt pyta „Ile mi dałeś?” (przyciski z kropkami). Herszt: „Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!”.
