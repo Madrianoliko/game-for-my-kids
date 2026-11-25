@@ -12,6 +12,8 @@ const Square := preload("res://scripts/village_square.gd")
 var square:=Square.new()
 var stable:=preload("res://scripts/pony_stable.gd").new()
 var camp
+const TRAVEL_APPLES := 3
+var waving_paw:Node3D
 var chapters:=0
 var reward:=Label.new()
 var curtain:=ColorRect.new()
@@ -278,6 +280,7 @@ func begin(resume:bool, start_step:="door") -> void:
 	render()
 
 func stop() -> void:
+	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
 	reward.hide()
@@ -316,9 +319,10 @@ func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or id()=="cross") and not host.paused
+	host.stick.visible=active and (roaming() or traveling or id() in ["cross","night_bridge"]) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=actions.visible and id()!="cross"
+	if id()=="night_bridge": actions.hide()
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
 	actions.position=Vector2(host.pause_button.position.x+host.pause_button.size.x-actions.size.x,host.stick.position.y+48)
 	bow.disabled="Łuk" not in items
@@ -326,6 +330,7 @@ func show_controls() -> void:
 	shield.disabled="Tarcza" not in items
 
 func render() -> void:
+	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
 	reward.hide()
@@ -372,6 +377,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
+	if id()=="chief_sad": origin=host.point(-7)
 	if id()=="tobo": origin=host.point(1.25,-1.5)
 	if id() in ["lanterns","invitation","village","stable","stable_home"]:
 		origin=square.position
@@ -565,6 +571,27 @@ func render() -> void:
 			actor("beaver",host.point(-6,-1)-origin)
 			host.walk([host.point(-6)],"Przejdź przez most")
 			show_controls()
+		"night_bridge":
+			dock.hide()
+			light_filter.exposure_multiplier=.42
+			host.camera.attributes=light_filter
+			host.leo.position=host.point(2)
+			host.camera.position=host.leo.position+Vector3(0,3.05,5.9)
+			visitor=actor("troll",host.leo.position-origin+Vector3(1,0,.6),.85)
+			var beaver:=actor("beaver",host.point(-2,-2.3)-origin+Vector3.DOWN*.32)
+			host.beaver.hide()
+			waving_paw=Node3D.new()
+			beaver.add_child(waving_paw)
+			waving_paw.position=Vector3(.35,.78,.2)
+			host.orb(waving_paw,Vector3(.15,.19,0),.17,Color("#8e582f")).scale.y=1.45
+			var flame=host.orb(scene,host.point(-8,1)-origin+Vector3.UP*.45,.3,Color.ORANGE_RED,true)
+			var flicker=flame.create_tween().set_loops()
+			flicker.tween_property(flame,"scale:y",1.65,.31)
+			flicker.tween_property(flame,"scale:y",1.1,.23)
+			host.walk([host.point(-6)],"Nocny most")
+			say("night_bridge")
+			show_controls()
+		"chief_sad": render_apple_chief()
 		"stable","stable_home":
 			render_stable()
 		"camp":
@@ -637,6 +664,104 @@ func answer(n:int) -> void:
 	if n==3: advance()
 	else: effect("story/again")
 
+func make_apple(at:Vector3) -> Node3D:
+	var apple=host.orb(scene,at,.25,Color("#de4939"))
+	host.box(apple,Vector3(0,.25,0),Vector3(.045,.14,.045),Color("#674324"))
+	host.orb(apple,Vector3(.08,.28,0),.09,Color("#76ab49")).scale=Vector3(1.3,.36,.7)
+	return apple
+
+func render_apple_chief() -> void:
+	host.hud.text="Kosz herszta"
+	light_filter.exposure_multiplier=.66
+	host.camera.attributes=light_filter
+	var chief:=actor("chief",Vector3(.75,0,-.8))
+	if part<3:
+		chief.scale.y=.76
+		chief.rotation.x=.12
+		for x in [-.29,.29]:
+			host.orb(chief,Vector3(x,.22,.43),.24,Props.GREEN)
+	var basket:=Vector3(.85,0,.56)
+	for row in 4:
+		var rim:=TorusMesh.new()
+		rim.inner_radius=.49+row*.055
+		rim.outer_radius=rim.inner_radius+.1
+		var hoop=host.mesh(scene,rim,basket+Vector3.UP*(.12+row*.11),Props.WOOD)
+		hoop.scale.x=1.45
+	var given:=TRAVEL_APPLES-items.count("Jabłko")
+	for i in TRAVEL_APPLES:
+		var at:=basket+Vector3((i-1)*.55,.55,.02)
+		if i>=given: at=Vector3(-2.2+(i-given)*.55,.45,.34)
+		pickups.append(make_apple(at))
+	match part:
+		0: say("sad_loss")
+		1:
+			if given<TRAVEL_APPLES: button("Ręka",give_apple)
+			if given==0: say("sad_give")
+			elif given<TRAVEL_APPLES: say("sad_next")
+			else: say("sad_question")
+		2:
+			for n in Data.number_choices(TRAVEL_APPLES): button(str(n),apple_answer.bind(n))
+			say("sad_question")
+		3:
+			button("Dalej",advance)
+			say("sad_thanks")
+	transition_time=(host.narrator.stream.get_length() if host.sound and host.narrator.stream else 2.0)+.25
+
+func give_apple() -> void:
+	var slot:=items.find("Jabłko")
+	if slot<0: return
+	items.remove_at(slot)
+	marks+=1
+	checkpoint()
+	render()
+	var apple:=pickups[marks-1]
+	var end:=apple.position
+	apple.position=Vector3(-2.2,.72,.34)
+	apple.create_tween().tween_property(apple,"position",end,.36)
+	var count_clip:="count_%d"%marks
+	if host.sound: host.play_clip(host.narrator,count_clip)
+	transition_time=(host.narrator.stream.get_length() if host.sound else .65)+.12
+	for b in options.get_children():
+		if b.accessibility_name=="Ręka": b.disabled=true
+
+func apple_answer(n:int) -> void:
+	if n==TRAVEL_APPLES:
+		go_to("chief_sad",3)
+		return
+	marks+=1
+	checkpoint()
+	say("sad_hint" if marks>=2 else "sad_retry")
+	for i in pickups.size():
+		var apple:=pickups[i]
+		var pulse:=apple.create_tween()
+		pulse.tween_interval(.55*i if marks>=2 else .08)
+		if marks==1 and i>=n:
+			pulse.tween_property(apple,"position:y",.93,.2)
+			pulse.tween_property(apple,"position:y",.55,.3)
+		pulse.tween_property(apple,"scale",Vector3.ONE*1.45,.2)
+		pulse.tween_property(apple,"scale",Vector3.ONE,.25)
+
+	if n>TRAVEL_APPLES:
+		for i in range(TRAVEL_APPLES,n):
+			var ring:=TorusMesh.new()
+			ring.inner_radius=.19
+			ring.outer_radius=.24
+			var empty=host.mesh(scene,ring,Vector3(.85+(i-3)*.58,.68,1.4),Color.WHEAT)
+			var fade=empty.create_tween()
+			fade.tween_interval(1.0)
+			fade.tween_property(empty,"scale",Vector3.ZERO,.3)
+			fade.tween_callback(empty.queue_free)
+
+func _unhandled_input(event:InputEvent) -> void:
+	if not active or host.paused or id()!="chief_sad" or part!=2: return
+	if not ((event is InputEventScreenTouch or (event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT)) and event.pressed): return
+	for i in pickups.size():
+		var pos:Vector2=host.camera.unproject_position(pickups[i].global_position)
+		if pos.distance_to(event.position)<maxf(18,host.camera.unproject_position(pickups[i].global_position+Vector3.RIGHT*.28).distance_to(pos)):
+			if host.sound: host.play_clip(host.narrator,"count_%d"%(i+1))
+			get_viewport().set_input_as_handled()
+			return
+
 func render_stable() -> void:
 	var home:=id()=="stable_home"
 	var focus:=stable.global_position
@@ -666,6 +791,13 @@ func render_stable() -> void:
 		var smoke_focus:=focus.lerp(stable.smoke.global_position,.62)
 		host.camera.look_at_from_position(smoke_focus+Vector3(0,5.5,9),smoke_focus,Vector3.UP)
 		say("stable_ok")
+	elif part==3:
+		for i in TRAVEL_APPLES:
+			make_apple(stable.position+Vector3(2.5+i*.48,.36,1.25))
+		button("Ręka",func():
+			for i in TRAVEL_APPLES: items.append("Jabłko")
+			go_to("stable",4,marks))
+		say("travel_apples")
 	else:
 		button("Dalej",advance)
 		say("stable_go")
@@ -720,7 +852,7 @@ func arrived() -> void:
 		traveling=false
 		checkpoint()
 		render()
-	elif id()=="cross": advance()
+	elif id() in ["cross","night_bridge"]: advance()
 
 func interact() -> void:
 	if not active or busy or host.paused: return
@@ -834,6 +966,18 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="night_bridge":
+		waving_paw.rotation.z=.25+.6*sin(age*6)
+		var target:Vector3=host.leo.global_position+Vector3(.85,0,.55)
+		visitor.global_position=visitor.global_position.move_toward(target,4.5*dt)
+		return
+	if id()=="chief_sad":
+		if age>=transition_time:
+			if part==0: go_to("chief_sad",1)
+			elif part==1 and marks==TRAVEL_APPLES: go_to("chief_sad",2)
+			elif part==1 and marks>0:
+				options.get_child(0).disabled=false
+		return
 	if id()=="homecoming" and part==1:
 		curtain.color.a=clampf(age/.65,0,1)
 		if age>=.65: advance()
