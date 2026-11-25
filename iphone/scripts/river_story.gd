@@ -12,6 +12,9 @@ const Square := preload("res://scripts/village_square.gd")
 var square:=Square.new()
 var stable:=preload("res://scripts/pony_stable.gd").new()
 var camp
+const ReturnTrip := preload("res://scripts/troll_return.gd")
+var return_trip:ReturnTrip
+var stone_hill:=Node3D.new()
 var dawn:Node3D
 var fork_trail:Node3D
 var fork_path:=""
@@ -79,6 +82,20 @@ func setup(game) -> void:
 	square.setup(game)
 	square.add_child(stable)
 	stable.setup(game)
+	stable.add_child(stone_hill)
+	stone_hill.position=Vector3(5.5,.80,-2.8)
+	var stone:=StandardMaterial3D.new()
+	stone.albedo_color=Color("#9ca7b0")
+	for i in 3:
+		var statue:=Props.new()
+		stone_hill.add_child(statue)
+		statue.setup(game)
+		statue.build("troll")
+		statue.position=Vector3((i-1)*1.03,0,0)
+		statue.rotation.z=[.42,-.36,.62][i]
+		statue.scale=Vector3.ONE*.82
+		for mesh in statue.find_children("*","MeshInstance3D",true,false): mesh.material_override=stone
+	stone_hill.hide()
 	stable.counted.connect(count_pen)
 	host.ui.add_child(reward)
 	reward.text="★"
@@ -218,6 +235,7 @@ func checkpoint(ended:=false) -> void:
 	cfg.set_value("story","route",id())
 	cfg.set_value("story","chapters_completed",chapters)
 	cfg.set_value("story","ended",ended)
+	cfg.set_value("story","stone_hill",stone_hill.visible)
 	for key in ["part","marks","items","declined","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
 	if cfg.save(FILE+".tmp")==OK:
 		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK and not ended
@@ -226,7 +244,11 @@ func read_save() -> bool:
 	var cfg:=ConfigFile.new()
 	if cfg.load(FILE)!=OK: return false
 	chapters=int(cfg.get_value("story","chapters_completed",0))
-	if cfg.get_value("story","ended",false): return false
+	stone_hill.visible=bool(cfg.get_value("story","stone_hill",chapters>=2 or cfg.get_value("story","route","")=="stable_home"))
+	if cfg.get_value("story","ended",false):
+		items=cfg.get_value("story","items",PackedStringArray())
+		if chapters>=2 and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
+		return false
 	village_pos=Square.ENTRY
 	room_saves={}
 	fork_path=str(cfg.get_value("story","fork_path",""))
@@ -253,6 +275,7 @@ func read_save() -> bool:
 		marks=int(cfg.get_value("story","marks",0))
 		if id()=="recipe" and int(cfg.get_value("story","version",1))==1: marks=(1<<clampi(marks,0,2))-1
 		items=cfg.get_value("story","items",PackedStringArray())
+		if id()=="stable_home" and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
 		declined=bool(cfg.get_value("story","declined",false))
 		traveling=bool(cfg.get_value("story","traveling",false))
 		village_pos=cfg.get_value("story","village_pos",Square.ENTRY)
@@ -328,10 +351,10 @@ func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
+	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=actions.visible and id()!="cross"
-	if id() in ["night_bridge","fork"]: actions.hide()
+	if id() in ["night_bridge","fork","chief_happy"]: actions.hide()
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
 	actions.position=Vector2(host.pause_button.position.x+host.pause_button.size.x-actions.size.x,host.stick.position.y+48)
 	bow.disabled="Łuk" not in items
@@ -388,6 +411,8 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
+	if id()=="troll_cave": origin=Vector3(324,0,100)
+	if id()=="chief_happy": origin=host.point(-7)
 	if id()=="troll_dawn": origin=Vector3(310,0,100)
 	if id()=="fork": origin=Vector3(260,0,90)
 	if id()=="chief_sad": origin=host.point(-7)
@@ -615,6 +640,11 @@ func render() -> void:
 				fork_trail=preload("res://scripts/forest_fork.gd").new()
 				scene.add_child(fork_trail)
 				fork_trail.setup(self)
+		"troll_cave","chief_happy":
+			if id()=="chief_happy" and part==2: dock.hide()
+			return_trip=ReturnTrip.new()
+			scene.add_child(return_trip)
+			return_trip.setup(self)
 		"troll_dawn":
 			host.hud.text="Kłótnia przy ognisku"
 			dawn=preload("res://scripts/troll_dawn.gd").new()
@@ -805,6 +835,8 @@ func render_stable() -> void:
 	var counting:=part==0 if home else part==1
 	stable.set_pens(home,marks,counting)
 	if home:
+		var pestka=actor("beaver",stable.position+stable.horses[2].position+Vector3(0,1.0,-.08),.46)
+		pestka.rotation.y=.18
 		if part==0: say("stable_home")
 		else:
 			reward.show()
@@ -870,6 +902,7 @@ func stable_tick() -> void:
 		host.home()
 
 func advance() -> void:
+	if id()=="troll_dawn": stone_hill.show()
 	if id()=="invitation": village_pos=Square.DOORS.delivery+Vector3.BACK*.95
 	index+=1
 	traveling=id() in ["guard","tobo"]
@@ -997,6 +1030,9 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="chief_happy" and part==2:
+		return_trip.tick(dt)
+		return
 	if id()=="troll_dawn":
 		dawn.tick(dt)
 		return

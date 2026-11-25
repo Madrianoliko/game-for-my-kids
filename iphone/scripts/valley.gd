@@ -331,6 +331,7 @@ func home() -> void:
 	pause_button.hide()
 	hud.hide()
 	overlay.hide()
+	atlas.knows_stone_hill=bystra.stone_hill.visible
 	atlas.select_world(0)
 	atlas.update_status(sound)
 	atlas.show()

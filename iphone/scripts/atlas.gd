@@ -18,6 +18,8 @@ var margin := MarginContainer.new()
 var image := TextureRect.new()
 var heading := Label.new()
 var story := Label.new()
+var stone_marker:=HBoxContainer.new()
+var knows_stone_hill:=false
 var selected_world := 0
 var resume := Button.new()
 var chapter_two := Button.new()
@@ -100,6 +102,21 @@ func _ready() -> void:
 	shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	hero.add_child(shade)
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hero.add_child(stone_marker)
+	stone_marker.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	stone_marker.offset_left=-126
+	stone_marker.offset_top=10
+	stone_marker.tooltip_text="Wzgórze kamiennych trolli"
+	for tilt in [.28,-.22,.36]:
+		var statue:=TextureRect.new()
+		statue.texture=preload("res://scripts/river_icons.gd").picture("Troll")
+		statue.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		statue.custom_minimum_size=Vector2(32,34)
+		statue.modulate=Color("#afbbc4")
+		statue.rotation=tilt
+		statue.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		stone_marker.add_child(statue)
+	stone_marker.hide()
 	var copy := VBoxContainer.new()
 	hero.add_child(copy)
 	copy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -150,6 +167,7 @@ func _ready() -> void:
 
 func select_world(index: int) -> void:
 	selected_world = index
+	stone_marker.visible=index==0 and knows_stone_hill
 	frame_illustration()
 	heading.text = TITLES[index]
 	story.text = STORIES[index]
