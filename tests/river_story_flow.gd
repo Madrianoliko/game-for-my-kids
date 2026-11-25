@@ -430,7 +430,38 @@ func run() -> void:
 	for i in order_ponies:
 		if not check(await driver.rescue(i,click),"Nie udało się odprowadzić kucyka %s"%i): return
 	while story.id()=="camp": await physics_frame
+	if not check(story.id()=="troll_dawn","Gapa zatrzymuje Bilba po trzecim ratunku"): return
+	for round_index in 3:
+		var answer:int=[4,3,6][round_index]
+		if round_index==1:
+			while story.part!=story.dawn.Beat.SKEWER: await physics_frame
+			if not check(story.dawn.objects.size()==4,"Cztery kiełbaski przed zjedzeniem"): return
+			while story.age<story.dawn.deadline-.25: await physics_frame
+			if not check(story.dawn.objects.back().scale.x<.3,"Burczyk zjada kiełbaskę"): return
+		while not story.dawn.ANSWERS.has(story.part): await physics_frame
+		var stage:int=story.part
+		if not check(story.dawn.objects.size()==answer and story.dawn.daylight==round_index,"Przedmioty i światło"): return
+		for item in story.dawn.objects:
+			var xy:Vector2=game.camera.unproject_position(item.global_position)
+			if not check(root.get_visible_rect().has_point(xy) and not story.dock.get_global_rect().has_point(xy),"Przedmiot poza obszarem dotyku"): return
+			touch(game.ui,xy,true)
+			touch(game.ui,xy,false)
+		if not check(story.dawn.counted.size()==answer,"Liczenie przedmiotów dotykiem"): return
+		for error in 2: await click(numeric_button(story.options,answer,false))
+		if not check(story.part==stage and story.dawn.daylight==round_index and story.marks==2,"Śmiech bez zmiany pory dnia"): return
+		if round_index==1: await reopen()
+		while story.dawn.countdown>=0: await physics_frame
+		if not check(story.dawn.next_count==answer,"Podpowiedź liczy wszystkie przedmioty"): return
+		await click(numeric_button(story.options,answer,true))
+		if not check(story.dawn.daylight==round_index+1,"Poprawna odpowiedź rozjaśnia niebo"): return
+	while story.part!=story.dawn.Beat.END: await physics_frame
+	await physics_frame
+	for troll in story.dawn.trolls:
+		if not check(troll.has_meta("stone"),"Kamienne trolle po wschodzie słońca"): return
+	await click(story.options.get_child(0))
 	if not check(story.id()=="stable_home","Brak finału w stajni"): return
+	await reopen()
+	if not check(story.id()=="stable_home" and story.part==0,"Istniejący zapis stajni za nowym krokiem"): return
 	for i in [3,1,4,0,2]: await click(story.stable.targets[i])
 	while not game.atlas.visible: await physics_frame
 	var cfg:=ConfigFile.new()

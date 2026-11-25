@@ -128,6 +128,6 @@ func run() -> void:
 	for i in [1,0]:
 		if not expect(await driver.rescue(i,click),"Powrót z kucykiem %s"%i): return
 	while game.bystra.id()=="camp": await physics_frame
-	if not expect(game.bystra.id()=="stable_home","Powrót do stajni"): return
-	print("PASS światło Gapy, trzy kucyki, wznowienie po jednym i powrót do stajni")
+	if not expect(game.bystra.id()=="troll_dawn" and game.bystra.part==0,"Zapis starego obozu prowadzi do kłótni bez utraty ratunków"): return
+	print("PASS światło Gapy, trzy kucyki, wznowienie po jednym i spotkanie z Gapą")
 	quit()
