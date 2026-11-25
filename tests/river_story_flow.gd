@@ -44,6 +44,15 @@ func walk() -> void:
 	for key in ["ui_left","ui_right","ui_down","ui_up"]: Input.action_release(key)
 	check(ticks<800,"Destination unreachable")
 
+func walk_fork(target:Vector3) -> void:
+	for tick in 180:
+		if story.id()!="fork" or story.bank.visible or story.fork_trail.roll>0: break
+		var delta:Vector3=target-story.fork_trail.to_local(game.leo.global_position)
+		if delta.length()<.08: break
+		game.stick.vector=Vector2(delta.x,delta.z).normalized()
+		await physics_frame
+	game.stick.vector=Vector2.ZERO
+
 func reopen() -> void:
 	reload_current_scene()
 	await scene_changed
@@ -378,10 +387,44 @@ func run() -> void:
 	for attempt in 2: await click(numeric_button(story.options,3,false))
 	if not check(story.part==2 and story.voice=="route_sad_hint","Pomoc w liczeniu"): return
 	await click(numeric_button(story.options,3,true))
+	var old_chief:=ConfigFile.new()
+	old_chief.load(story.FILE)
+	old_chief.erase_section_key("story","fork_path")
+	old_chief.save(story.FILE)
 	await reopen()
-	if not check(story.part==3 and story.voice=="route_sad_thanks","Wskazówka herszta po wznowieniu"): return
+	if not check(story.fork_path=="" and story.part==3 and story.voice=="route_sad_thanks","Wskazówka herszta po wznowieniu"): return
 	await click(story.options.get_child(0))
-	if not check(story.id()=="camp","Brak obozu"): return
+	if not check(story.id()=="fork" and game.stick.visible,"Rozwidlenie po spotkaniu"): return
+	var fork_save:=ConfigFile.new()
+	fork_save.load(story.FILE)
+	var path=story.fork_trail
+	await walk_fork(path.SHORT[1])
+	await reopen()
+	path=story.fork_trail
+	if not check(story.fork_path=="short","Zapis krótkiej drogi"): return
+	await walk_fork(path.SLEEPER)
+	if not check(path.roll>0,"Brak reakcji śpiącego trolla"): return
+	while path.roll>0: await physics_frame
+	if not check(path.to_local(game.leo.global_position).distance_to(path.SHORT[1])<.1,"Powrót przed krąg"): return
+	for point in path.SHORT.slice(2): await walk_fork(point)
+	if not check(story.id()=="camp" and story.fork_path=="short","Obejście Chrapka"): return
+	fork_save.save(story.FILE)
+	await reopen()
+	path=story.fork_trail
+	await walk_fork(path.LONG[1])
+	await walk_fork(path.STREAM)
+	if not check(story.bank.visible and story.bank.mode()=="hops","Wejście do strumienia"): return
+	var stone:Vector2=story.bank.screen(story.bank.next_hop())
+	touch(game.ui,stone,true)
+	touch(game.ui,stone,false)
+	await create_timer(.65).timeout
+	await reopen()
+	if not check(story.bank.visible and story.marks==1 and story.fork_path=="long","Wznowienie na kamieniu"): return
+	if not await riverbank(): return
+	path=story.fork_trail
+	await walk_fork(path.LONG[-2])
+	await walk_fork(path.EDGE)
+	if not check(story.id()=="camp" and story.fork_path=="long","Obóz za strumieniem"): return
 	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(story.camp)
 	var order_ponies:Array=[0,2,1] if variant==0 else [1,0,2]
 	for i in order_ponies:
