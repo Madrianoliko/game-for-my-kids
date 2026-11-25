@@ -12,6 +12,7 @@ const Square := preload("res://scripts/village_square.gd")
 var square:=Square.new()
 var stable:=preload("res://scripts/pony_stable.gd").new()
 var camp
+var dawn:Node3D
 var fork_trail:Node3D
 var fork_path:=""
 const TRAVEL_APPLES := 3
@@ -286,6 +287,8 @@ func begin(resume:bool, start_step:="door") -> void:
 	render()
 
 func stop() -> void:
+	host.camera.environment=null
+	host.camera.v_offset=0
 	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
@@ -336,6 +339,8 @@ func show_controls() -> void:
 	shield.disabled="Tarcza" not in items
 
 func render() -> void:
+	host.camera.environment=null
+	host.camera.v_offset=0
 	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
@@ -383,6 +388,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
+	if id()=="troll_dawn": origin=Vector3(310,0,100)
 	if id()=="fork": origin=Vector3(260,0,90)
 	if id()=="chief_sad": origin=host.point(-7)
 	if id()=="tobo": origin=host.point(1.25,-1.5)
@@ -609,6 +615,11 @@ func render() -> void:
 				fork_trail=preload("res://scripts/forest_fork.gd").new()
 				scene.add_child(fork_trail)
 				fork_trail.setup(self)
+		"troll_dawn":
+			host.hud.text="Kłótnia przy ognisku"
+			dawn=preload("res://scripts/troll_dawn.gd").new()
+			scene.add_child(dawn)
+			dawn.setup(self)
 		"chief_sad": render_apple_chief()
 		"stable","stable_home":
 			render_stable()
@@ -641,7 +652,9 @@ func render() -> void:
 	if Square.FOOD.has(id()) or id()=="delivery":
 		outside.show()
 		outside.position=host.pause_button.position+Vector2(0,host.pause_button.size.y+8)
-	if dock.visible:
+	if dock.visible and id()=="troll_dawn":
+		button("Posłuchaj",dawn.narrate)
+	elif dock.visible:
 		button("Posłuchaj",func(): prompt(voice,caption.text))
 
 func start_bank() -> void:
@@ -984,6 +997,9 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="troll_dawn":
+		dawn.tick(dt)
+		return
 	if id()=="fork":
 		if part!=2: fork_trail.tick(dt)
 		return

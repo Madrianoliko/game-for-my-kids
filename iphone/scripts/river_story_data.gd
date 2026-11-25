@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","stable_home"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","stable_home"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -22,6 +22,20 @@ const WORDS := {
 	"sad_retry":"Spójrz do kosza. Ile tu jest jabłek?",
 	"sad_hint":"Policz ze mną. Jedno, dwa, trzy. Ile mi dałeś?",
 	"sad_thanks":"Trzy! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!",
+	"dawn_caught":"Złapałem włamywacza!",
+	"dawn_dishes":"Każmy mu pozmywać garnki!",
+	"dawn_bet":"Założę się, że nie umiecie liczyć!",
+	"dawn_accept":"Umiemy! …Prawda, Chrapek?",
+	"dawn_rocks":"Ja mam dwa kamyki, Chrapek ma dwa. Ile razem?",
+	"dawn_argue_rocks":"Cztery! A ty mówiłeś, że pięć!",
+	"dawn_skewer":"Na patyku są cztery kiełbaski. Mniam!",
+	"dawn_sausages":"Ile kiełbasek zostało?",
+	"dawn_argue_food":"Trzy! A kto zjadł czwartą? Masz sos na nosie!",
+	"dawn_cones":"Trzy szyszki w jednej łapie i trzy w drugiej. Ile razem?",
+	"dawn_argue_cones":"Sześć! A ty jedną policzyłeś dwa razy!",
+	"dawn_sun":"Chrrr… co? Słońce?! O nie…",
+	"dawn_stone":"Chrup… chrup… chrup!",
+	"dawn_end":"Trolle zmieniły się w kamień!",
 	"stable_go":"Chodź, uratujemy je!",
 	"stable_home":"Wszystkie w domu! Policzmy je razem.",
 	"stable_thanks":"Dziękuję, Bilbo! Jesteś najdzielniejszym hobbitem w dolinie!",

@@ -53,7 +53,7 @@ const WORDS := {
 	"follow":"Kucyk idzie za tobą! Wracaj do Toba.",
 	"one":"Jeden kucyk jest już u mnie! Zostały jeszcze dwa.",
 	"two":"Dwa kucyki! Został jeszcze jeden.",
-	"done":"Wszystkie trzy! Wracajmy do stajni, Bilbo!"
+	"done":"Wszystkie trzy kucyki są bezpieczne, Bilbo!"
 }
 enum Phase { INTRO, FIRST, DEMO_TURN, DEMO_LOOK, BACK, TURN, LOOK, CAUGHT, DONE }
 var host
