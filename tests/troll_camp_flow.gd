@@ -59,7 +59,7 @@ func run() -> void:
 	game=current_scene
 	await click(game.atlas.resume)
 	camp=game.bystra.camp
-	if not expect(camp!=null and not game.atlas.visible,"Wejście z menu"): return
+	if not expect(game.bystra.id()=="camp" and camp!=null and not game.atlas.visible,"Stary zapis obozu sprzed dodania nocnego mostu"): return
 	# Próba ominięcia opowieści dotykiem i ruchem.
 	await click(camp.back)
 	game.stick.vector=Vector2.UP

@@ -358,6 +358,28 @@ func run() -> void:
 	if not check(story.part==1,"Błędna odpowiedź w stajni"): return
 	await click(numeric_button(story.options,3,true))
 	while story.part==2: await physics_frame
+	# Zapis stajni sprzed dodania jabłek zawierał część 3 i pustą kieszeń.
+	await reopen()
+	if not check(story.id()=="stable" and story.part==3 and not "Jabłko" in story.items,"Stary zapis stajni"): return
+	await click(story.options.get_child(0))
+	if not check(story.items.count("Jabłko")==3,"Prowiant od Toba"): return
+	await click(story.options.get_child(0))
+	await reopen()
+	if not check(story.id()=="night_bridge" and game.stick.visible,"Wznowienie na moście"): return
+	await walk()
+	if not check(story.id()=="chief_sad","Spotkanie za mostem"): return
+	while story.part==0: await physics_frame
+	for total in range(1,4):
+		while story.options.get_child(0).disabled: await physics_frame
+		await click(story.options.get_child(0))
+		if total==1: await reopen()
+		if not check(story.marks==total and story.items.count("Jabłko")==3-total,"Przekazanie jabłka"): return
+	while story.part==1: await physics_frame
+	for attempt in 2: await click(numeric_button(story.options,3,false))
+	if not check(story.part==2 and story.voice=="route_sad_hint","Pomoc w liczeniu"): return
+	await click(numeric_button(story.options,3,true))
+	await reopen()
+	if not check(story.part==3 and story.voice=="route_sad_thanks","Wskazówka herszta po wznowieniu"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="camp","Brak obozu"): return
 	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(story.camp)
