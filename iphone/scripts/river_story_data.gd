@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","camp","stable_home"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","stable_home"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -10,6 +10,10 @@ const WORDS := {
 	"empty_pens":"Dotknij każdego pustego boksu.",
 	"stable_ok":"Trzy! Widzisz ten dym na wzgórzu? Troll Gapa ukradł moje kucyki!",
 	"travel_apples":"Weź jabłka na drogę.",
+	"fork_choose":"Wybierz ścieżkę do obozu.",
+	"fork_quiet":"Ciii, Chrapek śpi. Obejdź go cichutko.",
+	"fork_walk":"Idź ścieżką w stronę krzaków.",
+	"fork_hint":"Przejdź obok Chrapka po zewnętrznej stronie jasnego koła.",
 	"night_bridge":"Twoje deski trzymają się świetnie, Bilbo! Uważaj w lesie!",
 	"sad_loss":"Ty znowu? Trolle zabrały mi wszystkie jabłka!",
 	"sad_next":"Podaj mi kolejne jabłko.",

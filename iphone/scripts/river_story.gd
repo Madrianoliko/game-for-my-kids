@@ -12,6 +12,8 @@ const Square := preload("res://scripts/village_square.gd")
 var square:=Square.new()
 var stable:=preload("res://scripts/pony_stable.gd").new()
 var camp
+var fork_trail:Node3D
+var fork_path:=""
 const TRAVEL_APPLES := 3
 var waving_paw:Node3D
 var chapters:=0
@@ -92,7 +94,9 @@ func setup(game) -> void:
 	props.setup(host)
 	add_child(bank)
 	bank.setup(host)
-	bank.progress.connect(func(n,m): part=n+1 if id() in ["bridge","pack"] else n; marks=m; checkpoint())
+	bank.progress.connect(func(n,m):
+		if id()!="fork": part=n+1 if id() in ["bridge","pack"] else n
+		marks=m; checkpoint())
 	bank.done.connect(bank_done)
 	bank.prompt.connect(prompt)
 	bank.sound.connect(effect)
@@ -213,7 +217,7 @@ func checkpoint(ended:=false) -> void:
 	cfg.set_value("story","route",id())
 	cfg.set_value("story","chapters_completed",chapters)
 	cfg.set_value("story","ended",ended)
-	for key in ["part","marks","items","declined","traveling","village_pos","room_saves"]: cfg.set_value("story",key,get(key))
+	for key in ["part","marks","items","declined","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
 	if cfg.save(FILE+".tmp")==OK:
 		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK and not ended
 
@@ -224,6 +228,7 @@ func read_save() -> bool:
 	if cfg.get_value("story","ended",false): return false
 	village_pos=Square.ENTRY
 	room_saves={}
+	fork_path=str(cfg.get_value("story","fork_path",""))
 	index=Data.ROUTE.find(cfg.get_value("story","route",""))
 	if index<0:
 		var old:=int(cfg.get_value("story","index",-1))
@@ -268,6 +273,7 @@ func begin(resume:bool, start_step:="door") -> void:
 		marks=0
 		items.clear()
 		room_saves.clear()
+		fork_path=""
 		village_pos=Square.ENTRY
 		declined=false
 		traveling=false
@@ -319,10 +325,10 @@ func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or id() in ["cross","night_bridge"]) and not host.paused
+	host.stick.visible=active and (roaming() or traveling or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=actions.visible and id()!="cross"
-	if id()=="night_bridge": actions.hide()
+	if id() in ["night_bridge","fork"]: actions.hide()
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
 	actions.position=Vector2(host.pause_button.position.x+host.pause_button.size.x-actions.size.x,host.stick.position.y+48)
 	bow.disabled="Łuk" not in items
@@ -377,6 +383,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
+	if id()=="fork": origin=Vector3(260,0,90)
 	if id()=="chief_sad": origin=host.point(-7)
 	if id()=="tobo": origin=host.point(1.25,-1.5)
 	if id() in ["lanterns","invitation","village","stable","stable_home"]:
@@ -591,6 +598,17 @@ func render() -> void:
 			host.walk([host.point(-6)],"Nocny most")
 			say("night_bridge")
 			show_controls()
+		"fork":
+			light_filter.exposure_multiplier=.68
+			host.camera.attributes=light_filter
+			host.hud.text="Dwie drogi do obozu"
+			if part==2:
+				bank.begin("fork",0,marks)
+			else:
+				dock.hide()
+				fork_trail=preload("res://scripts/forest_fork.gd").new()
+				scene.add_child(fork_trail)
+				fork_trail.setup(self)
 		"chief_sad": render_apple_chief()
 		"stable","stable_home":
 			render_stable()
@@ -966,6 +984,9 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="fork":
+		if part!=2: fork_trail.tick(dt)
+		return
 	if id()=="night_bridge":
 		waving_paw.rotation.z=.25+.6*sin(age*6)
 		var target:Vector3=host.leo.global_position+Vector3(.85,0,.55)
@@ -1076,6 +1097,9 @@ func _input(event:InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func bank_done() -> void:
+	if id()=="fork":
+		go_to("fork",1)
+		return
 	if id()=="pack":
 		items.append("Gwoździe")
 		part=0

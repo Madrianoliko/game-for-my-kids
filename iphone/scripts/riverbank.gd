@@ -10,7 +10,7 @@ const STAGES := {
 	"nailbox":["nails"], "dairy":["hay","milk_cow"],
 	"recipe":["scoop"], "eggs":["crack"], "milk":["pour","stir","flip"],
 	"bridge":["fit","pegs"],
-	"blanket":["stones","hops"],
+	"blanket":["stones","hops"], "fork":["hops"],
 }
 const LINES := {
 	"nails":"Do naprawy potrzebujemy ośmiu gwoździ. Przeciągaj je z pudełka do plecaka, po jednym.",
@@ -176,9 +176,10 @@ func build() -> void:
 					markers.append(torus(STONE_TO[i],.58,LIGHT))
 				else: markers.append(null)
 			porter=character("troll",Vector3(-4.6,.26,-.15),.65)
-			for i in 3:
-				host.box(porter,Vector3(-.6,1.02+i*.13,0),Vector3(.48,.12,2.25),WOOD)
-			host.box(porter,Vector3(-.6,1.42,0),Vector3(.50,.06,.13),Color("#dbc298"))
+			if id!="fork":
+				for i in 3:
+					host.box(porter,Vector3(-.6,1.02+i*.13,0),Vector3(.48,.12,2.25),WOOD)
+				host.box(porter,Vector3(-.6,1.42,0),Vector3(.50,.06,.13),Color("#dbc298"))
 			if mode()!="stones":
 				bilbo=preload("res://art/leo.glb").instantiate()
 				actors.add_child(bilbo)
