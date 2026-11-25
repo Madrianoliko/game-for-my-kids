@@ -459,14 +459,43 @@ func run() -> void:
 	for troll in story.dawn.trolls:
 		if not check(troll.has_meta("stone"),"Kamienne trolle po wschodzie słońca"): return
 	await click(story.options.get_child(0))
-	if not check(story.id()=="stable_home","Brak finału w stajni"): return
+	if not check(story.id()=="troll_cave" and story.part==0,"Wejście do jaskini za trollami"): return
+	await click(story.options.get_child(0))
 	await reopen()
-	if not check(story.id()=="stable_home" and story.part==0,"Istniejący zapis stajni za nowym krokiem"): return
+	if not check(story.part==1 and story.items.count(story.ReturnTrip.MAP)==1 and story.ReturnTrip.APPLES in story.items,"Zawartość skrzyni po wznowieniu"): return
+	await click(story.options.get_child(0))
+	if not check(story.id()=="chief_happy" and story.part==0,"Herszt czeka na trakcie"): return
+	await click(story.options.get_child(0))
+	await reopen()
+	if not check(story.part==1 and story.ReturnTrip.APPLES not in story.items and story.ReturnTrip.MAP in story.items,"Oddano jabłka, zachowano mapę"): return
+	await click(story.options.get_child(0))
+	for actor in story.return_trip.ponies+[game.leo,game.marker]:
+		if not check(root.get_visible_rect().has_point(game.camera.unproject_position(actor.global_position)),"Kucyki i cel widoczne na początku przeprawy"): return
+	for expected in [1,2,3]:
+		game.stick.vector=Vector2.DOWN
+		for tick in 180:
+			await physics_frame
+			if story.marks>=expected: break
+		game.stick.vector=Vector2.ZERO
+		if not check(story.marks==expected and story.return_trip.ponies[expected-1].global_position.z>=story.ReturnTrip.BRIDGE_START,"Kucyk wchodzi na deski"): return
+		if expected==1:
+			await reopen()
+			if not check(story.part==2 and story.marks==1 and game.stick.visible,"Wznowienie z pierwszym kucykiem na moście"): return
+	game.stick.vector=Vector2.DOWN
+	while story.id()=="chief_happy": await physics_frame
+	if not check(story.id()=="stable_home" and story.stone_hill.is_visible_in_tree(),"Stajnia i wzgórze trolli"): return
+	var legacy_stable:=ConfigFile.new()
+	legacy_stable.load(story.FILE)
+	legacy_stable.erase_section_key("story","stone_hill")
+	legacy_stable.set_value("story","items",PackedStringArray())
+	legacy_stable.save(story.FILE)
+	await reopen()
+	if not check(story.id()=="stable_home" and story.part==0 and story.stone_hill.visible and story.ReturnTrip.MAP in story.items,"Istniejący zapis stajni za nowym krokiem"): return
 	for i in [3,1,4,0,2]: await click(story.stable.targets[i])
 	while not game.atlas.visible: await physics_frame
 	var cfg:=ConfigFile.new()
 	cfg.load(story.FILE)
-	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
+	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and game.atlas.stone_marker.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
 	await click(game.atlas.chapter_two)
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
