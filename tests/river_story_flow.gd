@@ -212,6 +212,7 @@ func run() -> void:
 	await scene_changed
 	game=current_scene
 	story=game.bystra
+	if not check(not game.atlas.chapter_three.visible,"Smoczek zablokowany przed rozdziałem 2"): return
 	seed(179)
 	var positions := {}
 	for i in 30:
@@ -529,6 +530,31 @@ func run() -> void:
 	var cfg:=ConfigFile.new()
 	cfg.load(story.FILE)
 	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and game.atlas.stone_marker.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
+	if not check(game.atlas.chapter_three.visible,"Odblokowanie smoczka"): return
+	await click(game.atlas.chapter_three)
+	if not check(story.id()=="dragon_map" and story.ReturnTrip.MAP in story.items,"Mapa w chatce"): return
+	await click(story.options.get_child(0))
+	await move_to(story.origin+story.iskierka.SHRUB)
+	if not check(story.part==1,"Spotkanie w krzakach"): return
+	await click(story.options.get_child(0))
+	if not check(story.part==1 and not story.iskierka.flame.visible,"Zasięg ognia"): return
+	await move_to(story.origin+story.iskierka.LANTERN)
+	if not check(story.iskierka.dragon.position.distance_to(story.iskierka.LANTERN)<1.85,"Smoczyca idzie za Bilbem"): return
+	await click(story.options.get_child(0))
+	await create_timer(.5).timeout
+	if not check(story.part==2 and story.iskierka.flame.visible,"Kichnięcie zapala latarnię"): return
+	await click(story.options.get_child(0))
+	if not check(story.id()=="dragon_berries","Sześć jagód"): return
+	for i in 6:
+		await move_berry(i,0 if i<4 else 1)
+		if i==2:
+			await reopen()
+			if not check(story.iskierka.slots.count(1)==3,"Zapis ułożonych jagód"): return
+	if not check(story.part==0 and story.iskierka.pointing==1,"Iskierka pokazuje mniejszą porcję"): return
+	await move_berry(0,1)
+	if not check(story.part==1 and story.iskierka.spark.scale.x>2,"Równe porcje rozjaśniają płomyk"): return
+	await click(story.options.get_child(0))
+	if not check(game.atlas.visible and game.atlas.chapter_three.visible,"Powrót po nakarmieniu Iskierki"): return
 	await click(game.atlas.chapter_two)
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
@@ -539,3 +565,11 @@ func run() -> void:
 		await process_frame
 	print("PASS oba rozdziały, ratunki i odblokowanie rozdziału. Wylosowane liczby ",rolled)
 	quit()
+
+func move_berry(i:int,side:int) -> void:
+	var start:Vector2=game.camera.unproject_position(story.iskierka.berries[i].global_position)
+	var end:Vector2=game.camera.unproject_position(story.iskierka.leaves[side].global_position)
+	touch(game.ui,start,true)
+	drag(game.ui,end)
+	touch(game.ui,end,false)
+	await process_frame
