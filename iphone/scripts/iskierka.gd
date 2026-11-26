@@ -7,6 +7,7 @@ const LEAVES := [Vector3(-2.1,.28,-.9),Vector3(2.1,.28,-.9)]
 var story
 var game
 var dragon:Node3D
+var wings:Array[MeshInstance3D]=[]
 var paw:MeshInstance3D
 var brows:Array[MeshInstance3D]=[]
 var head:Node3D
@@ -71,7 +72,9 @@ func build_dragon() -> void:
 		game.orb(head,Vector3(side*.25,.36,-.05),.11,Color.WHEAT).scale.y=1.65
 		var wing:=PrismMesh.new()
 		wing.size=Vector3(.64,.61,.14)
-		game.mesh(dragon,wing,Vector3(side*.47,.78,-.13),Color("#ba685c")).rotation.z=-side*.55
+		var blade=game.mesh(dragon,wing,Vector3(side*.47,.78,-.13),Color("#ba685c"))
+		blade.rotation.z=-side*.55
+		wings.append(blade)
 		game.orb(dragon,Vector3(side*.3,.14,.2),.18,skin)
 	paw=game.orb(dragon,Vector3(.29,.44,.32),.15,skin)
 	spark=game.orb(head,Vector3(0,-.04,.61),.14,Color.ORANGE,true)

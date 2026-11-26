@@ -169,7 +169,7 @@ func build_cave() -> void:
 	if story.part==1:
 		show_fire(large_side)
 		story.say("mountain_warm")
-		story.button("Dalej",finish)
+		story.button("Dalej",story.advance)
 	else:
 		shiver()
 		story.say("mountain_coal")
