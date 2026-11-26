@@ -75,7 +75,7 @@ Plan: zasada 7.
 - Liczby wypowiadane w fabule, które muszą zostać stałe (np. „osiem gwoździ”), zostaw bez zmian i wypisz je w raporcie.
 - Test: dwa przejścia z różnym ziarnem losowania dają różne liczby, a wznowienie zachowuje te same.
 
-### [ ] Z07 — Rozdział 3, część 1: Iskierka i głodny smoczek
+### [x] Z07 — Rozdział 3, część 1: Iskierka i głodny smoczek (2026-11-26)
 Plan: `PLAN_PRZYGOD.md`, rozdział 3. Nowe kroki po `stable_home`. Rozdział 3 dostaje przycisk w menu (obrazek smoczka) po ukończeniu rozdziału 2.
 - Otwarcie: Bilbo w chatce rozwija mapę z plecaka. Rano w sadzie przypalone ogryzki pod jabłonią. W krzakach płacze mała smoczyca Iskierka: „Chlip… Zgubiłam się. Moja mama mieszka na górze, tam, gdzie dym.”.
 - Nowa mechanika: Iskierka idzie za Bilbem (jak kucyk) i „kicha” ogniem po dotknięciu przycisku z płomykiem. Kichnięcie zapala rzeczy w zasięgu.

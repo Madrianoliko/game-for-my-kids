@@ -1,3 +1,12 @@
+## 2026-11-26 — Z07. Iskierka i głodny smoczek
+
+Po ukończeniu drugiego rozdziału ikona smoczycy otwiera trzeci. Kroki ROUTE to `dragon_map`, `dragon_orchard` i `dragon_berries`.
+Bilbo rozwija mapę w chatce, odnajduje ogryzki i idzie po śladach do krzaków. Iskierka opowiada o mamie i podąża za nim. Do nauki kichania wybrano latarnię w sadzie. Zasięg ognia wynosi 1,85 m.
+Dziecko przenosi sześć jagód na dwa listki. Gra pamięta każde odłożenie. Przy nierównym podziale Iskierka wskazuje mniejszą porcję, po dwóch próbach podpowiada, jak ją poprawić. Przy podziale 3 + 3 mruczy, a ogień przy pyszczku jaśnieje.
+Strzałka po nakarmieniu wraca do menu. Dalsza droga jest zadaniem Z08. Wszystkie nowe kwestie nagrano głosem Zosi. Brak otwartych pytań i nowych uwag z gry.
+Pakiet iPhone ma 10 121 632 bajty. Wszystkie trzy testy przy 60 kl./s przeszły. Test fabuły obejmuje starszy zapis stajni, odblokowanie rozdziału, zasięg ognia, przeciąganie jagód, wznowienie i poprawienie podziału 4 + 2.
+Przy zamykaniu testów obozu i doliny Godot zgłosił pozostające obiekty. Wielkość jagód i wygoda przeciągania czekają na sprawdzenie na iPhonie.
+
 ## 2026-11-26 — Z06. Losowanie liczb w nowej wyprawie
 
 Nowa wyprawa losuje liczby i zapisuje je razem z postępem. Starsze zapisy odtwarzają pierwotny układ.
