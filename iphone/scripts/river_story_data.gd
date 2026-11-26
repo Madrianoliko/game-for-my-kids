@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -55,6 +55,17 @@ const WORDS := {
 	"dawn_argue_food_alt":"Cztery! A kto zjadł piątą?",
 	"dawn_cones_alt":"Dwie szyszki w jednej łapie i dwie w drugiej. Ile razem?",
 	"dawn_argue_cones_alt":"Cztery! A ty jedną policzyłeś dwa razy!",
+	"mountain_choose":"Którędy pójdziemy? Dotknij strumienia albo krzaka jeżyn.",
+	"mountain_jump":"Dotknij kolejnego kamienia w strumieniu.",
+	"mountain_burn":"Dotknij płomyka. Iskierka wypali przejście.",
+	"mountain_steps":"Wstaw kamień w schody tam, gdzie pasuje liczba kropek.",
+	"mountain_wobble":"Oj, chwieje się! Poszukaj innego miejsca.",
+	"mountain_help":"Spójrz na jasne miejsce. Tu pasuje ten kamień.",
+	"mountain_ready":"Schody gotowe! Chodźmy do jaskini.",
+	"mountain_coal":"Brrr! Na której kupce jest więcej węgielków?",
+	"mountain_cold":"Mały płomyczek… Dalej mi zimno! Spróbuj jeszcze raz.",
+	"mountain_point":"Popatrz na jasną kupkę. Tu jest więcej węgielków!",
+	"mountain_warm":"Apsik! Jak cieplutko! Dziękuję, Bilbo!",
 	"dragon_map":"To mapa z jaskini trolli! Nad górą unosi się dym.",
 	"dragon_tracks":"Przypalone ogryzki! Pójdź śladem małych łapek.",
 	"dragon_lost":"Chlip… Zgubiłam się. Moja mama mieszka na górze, tam, gdzie dym.",

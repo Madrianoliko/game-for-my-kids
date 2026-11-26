@@ -161,7 +161,7 @@ func build_berries() -> void:
 		spark.scale=Vector3.ONE*2.2
 		head.rotation.z=.16
 		story.say("dragon_full")
-		story.button("Dalej",finish)
+		story.button("Dalej",story.advance)
 	else: story.say("dragon_share")
 
 func arrange() -> void:

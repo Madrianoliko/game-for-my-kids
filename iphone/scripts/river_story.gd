@@ -259,7 +259,8 @@ func read_save() -> bool:
 	numbers=cfg.get_value("story","numbers",{})
 	chapters=int(cfg.get_value("story","chapters_completed",0))
 	stone_hill.visible=bool(cfg.get_value("story","stone_hill",chapters>=2 or cfg.get_value("story","route","")=="stable_home"))
-	if cfg.get_value("story","ended",false):
+	var old_berry_end:bool=cfg.get_value("story","ended",false) and cfg.get_value("story","route","")=="dragon_berries"
+	if cfg.get_value("story","ended",false) and not old_berry_end:
 		items=cfg.get_value("story","items",PackedStringArray())
 		if chapters>=2 and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
 		return false
@@ -300,6 +301,10 @@ func read_save() -> bool:
 			traveling=false
 			part=0
 			marks=0
+	if old_berry_end:
+		index=Data.ROUTE.find("mountain_fork")
+		part=0
+		marks=0
 	return true
 
 func begin(resume:bool, start_step:="door") -> void:
@@ -430,7 +435,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
-	if id() in ["dragon_orchard","dragon_berries"]: origin=Vector3(400,0,90)
+	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave"]: origin=Vector3(400,0,90)
 	if id()=="troll_cave": origin=Vector3(324,0,100)
 	if id()=="chief_happy": origin=host.point(-7)
 	if id()=="troll_dawn": origin=Vector3(310,0,100)
@@ -665,6 +670,10 @@ func render() -> void:
 			return_trip=ReturnTrip.new()
 			scene.add_child(return_trip)
 			return_trip.setup(self)
+		"mountain_fork","mountain_steps","warm_cave":
+			iskierka=preload("res://scripts/dragon_mountain.gd").new()
+			scene.add_child(iskierka)
+			iskierka.setup(self)
 		"dragon_map","dragon_orchard","dragon_berries":
 			iskierka=preload("res://scripts/iskierka.gd").new()
 			scene.add_child(iskierka)
