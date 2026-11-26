@@ -112,7 +112,8 @@ func build_steps() -> void:
 		var i:=MISSING.find(n)
 		var fitted:bool=i>=0 and (story.marks & (1<<i))!=0
 		var pos:=at if i<0 or fitted else tray_at(i)
-		var slab=game.box(self,pos,Vector3(.96,.22,1.06),GOLD if fitted else ROCK,fitted)
+		var slab=game.box(self,pos,Vector3(.96,.22,1.06),ROCK)
+		if fitted: light_step(slab)
 		rocks.append(slab)
 		for j in n:
 			var dot=game.orb(slab,Vector3((j%2-.5)*.37,.125,(floori(j/2.0)-(ceili(n/2.0)-1)*.5)*.23),.083,Color("#212730"))
@@ -122,14 +123,17 @@ func build_steps() -> void:
 		story.button("Dalej",story.advance)
 	else: story.say("mountain_steps")
 
+func light_step(rock:MeshInstance3D) -> void:
+	tint(rock,GOLD)
+	rock.material_override.emission_enabled=true
+	rock.material_override.emission=GOLD
+
 func fit(i:int,n:int) -> void:
 	var expected:int=MISSING[i]
 	var rock:=rocks[expected-1]
 	if expected==n:
 		rock.position=slot_at(n)
-		tint(rock,GOLD)
-		rock.material_override.emission_enabled=true
-		rock.material_override.emission=GOLD
+		light_step(rock)
 		story.marks|=1<<i
 		story.checkpoint()
 		if story.marks==7: story.render()
