@@ -20,6 +20,7 @@ var hint_total:=0
 var hint_lit:=0
 var hint_delay:=0.0
 var hint_display:=Callable()
+var iskierka:Node3D
 var dawn:Node3D
 var fork_trail:Node3D
 var fork_path:=""
@@ -310,6 +311,7 @@ func begin(resume:bool, start_step:="door") -> void:
 		part=0
 		marks=0
 		items.clear()
+		if start_step=="dragon_map": items.append(ReturnTrip.MAP)
 		room_saves.clear()
 		fork_path=""
 		village_pos=Square.ENTRY
@@ -366,10 +368,11 @@ func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
+	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or id() in ["cross","night_bridge","dragon_orchard"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=actions.visible and id()!="cross"
-	if id() in ["night_bridge","fork","chief_happy"]: actions.hide()
+	if id() in ["night_bridge","fork","chief_happy","dragon_orchard"]: actions.hide()
+	if id()=="dragon_orchard": replay.hide()
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
 	actions.position=Vector2(host.pause_button.position.x+host.pause_button.size.x-actions.size.x,host.stick.position.y+48)
 	bow.disabled="Łuk" not in items
@@ -423,10 +426,11 @@ func render() -> void:
 	foe=null
 	props.hide()
 	scene.show()
-	var indoors:=id() in ["door","pack","delivery","homecoming"]
+	var indoors:=id() in ["dragon_map","door","pack","delivery","homecoming"]
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
+	if id() in ["dragon_orchard","dragon_berries"]: origin=Vector3(400,0,90)
 	if id()=="troll_cave": origin=Vector3(324,0,100)
 	if id()=="chief_happy": origin=host.point(-7)
 	if id()=="troll_dawn": origin=Vector3(310,0,100)
@@ -661,6 +665,10 @@ func render() -> void:
 			return_trip=ReturnTrip.new()
 			scene.add_child(return_trip)
 			return_trip.setup(self)
+		"dragon_map","dragon_orchard","dragon_berries":
+			iskierka=preload("res://scripts/iskierka.gd").new()
+			scene.add_child(iskierka)
+			iskierka.setup(self)
 		"troll_dawn":
 			host.hud.text="Kłótnia przy ognisku"
 			dawn=preload("res://scripts/troll_dawn.gd").new()
@@ -1080,6 +1088,9 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="dragon_orchard":
+		if part<2: iskierka.walk(dt)
+		return
 	if hint_lit<hint_total:
 		hint_delay-=dt
 		if hint_delay<=0:

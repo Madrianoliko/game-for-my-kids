@@ -1,6 +1,7 @@
 extends ColorRect
 
 signal resume_requested
+signal chapter_three_requested
 signal chapter_two_requested
 signal play_requested
 signal sound_requested
@@ -22,6 +23,8 @@ var stone_marker:=HBoxContainer.new()
 var knows_stone_hill:=false
 var selected_world := 0
 var resume := Button.new()
+var chapter_three:=Button.new()
+var unlocked_chapter_three:=false
 var chapter_two := Button.new()
 var unlocked_chapter_two:=false
 var can_resume := false
@@ -142,6 +145,11 @@ func _ready() -> void:
 	chapter_two.add_theme_constant_override("icon_max_width",42)
 	format_button(chapter_two)
 	chapter_two.pressed.connect(func(): chapter_two_requested.emit())
+	actions.add_child(chapter_three)
+	chapter_three.accessibility_name="Rozdział 3. Zgubiony smoczek"
+	chapter_three.icon=preload("res://scripts/river_icons.gd").picture("Iskierka")
+	format_button(chapter_three)
+	chapter_three.pressed.connect(func(): chapter_three_requested.emit())
 	play.pressed.connect(func(): play_requested.emit())
 
 	var choose := Label.new()
@@ -172,6 +180,7 @@ func select_world(index: int) -> void:
 	heading.text = TITLES[index]
 	story.text = STORIES[index]
 	resume.visible=index==0 and can_resume
+	chapter_three.visible=index==0 and unlocked_chapter_three
 	chapter_two.visible=index==0 and unlocked_chapter_two
 	play.icon=preload("res://scripts/river_icons.gd").picture("Most") if index==0 else null
 	play.add_theme_constant_override("icon_max_width",42)

@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -55,6 +55,16 @@ const WORDS := {
 	"dawn_argue_food_alt":"Cztery! A kto zjadł piątą?",
 	"dawn_cones_alt":"Dwie szyszki w jednej łapie i dwie w drugiej. Ile razem?",
 	"dawn_argue_cones_alt":"Cztery! A ty jedną policzyłeś dwa razy!",
+	"dragon_map":"To mapa z jaskini trolli! Nad górą unosi się dym.",
+	"dragon_tracks":"Przypalone ogryzki! Pójdź śladem małych łapek.",
+	"dragon_lost":"Chlip… Zgubiłam się. Moja mama mieszka na górze, tam, gdzie dym.",
+	"dragon_near":"Podejdź ze mną do latarni.",
+	"dragon_fire":"Dotknij płomyka, żebym kichnęła ogniem.",
+	"dragon_warm":"Apsik! Świeci! Aż zgłodniałam.",
+	"dragon_share":"Podzielmy się! Przeciągnij jagody na listki. Dla ciebie i dla mnie tyle samo.",
+	"dragon_less":"Och… Na tym listku jest mniej.",
+	"dragon_hint":"Przenieś jedną jagodę z pełniejszego listka na ten jasny.",
+	"dragon_full":"Mrrrr… Po trzy jagody! Teraz mam siłę na dalszą drogę!",
 	"stable_go":"Chodź, uratujemy je!",
 	"stable_home":"Wszystkie w domu! Policzmy je razem.",
 	"stable_thanks":"Wszystkie kucyki w domu! Raz, dwa, trzy… i dwa w stajni. Pięć! Dziękuję, Bilbo!",
