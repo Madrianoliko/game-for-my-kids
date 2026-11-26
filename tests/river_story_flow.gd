@@ -293,6 +293,10 @@ func run() -> void:
 	await create_timer(.45).timeout
 	if not check(story.id()=="chief","Cannot hit exposed orc"): return
 	await click(numeric_button(story.options, 3, false))
+	if not check(story.hint_total==0,"Za wczesna pomoc"): return
+	await click(numeric_button(story.options, 3, false))
+	await create_timer(5).timeout
+	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
 	if not check(story.id()=="chief","Incorrect addition accepted"): return
 	await click(numeric_button(story.options, 3, true))
 	await walk()
@@ -302,15 +306,28 @@ func run() -> void:
 	if not check(not repair.choices.visible,"Answers before count"): return
 	for slot in repair.slots: await click(slot)
 	await click(numeric_button(repair.choices, 3, false))
-	if not check(not story.bank.visible,"Wrong board count accepted"): return
+	if not check(story.hint_total==0,"Za wczesna pomoc"): return
+	await click(numeric_button(repair.choices, 3, false))
+	await create_timer(5).timeout
+	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
+	if not check(not story.bank.visible and repair.highlighted==3 and repair.preview==0,"Trzy podświetlone luki mostu"): return
 	await click(numeric_button(repair.choices, 3, true))
 	if not await riverbank(): return
 	await walk()
 	if not check(story.id()=="lanterns","Missing dark village"): return
+	var wrong_lamps:=numeric_button(story.options,5,false)
+	await click(wrong_lamps)
+	for i in 5:
+		if not check(story.square.lit_lanterns.get_child(i).visible==(i<int(wrong_lamps.text)),"Liczba zapalonych latarenek"): return
+	if not check(story.hint_total==0,"Za wczesna pomoc"): return
 	await click(numeric_button(story.options, 5, false))
+	await create_timer(5).timeout
+	if not check(story.hint_lit==5,"Liczenie po drugiej pomyłce"): return
+	for lamp in story.square.lit_lanterns.get_children():
+		if not check(lamp.is_visible_in_tree(),"Latarenka nadal ciemna po podpowiedzi"): return
 	if not check(story.part==0,"Wrong lantern sum accepted"): return
 	await click(numeric_button(story.options, 5, true))
-	if not check(story.part==1,"Lamps did not light"): return
+	if not check(story.part==1 and story.hint_total==0,"Lamps did not light"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="invitation","No birthday invitation"): return
 	await click(story.options.get_child(0))
@@ -364,6 +381,10 @@ func run() -> void:
 	for i in [2,1,4]: await click(story.stable.targets[i])
 	while story.options.get_child_count()<3: await physics_frame
 	await click(numeric_button(story.options,3,false))
+	if not check(story.hint_total==0,"Za wczesna pomoc"): return
+	await click(numeric_button(story.options,3,false))
+	await create_timer(5).timeout
+	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
 	if not check(story.part==1,"Błędna odpowiedź w stajni"): return
 	await click(numeric_button(story.options,3,true))
 	while story.part==2: await physics_frame
@@ -385,7 +406,9 @@ func run() -> void:
 		if not check(story.marks==total and story.items.count("Jabłko")==3-total,"Przekazanie jabłka"): return
 	while story.part==1: await physics_frame
 	for attempt in 2: await click(numeric_button(story.options,3,false))
-	if not check(story.part==2 and story.voice=="route_sad_hint","Pomoc w liczeniu"): return
+	if not check(story.part==2 and story.hint_total==3,"Pomoc w liczeniu"): return
+	await create_timer(1).timeout
+	if not check(story.hint_lit==1 and story.pickups[0].material_override.emission_enabled and not story.pickups[1].material_override.emission_enabled,"Jabłka zapalają się po kolei"): return
 	await click(numeric_button(story.options,3,true))
 	var old_chief:=ConfigFile.new()
 	old_chief.load(story.FILE)
@@ -450,8 +473,8 @@ func run() -> void:
 		for error in 2: await click(numeric_button(story.options,answer,false))
 		if not check(story.part==stage and story.dawn.daylight==round_index and story.marks==2,"Śmiech bez zmiany pory dnia"): return
 		if round_index==1: await reopen()
-		while story.dawn.countdown>=0: await physics_frame
-		if not check(story.dawn.next_count==answer,"Podpowiedź liczy wszystkie przedmioty"): return
+		while story.hint_lit<answer: await physics_frame
+		if not check(story.hint_lit==answer,"Podpowiedź liczy wszystkie przedmioty"): return
 		await click(numeric_button(story.options,answer,true))
 		if not check(story.dawn.daylight==round_index+1,"Poprawna odpowiedź rozjaśnia niebo"): return
 	while story.part!=story.dawn.Beat.END: await physics_frame
