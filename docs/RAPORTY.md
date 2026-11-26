@@ -1,3 +1,14 @@
+## 2026-11-26 — Z08. Droga na górę z Iskierką
+
+Po jagodach Bilbo wybiera trzy skoki przez strumień albo kichnięcie w jeżyny. Obie drogi prowadzą do schodów i jaskini.
+Nowe kroki ROUTE to `mountain_fork`, `mountain_steps`, `warm_cave`. Starszy zapis ukończonej uczty z jagodami pozwala wznowić grę u stóp góry.
+Schody mają 1–8 kropek. Stopnie 5, 2 i 7 leżą obok w mieszanej kolejności. Pomyłka kołysze kamieniem, trafienie zapala złotą poświatę.
+W jaskini są 2 i 5 węgielków. Położenie większej kupki jest losowane i zapisane. Mały ogień zostawia Iskierkę zmarzniętą, duży ją ogrzewa.
+Podpowiedź pojawia się po dwóch pomyłkach. Do strojenia po zabawie: skok 0,43 s i promień trafienia w lukę 36 jednostek ekranu.
+Wszystkie 11 nowych kwestii ma nagrania Zosi. Brak nowych uwag, pominiętych elementów i pytań.
+Pakiet iPhone wzrósł z 10 121 632 do 10 546 456 bajtów. Wszystkie trzy testy na pakiecie przeszły przy 60 kl./s, w tym obie drogi, podpowiedzi i wznowienie.
+Przy zamykaniu testów obozu i doliny Godot ostrzegł o pozostających obiektach. Wygoda przeciągania na iPhonie czeka na sprawdzenie.
+
 ## 2026-11-26 — Z07. Iskierka i głodny smoczek
 
 Po ukończeniu drugiego rozdziału ikona smoczycy otwiera trzeci. Kroki ROUTE to `dragon_map`, `dragon_orchard` i `dragon_berries`.

@@ -82,7 +82,7 @@ Plan: `PLAN_PRZYGOD.md`, rozdział 3. Nowe kroki po `stable_home`. Rozdział 3 d
 - Zagadka „Głodny smoczek”: 6 jagód, dziecko przeciąga je na dwa listki, aż na obu jest tyle samo. Gdy jest równo, Iskierka mruczy, a jej płomyk jaśnieje. Gdy nierówno, smutna mina i wskazanie listka, na którym jest mniej.
 - Test całego fragmentu i odblokowania przycisku rozdziału 3.
 
-### [ ] Z08 — Rozdział 3, część 2: droga na górę
+### [x] Z08 — Rozdział 3, część 2: droga na górę (2026-11-26)
 Plan: rozdział 3, zagadki 2 i 3, wybór drogi.
 - Wybór drogi u stóp góry: strumień po kamieniach albo krzaki jeżyn, które Iskierka wypala kichnięciem.
 - Kamienne stopnie: schody z kropkami 1–8, trzy stopnie leżą obok. Dziecko wkłada je w luki. Pasujący zapala się na złoto, a niepasujący się chwieje.
