@@ -553,8 +553,47 @@ func run() -> void:
 	if not check(story.part==0 and story.iskierka.pointing==1,"Iskierka pokazuje mniejszą porcję"): return
 	await move_berry(0,1)
 	if not check(story.part==1 and story.iskierka.spark.scale.x>2,"Równe porcje rozjaśniają płomyk"): return
+	var old_end:=ConfigFile.new()
+	old_end.load(story.FILE)
+	old_end.set_value("story","ended",true)
 	await click(story.options.get_child(0))
-	if not check(game.atlas.visible and game.atlas.chapter_three.visible,"Powrót po nakarmieniu Iskierki"): return
+	if not check(story.id()=="mountain_fork","Droga za sadem"): return
+	await tap_model(story.iskierka.rocks[0])
+	for i in 3:
+		await tap_model(story.iskierka.rocks[i])
+		await create_timer(.55).timeout
+	if not check(story.id()=="mountain_steps","Przeprawa przez strumień"): return
+	old_end.save(story.FILE)
+	await reopen()
+	if not check(story.id()=="mountain_fork" and story.part==0,"Starszy zapis po nakarmieniu Iskierki"): return
+	await tap_model(story.iskierka.bush)
+	if not check(story.part==2,"Ścieżka przez jeżyny"): return
+	await click(story.options.get_child(0))
+	await create_timer(1).timeout
+	if not check(story.id()=="mountain_steps","Wypalenie przejścia"): return
+	for i in 2:
+		await place_step(5,2)
+		await create_timer(.55).timeout
+	if not check(story.marks==0 and story.voice=="route_mountain_help","Podpowiedź po dwóch pomyłkach"): return
+	await place_step(2,2)
+	await reopen()
+	if not check(story.marks==2,"Zapis naprawionego stopnia"): return
+	await place_step(7,7)
+	await place_step(5,5)
+	if not check(story.marks==7,"Trzy złote stopnie"): return
+	await click(story.options.get_child(0))
+	var side:int=story.iskierka.large_side
+	await reopen()
+	if not check(story.id()=="warm_cave" and story.iskierka.large_side==side,"Wznowienie z tymi samymi kupkami"): return
+	for i in 2:
+		await tap_model(story.iskierka.piles[1-side])
+		await create_timer(.4).timeout
+	if not check(story.part==0 and story.voice=="route_mountain_point" and story.iskierka.fire.scale.y<1,"Mały ogień i wskazanie kupki"): return
+	await tap_model(story.iskierka.piles[side])
+	await create_timer(.4).timeout
+	if not check(story.part==1 and story.iskierka.fire.scale.y>1,"Duże ognisko ogrzewa Iskierkę"): return
+	await click(story.options.get_child(0))
+	if not check(game.atlas.visible and game.atlas.chapter_three.visible,"Powrót z ciepłej jaskini"): return
 	await click(game.atlas.chapter_two)
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
@@ -570,6 +609,20 @@ func move_berry(i:int,side:int) -> void:
 	var start:Vector2=game.camera.unproject_position(story.iskierka.berries[i].global_position)
 	var end:Vector2=game.camera.unproject_position(story.iskierka.leaves[side].global_position)
 	touch(game.ui,start,true)
+	drag(game.ui,end)
+	touch(game.ui,end,false)
+	await process_frame
+
+func tap_model(node:Node3D) -> void:
+	var p:Vector2=game.camera.unproject_position(node.global_position)
+	touch(game.ui,p,true)
+	touch(game.ui,p,false)
+	await process_frame
+
+func place_step(piece:int,socket:int) -> void:
+	var at:Vector2=game.camera.unproject_position(story.iskierka.rocks[piece-1].global_position)
+	var end:Vector2=game.camera.unproject_position(story.iskierka.sockets[socket-1].global_position)
+	touch(game.ui,at,true)
 	drag(game.ui,end)
 	touch(game.ui,end,false)
 	await process_frame
