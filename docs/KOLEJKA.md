@@ -22,6 +22,7 @@ Plany fabuły, z których korzystają zadania:
 10. **Kiedy nie wiesz — zatrzymaj się.** Jeśli coś jest niejasne, sprzeczne z planem albo testy nie przechodzą i nie wiesz dlaczego, nie zgaduj. Zapisz pytanie w `docs/RAPORTY.md` pod nagłówkiem „PYTANIE”, zostaw zadanie jako `[ ]` i zakończ sesję.
 11. **Raport** w `docs/RAPORTY.md` (najnowszy na górze): numer zadania, co zrobiono, co pominięto i dlaczego, nowe kroki ROUTE, wartości do strojenia, wyniki testów, brakujące nagrania, rozmiar `.pck`. Maksymalnie 15 linijek.
 12. **Kolejka ma pierwszeństwo przed planem.** Jeśli opis zadania w kolejce różni się od planu fabuły w `docs/`, rób według kolejki, a w raporcie zapisz, czym się różniły. Pytaj tylko wtedy, gdy kolejka sama jest niejasna albo sprzeczna.
+13. **Drobne decyzje podejmuj sam.** Jeśli zadanie zostawia wybór, który nie zmienia celu rozdziału (np. jak dopasować liczby, kwestie albo rozstawienie do losowania), wybierz wariant, który daje dziecku więcej liczenia i nie skraca zabawy, i opisz decyzję w raporcie. Zatrzymuj się z pytaniem tylko przy sprzecznościach, których nie da się pogodzić, albo przy zmianach, które usuwają lub skracają istniejącą scenę.
 
 ---
 
@@ -67,7 +68,7 @@ Plan: `PLAN_PRZYGOD.md`, zasady 3 i 4.
 - Tam, gdzie to łatwe, pomyłka pokazuje skutek: przy latarenkach zapala się tyle latarenek, ile dziecko wybrało, i widać, że część stoi ciemna; przy deskach za mało desek zostawia widoczną lukę.
 - Test: dwie złe odpowiedzi włączają pomoc, a dobra odpowiedź ją wyłącza.
 
-### [ ] Z06 — Inne liczby przy każdym przejściu
+### [x] Z06 — Inne liczby przy każdym przejściu (2026-11-26)
 Plan: zasada 7.
 - W każdej zagadce liczby losują się z bezpiecznego zakresu przy każdym nowym przejściu (np. latarenki 1–4 po każdej stronie, w stajni zniknęło 2–3 kucyków, u trolli różne pary). Wynik zapisuje się w zapisie gry, żeby wznowienie pokazywało te same liczby.
 - Kwestie z liczbami nagraj w wariantach (np. „Dwie latarenki z lewej, trzy z prawej” w każdej potrzebnej kombinacji) albo złóż z krótkich nagrań („z lewej” + „dwie”…). Wybierz sposób, który brzmi naturalnie, i opisz go w raporcie.

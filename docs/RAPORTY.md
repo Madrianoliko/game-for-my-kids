@@ -1,3 +1,13 @@
+## 2026-11-26 — Z06. Losowanie liczb w nowej wyprawie
+
+Nowa wyprawa losuje liczby i zapisuje je razem z postępem. Starsze zapisy odtwarzają pierwotny układ.
+Warianty do strojenia obejmują 3–4 jabłka w obu spotkaniach z hersztem, 4–6 latarenek, 3–4 brakujące deski, kamyki i szyszki w parach 2+2 lub 3+3 oraz 4–5 kiełbasek przed zjedzeniem jednej.
+Zgodnie z odpowiedzią Adriana z pięciu boksów znikają dwa albo trzy kucyki. Przy dwóch jeden jest przy ognisku, drugi przy drzewie lub wozie. Kłótnia zaczyna się po ostatnim ratunku. Przez most wraca tyle kucyków, ile uratowano.
+Pełne zdania w wariantach nagrano Zosią, żeby zachować odmianę liczebników i naturalne pauzy. Brak brakujących nagrań.
+Stałe fabularne obejmują pięć boksów i pięć kucyków po powrocie, osiem gwoździ, pięć miejsc na deski, trzy kamienie przeprawy, trzy porcje mąki, dwa jajka, dwa żłoby, trzy pociągnięcia przy dojeniu oraz rytm liczenia Gapy do trzech.
+Trzy testy na pakiecie iPhone przy 60 kl./s przeszły. Pełne przejścia objęły wszystkie trzy układy obozu, sprawdzenie zapisu liczb i powrotu do stajni. Pakiet ma 9 731 356 bajtów.
+Przy zamykaniu testów obozu i doliny Godot zgłasza pozostające obiekty. Próba na telefonie czeka na dziecko. Brak nowych kroków ROUTE, pominiętych uwag i otwartych pytań.
+
 ## 2026-11-26 — Z06. Losowanie liczb w zagadkach
 
 ### PYTANIE
@@ -5,6 +15,8 @@
 Gdy w stajni wylosują się dwa zaginione kucyki, czy Bilbo ma uratować dwa także w obozie i wrócić przez most z dwoma? Druga możliwość to zachować trzy ratunki jako stałą fabularną i w stajni losować liczbę kucyków, które zostały w domu.
 Z06 podaje 2–3 zaginione jako przykład i dopuszcza stałe fabularne. Z03 rozpoczyna kłótnię po trzecim ratunku, a Z04 prowadzi przez most trzy kucyki. Wybór zmienia długość gry, warunek zakończenia obozu i kwestie Toba.
 Brak nowych uwag z testów. Z06 pozostaje otwarte. W tej sesji zmienił się tylko raport. Eksport i testy czekają na rozstrzygnięcie.
+
+**ODPOWIEDŹ (Adrian / plan, 2026-11-26):** w stajni zawsze jest 5 boksów. Losuje się, czy zniknęły 2, czy 3 kucyki (w stajni stoją wtedy 3 albo 2). W obozie jest tyle kucyków, ile zniknęło, a liczba ratunków, kłótnia trolli i przeprawa przez most dostosowują się do tej liczby. Kucyk przy ognisku Gapy (najtrudniejszy) jest zawsze. Przy 2 kucykach drugi stoi losowo przy drzewie albo przy wozie. Kwestie Toba w obozie i na moście mają warianty dla 2 i 3 kucyków. Kłótnia trolli zaczyna się po ostatnim ratunku. Końcowe liczenie w stajni zawsze daje 5. Można robić Z06.
 
 ## 2026-11-26 — Z05. Wspólne liczenie po dwóch pomyłkach
 
