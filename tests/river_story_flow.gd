@@ -132,9 +132,9 @@ func riverbank() -> bool:
 				var i:=0
 				while before & (1<<i): i+=1
 				start=bank.screen(bank.bridge.YARD[i])
-				end=bank.screen(bank.bridge.slot(i+2))
+				end=bank.screen(bank.bridge.slot(i+bank.bridge.on_hand))
 				if before==0:
-					var wrong:Vector2=bank.screen(bank.bridge.slot(1))
+					var wrong:Vector2=bank.screen(bank.bridge.slot(0))
 					touch(game.ui,start,true)
 					drag(game.ui,wrong)
 					touch(game.ui,wrong,false)
@@ -222,8 +222,15 @@ func run() -> void:
 			var low:Array[int] = story.Data.number_choices(small)
 			if not check(low.min()>=1 and small in low,"Invalid small answer"): return
 	if not check(positions.size()==3,"Missing answer position"): return
-	randomize()
+	seed(23)
+	var first:Dictionary=story.Data.draw_numbers()
+	seed(42)
+	if not check(first!=story.Data.draw_numbers(),"Różne ziarna losują różne liczby"): return
+	seed([23,10,1][variant])
 	await click(game.atlas.play)
+	var rolled:Dictionary=story.numbers.duplicate()
+	await reopen()
+	if not check(story.numbers==rolled,"Zapis zachowuje wylosowane liczby"): return
 	await click(story.options.get_child(1))
 	await move_to(story.origin+Vector3(-2.1,0,1.3))
 	await move_to(story.origin+Vector3(-2.1,0,-1.8))
@@ -292,41 +299,42 @@ func run() -> void:
 	await tap_action(story.sword)
 	await create_timer(.45).timeout
 	if not check(story.id()=="chief","Cannot hit exposed orc"): return
-	await click(numeric_button(story.options, 3, false))
+	await click(numeric_button(story.options, story.numbers.chief, false))
 	if not check(story.hint_total==0,"Za wczesna pomoc"): return
-	await click(numeric_button(story.options, 3, false))
+	await click(numeric_button(story.options, story.numbers.chief, false))
 	await create_timer(5).timeout
-	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
+	if not check(story.hint_lit==story.numbers.chief,"Liczenie po drugiej pomyłce"): return
 	if not check(story.id()=="chief","Incorrect addition accepted"): return
-	await click(numeric_button(story.options, 3, true))
+	await click(numeric_button(story.options, story.numbers.chief, true))
 	await walk()
 	await click(story.options.get_child(0))
 	if not await riverbank(): return
 	var repair=game.panel.get_child(-1)
 	if not check(not repair.choices.visible,"Answers before count"): return
 	for slot in repair.slots: await click(slot)
-	await click(numeric_button(repair.choices, 3, false))
+	await click(numeric_button(repair.choices, story.numbers.boards, false))
 	if not check(story.hint_total==0,"Za wczesna pomoc"): return
-	await click(numeric_button(repair.choices, 3, false))
+	await click(numeric_button(repair.choices, story.numbers.boards, false))
 	await create_timer(5).timeout
-	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
-	if not check(not story.bank.visible and repair.highlighted==3 and repair.preview==0,"Trzy podświetlone luki mostu"): return
-	await click(numeric_button(repair.choices, 3, true))
+	if not check(story.hint_lit==story.numbers.boards,"Liczenie po drugiej pomyłce"): return
+	if not check(not story.bank.visible and repair.highlighted==story.numbers.boards and repair.preview==0,"Trzy podświetlone luki mostu"): return
+	await click(numeric_button(repair.choices, story.numbers.boards, true))
 	if not await riverbank(): return
 	await walk()
 	if not check(story.id()=="lanterns","Missing dark village"): return
-	var wrong_lamps:=numeric_button(story.options,5,false)
+	var wrong_lamps:=numeric_button(story.options,story.numbers.lamps,false)
 	await click(wrong_lamps)
-	for i in 5:
-		if not check(story.square.lit_lanterns.get_child(i).visible==(i<int(wrong_lamps.text)),"Liczba zapalonych latarenek"): return
+	for i in story.square.lamp_order.size():
+		if not check(story.square.lit_lanterns.get_child(story.square.lamp_order[i]).visible==(i<int(wrong_lamps.text)),"Liczba zapalonych latarenek"): return
 	if not check(story.hint_total==0,"Za wczesna pomoc"): return
-	await click(numeric_button(story.options, 5, false))
+	await click(numeric_button(story.options, story.numbers.lamps, false))
 	await create_timer(5).timeout
-	if not check(story.hint_lit==5,"Liczenie po drugiej pomyłce"): return
-	for lamp in story.square.lit_lanterns.get_children():
+	if not check(story.hint_lit==story.numbers.lamps,"Liczenie po drugiej pomyłce"): return
+	for index in story.square.lamp_order:
+		var lamp=story.square.lit_lanterns.get_child(index)
 		if not check(lamp.is_visible_in_tree(),"Latarenka nadal ciemna po podpowiedzi"): return
 	if not check(story.part==0,"Wrong lantern sum accepted"): return
-	await click(numeric_button(story.options, 5, true))
+	await click(numeric_button(story.options, story.numbers.lamps, true))
 	if not check(story.part==1 and story.hint_total==0,"Lamps did not light"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="invitation","No birthday invitation"): return
@@ -378,44 +386,45 @@ func run() -> void:
 	while story.id()=="homecoming": await physics_frame
 	if not check(story.id()=="stable" and story.chapters==1,"Ukończenie rozdziału 1"): return
 	while story.part==0: await physics_frame
-	for i in [2,1,4]: await click(story.stable.targets[i])
+	for i in [2,1,4]:
+		if story.stable.targets[i].visible: await click(story.stable.targets[i])
 	while story.options.get_child_count()<3: await physics_frame
-	await click(numeric_button(story.options,3,false))
+	await click(numeric_button(story.options,story.pony_count(),false))
 	if not check(story.hint_total==0,"Za wczesna pomoc"): return
-	await click(numeric_button(story.options,3,false))
+	await click(numeric_button(story.options,story.pony_count(),false))
 	await create_timer(5).timeout
-	if not check(story.hint_lit==3,"Liczenie po drugiej pomyłce"): return
+	if not check(story.hint_lit==story.pony_count(),"Liczenie po drugiej pomyłce"): return
 	if not check(story.part==1,"Błędna odpowiedź w stajni"): return
-	await click(numeric_button(story.options,3,true))
+	await click(numeric_button(story.options,story.pony_count(),true))
 	while story.part==2: await physics_frame
 	# Zapis stajni sprzed dodania jabłek zawierał część 3 i pustą kieszeń.
 	await reopen()
 	if not check(story.id()=="stable" and story.part==3 and not "Jabłko" in story.items,"Stary zapis stajni"): return
 	await click(story.options.get_child(0))
-	if not check(story.items.count("Jabłko")==3,"Prowiant od Toba"): return
+	if not check(story.items.count("Jabłko")==story.travel_apples,"Prowiant od Toba"): return
 	await click(story.options.get_child(0))
 	await reopen()
 	if not check(story.id()=="night_bridge" and game.stick.visible,"Wznowienie na moście"): return
 	await walk()
 	if not check(story.id()=="chief_sad","Spotkanie za mostem"): return
 	while story.part==0: await physics_frame
-	for total in range(1,4):
+	for total in range(1,story.travel_apples+1):
 		while story.options.get_child(0).disabled: await physics_frame
 		await click(story.options.get_child(0))
 		if total==1: await reopen()
-		if not check(story.marks==total and story.items.count("Jabłko")==3-total,"Przekazanie jabłka"): return
+		if not check(story.marks==total and story.items.count("Jabłko")==story.travel_apples-total,"Przekazanie jabłka"): return
 	while story.part==1: await physics_frame
-	for attempt in 2: await click(numeric_button(story.options,3,false))
-	if not check(story.part==2 and story.hint_total==3,"Pomoc w liczeniu"): return
+	for attempt in 2: await click(numeric_button(story.options,story.travel_apples,false))
+	if not check(story.part==2 and story.hint_total==story.travel_apples,"Pomoc w liczeniu"): return
 	await create_timer(1).timeout
 	if not check(story.hint_lit==1 and story.pickups[0].material_override.emission_enabled and not story.pickups[1].material_override.emission_enabled,"Jabłka zapalają się po kolei"): return
-	await click(numeric_button(story.options,3,true))
+	await click(numeric_button(story.options,story.travel_apples,true))
 	var old_chief:=ConfigFile.new()
 	old_chief.load(story.FILE)
 	old_chief.erase_section_key("story","fork_path")
 	old_chief.save(story.FILE)
 	await reopen()
-	if not check(story.fork_path=="" and story.part==3 and story.voice=="route_sad_thanks","Wskazówka herszta po wznowieniu"): return
+	if not check(story.fork_path=="" and story.part==3 and story.voice.begins_with("route_sad_thanks"),"Wskazówka herszta po wznowieniu"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="fork" and game.stick.visible,"Rozwidlenie po spotkaniu"): return
 	var fork_save:=ConfigFile.new()
@@ -451,17 +460,18 @@ func run() -> void:
 	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(story.camp)
 	var order_ponies:Array=[0,2,1] if variant==0 else [1,0,2]
 	for i in order_ponies:
+		if not (story.numbers.camp & (1<<i)): continue
 		if not check(await driver.rescue(i,click),"Nie udało się odprowadzić kucyka %s"%i): return
 	while story.id()=="camp": await physics_frame
 	if not check(story.id()=="troll_dawn","Gapa zatrzymuje Bilba po trzecim ratunku"): return
 	for round_index in 3:
-		var answer:int=[4,3,6][round_index]
+		var answer:int=[story.numbers.rocks,story.numbers.sausages,story.numbers.cones][round_index]
 		if round_index==1:
 			while story.part!=story.dawn.Beat.SKEWER: await physics_frame
-			if not check(story.dawn.objects.size()==4,"Cztery kiełbaski przed zjedzeniem"): return
+			if not check(story.dawn.objects.size()==answer+1,"Cztery kiełbaski przed zjedzeniem"): return
 			while story.age<story.dawn.deadline-.25: await physics_frame
 			if not check(story.dawn.objects.back().scale.x<.3,"Burczyk zjada kiełbaskę"): return
-		while not story.dawn.ANSWERS.has(story.part): await physics_frame
+		while not story.dawn.answers.has(story.part): await physics_frame
 		var stage:int=story.part
 		if not check(story.dawn.objects.size()==answer and story.dawn.daylight==round_index,"Przedmioty i światło"): return
 		for item in story.dawn.objects:
@@ -494,7 +504,7 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	for actor in story.return_trip.ponies+[game.leo,game.marker]:
 		if not check(root.get_visible_rect().has_point(game.camera.unproject_position(actor.global_position)),"Kucyki i cel widoczne na początku przeprawy"): return
-	for expected in [1,2,3]:
+	for expected in range(1,story.pony_count()+1):
 		game.stick.vector=Vector2.DOWN
 		for tick in 180:
 			await physics_frame
@@ -527,5 +537,5 @@ func run() -> void:
 	for i in 18:
 		OS.delay_msec(12)
 		await process_frame
-	print("PASS oba rozdziały, boksy, trzy ratunki, finał i odblokowanie rozdziału")
+	print("PASS oba rozdziały, ratunki i odblokowanie rozdziału. Wylosowane liczby ",rolled)
 	quit()
