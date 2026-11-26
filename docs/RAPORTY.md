@@ -1,3 +1,14 @@
+## 2026-11-26 — Z09. Urodziny kreta i powrót Iskierki do mamy
+
+Kroki ROUTE: `mole_candles`, `dragon_nest`, `dragon_flight`. Starszy zakończony zapis w ciepłej jaskini wznawia się u kreta.
+Dziecko dotyka świeczek i wybiera liczbę kichnięć. Cztery zostawiają zgaszoną świeczkę, szóste przypala czapkę kreta, pięć otwiera drogę na szczyt.
+W gnieździe widać cztery smoczątka w skorupkach i jedno wolne miejsce. Po odpowiedzi „jednego” mama przytula Iskierkę.
+Zachowano liczby z fabuły i przemieszano przyciski z kropkami. Po dwóch pomyłkach gra podświetla i liczy świeczki albo wskazuje puste miejsce.
+Bilbo i Iskierka lecą na plecach mamy nad młynem, mostem i kamiennymi trollami. Po ostrzeżeniu o Szeptku strzałka kończy rozdział 3.
+Do strojenia po grze na telefonie: odstęp między kichnięciami 0,55 s, czas lotu 9 s. Wszystkie 11 nowych kwestii ma nagrania Zosi.
+Pakiet iPhone ma 10 936 352 bajty. Wszystkie trzy testy przeszły przy 60 kl./s, w tym wznowienie, obie pomyłki u kreta, przytulenie, lot i zapis ukończenia.
+Przy zamykaniu testów obozu i doliny Godot ostrzegł o pozostających obiektach. Nie sprawdzano na telefonie. Brak nowych uwag, pominiętych elementów zadania i pytań.
+
 ## 2026-11-26 — Z08. Droga na górę z Iskierką
 
 Po jagodach Bilbo wybiera trzy skoki przez strumień albo kichnięcie w jeżyny. Obie drogi prowadzą do schodów i jaskini.

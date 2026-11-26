@@ -88,7 +88,7 @@ Plan: rozdział 3, zagadki 2 i 3, wybór drogi.
 - Kamienne stopnie: schody z kropkami 1–8, trzy stopnie leżą obok. Dziecko wkłada je w luki. Pasujący zapala się na złoto, a niepasujący się chwieje.
 - Ciepła jaskinia: dwie kupki węgielków, „Na której jest więcej?”. Kichnięcie w większą daje duże ognisko, w mniejszą mały płomyczek i drżącą Iskierkę.
 
-### [ ] Z09 — Rozdział 3, część 3: kret, mama smoczyca i lot
+### [x] Z09 — Rozdział 3, część 3: kret, mama smoczyca i lot (2026-11-26)
 Plan: rozdział 3, zagadki 4 i 5, nagroda.
 - Kret pustelnik i świeczki: 3 na torcie + 2 na półce, każde kichnięcie zapala jedną. Za mało zostawia zgaszoną świeczkę, za dużo przypala kretowi czapkę (śmiesznie, bez kary).
 - Mama smoczyca: „Mam pięcioro dzieci, a w gnieździe są cztery. Kogo brakuje?”. Po odpowiedzi mama obejmuje Iskierkę skrzydłem.
