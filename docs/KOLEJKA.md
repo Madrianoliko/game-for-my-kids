@@ -125,4 +125,5 @@ Plan: rozdział 5, zagadki 1, 3, 4 i finał.
 - Menu pokazuje odblokowane rozdziały jako 5 obrazków (most, troll, smoczek, kryształ, płatek śniegu). Zablokowane są szare z kłódką.
 - „Wznów” zawsze wraca do ostatniego miejsca zapisu.
 - Przejrzyj wszystkie kwestie: żadna nie może mieć więcej niż jednego polecenia ani być dłuższa niż ok. 6 sekund.
+- Losowanie liczb (zasada 7) także w rozdziałach 3–5, tam gdzie zostały stałe: brakujące kamienne stopnie (dziś zawsze 5, 2 i 7), kupki węgielków (dziś 2 i 5, różnica może się zmniejszać przy kolejnych przejściach, np. 4 i 5), świeczki kreta, liczby u Szeptka i na wozie.
 - Sprawdź płynność na iPhonie 12 (renderer Mobile): jeśli któraś scena ma dużo obiektów, uprość ją. Wypisz w raporcie sceny, które warto sprawdzić na telefonie.
