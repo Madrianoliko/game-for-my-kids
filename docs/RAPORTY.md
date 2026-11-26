@@ -1,3 +1,11 @@
+## 2026-11-26 — Z06. Losowanie liczb w zagadkach
+
+### PYTANIE
+
+Gdy w stajni wylosują się dwa zaginione kucyki, czy Bilbo ma uratować dwa także w obozie i wrócić przez most z dwoma? Druga możliwość to zachować trzy ratunki jako stałą fabularną i w stajni losować liczbę kucyków, które zostały w domu.
+Z06 podaje 2–3 zaginione jako przykład i dopuszcza stałe fabularne. Z03 rozpoczyna kłótnię po trzecim ratunku, a Z04 prowadzi przez most trzy kucyki. Wybór zmienia długość gry, warunek zakończenia obozu i kwestie Toba.
+Brak nowych uwag z testów. Z06 pozostaje otwarte. W tej sesji zmienił się tylko raport. Eksport i testy czekają na rozstrzygnięcie.
+
 ## 2026-11-26 — Z05. Wspólne liczenie po dwóch pomyłkach
 
 Oba spotkania z hersztem, latarenki, deski, stajnia i trzy pytania trolli korzystają ze wspólnej podpowiedzi. Po drugiej pomyłce gra liczy na głos i kolejno podświetla przedmioty, luki lub puste boksy. Podświetlenie trwa do poprawnej odpowiedzi.
