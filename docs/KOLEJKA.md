@@ -61,7 +61,7 @@ Plan: sceny 8 i 9.
 - Kucyki przechodzą przez most po kolei, a gra liczy je na głos (1, 2, 3).
 - Kamienne trolle zostają na wzgórzu jako nowy punkt na mapie doliny.
 
-### [ ] Z05 — Pomoc po dwóch pomyłkach (cała gra)
+### [x] Z05 — Pomoc po dwóch pomyłkach (cała gra) (2026-11-26)
 Plan: `PLAN_PRZYGOD.md`, zasady 3 i 4.
 - Wspólny mechanizm dla wszystkich zagadek z przyciskami (herszt, latarenki, deski, stajnia, herszt bez jabłek, trolle): po dwóch złych odpowiedziach przedmioty, które trzeba policzyć, zapalają się po kolei, a głos liczy razem z dzieckiem („jeden… dwa… trzy…”). Potem zostają podświetlone do czasu dobrej odpowiedzi.
 - Tam, gdzie to łatwe, pomyłka pokazuje skutek: przy latarenkach zapala się tyle latarenek, ile dziecko wybrało, i widać, że część stoi ciemna; przy deskach za mało desek zostawia widoczną lukę.

@@ -1,3 +1,11 @@
+## 2026-11-26 — Z05. Wspólne liczenie po dwóch pomyłkach
+
+Oba spotkania z hersztem, latarenki, deski, stajnia i trzy pytania trolli korzystają ze wspólnej podpowiedzi. Po drugiej pomyłce gra liczy na głos i kolejno podświetla przedmioty, luki lub puste boksy. Podświetlenie trwa do poprawnej odpowiedzi.
+Pierwsza błędna odpowiedź przy latarenkach zapala wskazaną liczbę dostępnych lamp. Na moście wybór zbyt małej liczby desek pozostawia widoczną lukę.
+Pierwszy przedmiot zapala się po 0,45 s, kolejne co 0,85 s. Wykorzystano istniejące polskie nagrania liczb. Brak brakujących nagrań, nowych kroków ROUTE i otwartych pytań.
+Pakiet iPhone ma 8 916 140 bajtów. Wszystkie trzy testy na pakiecie przy 60 kl./s przeszły. Sprawdzono m.in. kolejność zapalania jabłek, widoczność lamp oraz wyłączenie pomocy po dobrej odpowiedzi.
+Przy zamykaniu testów obozu i doliny Godot zgłosił pozostające obiekty. Tempo liczenia czeka na sprawdzenie z dzieckiem na telefonie.
+
 ## 2026-11-25 — Z04. Jaskinia trolli i powrót przez trakt
 
 Po świcie krok `troll_cave` prowadzi do skrzyni. Dotknięcie dłoni odsłania jabłka i zwiniętą mapę z dymiącą górą. Oba znaleziska trafiają do plecaka.
