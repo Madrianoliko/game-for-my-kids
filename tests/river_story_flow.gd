@@ -592,8 +592,49 @@ func run() -> void:
 	await tap_model(story.iskierka.piles[side])
 	await create_timer(.4).timeout
 	if not check(story.part==1 and story.iskierka.fire.scale.y>1,"Duże ognisko ogrzewa Iskierkę"): return
+	var cave_end:=ConfigFile.new()
+	cave_end.load(story.FILE)
+	cave_end.set_value("story","ended",true)
 	await click(story.options.get_child(0))
-	if not check(game.atlas.visible and game.atlas.chapter_three.visible,"Powrót z ciepłej jaskini"): return
+	if not check(story.id()=="mole_candles","Od ogniska do pustelnika"): return
+	cave_end.save(story.FILE)
+	await reopen()
+	if not check(story.id()=="mole_candles" and story.part==0,"Wznowienie starszego zakończenia w jaskini"): return
+	await click(story.options.get_child(0))
+	for i in 5:
+		await tap_model(story.iskierka.tokens[i])
+		if i==1:
+			await reopen()
+			if not check(story.marks==3,"Wznowienie po dwóch świeczkach"): return
+	if not check(story.part==2,"Policzone świeczki na torcie i na półce"): return
+	await click(numeric_button(story.options,4,true))
+	await create_timer(3).timeout
+	if not check(story.iskierka.lights[3].visible and not story.iskierka.lights[4].visible,"Cztery kichnięcia zostawiają zgaszoną świeczkę"): return
+	await click(numeric_button(story.options,6,true))
+	await create_timer(3.9).timeout
+	if not check(story.hint_total==5 and story.iskierka.hat.rotation.z>.4,"Przypalona czapka i pomoc w liczeniu"): return
+	await click(numeric_button(story.options,5,true))
+	await create_timer(3.2).timeout
+	if not check(story.part==3 and story.iskierka.lights.all(func(light): return light.visible),"Pięć płomyków"): return
+	await click(story.options.get_child(0))
+	if not check(story.id()=="dragon_nest","Mama na szczycie"): return
+	await click(story.options.get_child(0))
+	for i in 4: await tap_model(story.iskierka.tokens[i])
+	for i in 2: await click(numeric_button(story.options,2,true))
+	if not check(story.part==2 and story.hint_total==1,"Mama pokazuje puste miejsce"): return
+	await click(numeric_button(story.options,1,true))
+	await create_timer(1).timeout
+	if not check(story.part==3 and story.iskierka.mother.wings[0].rotation.x>1,"Mama obejmuje Iskierkę"): return
+	await click(story.options.get_child(0))
+	var takeoff:Vector3=game.camera.position
+	await create_timer(4).timeout
+	if not check(story.id()=="dragon_flight" and game.camera.position.distance_to(takeoff)>4 and story.square.is_visible_in_tree(),"Lot nad znajomą doliną"): return
+	await create_timer(5.5).timeout
+	await reopen()
+	if not check(story.part==1 and story.stone_hill.is_visible_in_tree(),"Wznowienie przy wzgórzu trolli"): return
+	await click(story.options.get_child(0))
+	cfg.load(story.FILE)
+	if not check(game.atlas.visible and cfg.get_value("story","chapters_completed")==3 and cfg.get_value("story","ended"),"Zakończony trzeci rozdział"): return
 	await click(game.atlas.chapter_two)
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
@@ -602,7 +643,7 @@ func run() -> void:
 	for i in 18:
 		OS.delay_msec(12)
 		await process_frame
-	print("PASS oba rozdziały, ratunki i odblokowanie rozdziału. Wylosowane liczby ",rolled)
+	print("PASS trzy rozdziały, ratunki i lot Iskierki. Wylosowane liczby ",rolled)
 	quit()
 
 func move_berry(i:int,side:int) -> void:
