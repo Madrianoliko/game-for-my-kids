@@ -5,7 +5,6 @@ const ANSWERS := {Beat.ROCKS:4, Beat.SAUSAGES:3, Beat.CONES:6}
 const CLIPS := ["caught","dishes","bet","accept","rocks","argue_rocks","skewer","sausages","argue_food","cones","argue_cones","sun","stone","end"]
 const SKY := [Color("#293759"), Color("#65567d"), Color("#ba8191"), Color("#ffce85")]
 const POS := [Vector3(0,0,-.9), Vector3(-2.3,0,-.5), Vector3(2.3,0,-.5)]
-const COUNT_TIME := .78
 var story
 var game
 var beat:int
@@ -14,8 +13,6 @@ var objects:Array[MeshInstance3D]=[]
 var deadline:float
 var catching_arm:Node3D
 var eaten_from:Vector3
-var countdown:=-1.0
-var next_count:=0
 var counted:Array[int]=[]
 var chuckle:=0.0
 var daylight:=0
@@ -66,7 +63,9 @@ func setup(owner_story) -> void:
 		for n in story.Data.number_choices(ANSWERS[beat]): story.button(str(n),answer.bind(n))
 	if beat==Beat.END: story.button("Dalej",story.advance)
 	narrate()
-	if ANSWERS.has(beat) and story.marks>=2: start_help()
+	if ANSWERS.has(beat) and story.marks>0:
+		story.hint_errors=1
+		if story.marks>=2: story.hint_miss(objects.size(),show_count)
 
 func narrate() -> void:
 	story.say("dawn_"+CLIPS[beat])
@@ -112,11 +111,10 @@ func highlight(index:int) -> void:
 func count_voice(n:int) -> void:
 	if game.sound: game.play_clip(game.chime,"count_%d"%n)
 
-func start_help() -> void:
-	countdown=.45
-	next_count=0
-	counted.clear()
-	for obj in objects: obj.material_override.emission_enabled=false
+func show_count(total:int) -> void:
+	for i in objects.size():
+		objects[i].material_override.emission_enabled=false
+		if i<total: highlight(i)
 
 func answer(n:int) -> void:
 	if story.host.paused or story.part!=beat: return
@@ -127,11 +125,11 @@ func answer(n:int) -> void:
 	story.marks+=1
 	story.checkpoint()
 	chuckle=.75
-	story.effect("story/dawn_laugh")
-	if story.marks>=2: start_help()
+	if story.hint_lit>=story.hint_total: story.effect("story/dawn_laugh")
+	story.hint_miss(objects.size(),show_count)
 
 func _input(event:InputEvent) -> void:
-	if not is_visible_in_tree() or game.paused or not ANSWERS.has(beat) or countdown>=0: return
+	if not is_visible_in_tree() or game.paused or not ANSWERS.has(beat) or story.hint_total>0: return
 	if not ((event is InputEventScreenTouch or (event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT)) and event.pressed): return
 	if story.dock.get_global_rect().has_point(event.position) or game.pause_button.get_global_rect().has_point(event.position): return
 	var nearest:=-1
@@ -175,12 +173,5 @@ func tick(dt:float) -> void:
 				stone.albedo_color=Color("#9ca7b0")
 				for mesh in trolls[i].find_children("*","MeshInstance3D",true,false): mesh.material_override=stone
 				trolls[i].set_meta("stone",true)
-	if countdown>=0:
-		countdown-=dt
-		if countdown<=0:
-			highlight(next_count)
-			count_voice(next_count+1)
-			next_count+=1
-			countdown=COUNT_TIME if next_count<objects.size() else -1
 	if beat!=Beat.END and not ANSWERS.has(beat) and t>=deadline:
 		story.go_to("troll_dawn",beat+1)

@@ -107,3 +107,8 @@ func _process(dt:float) -> void:
 	if visible and not game.paused:
 		# The axle is one unit above the mill wheel model's origin.
 		if mill_wheel: mill_wheel.rotation.z+=dt*.28
+
+func show_lamps(total:int) -> void:
+	for i in lit_lanterns.get_child_count():
+		lit_lanterns.get_child(i).visible=i<total
+		unlit_lanterns.get_child(i).visible=i>=total

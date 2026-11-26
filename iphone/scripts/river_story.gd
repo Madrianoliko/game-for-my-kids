@@ -15,6 +15,11 @@ var camp
 const ReturnTrip := preload("res://scripts/troll_return.gd")
 var return_trip:ReturnTrip
 var stone_hill:=Node3D.new()
+var hint_errors:=0
+var hint_total:=0
+var hint_lit:=0
+var hint_delay:=0.0
+var hint_display:=Callable()
 var dawn:Node3D
 var fork_trail:Node3D
 var fork_path:=""
@@ -310,6 +315,7 @@ func begin(resume:bool, start_step:="door") -> void:
 	render()
 
 func stop() -> void:
+	clear_hint()
 	host.camera.environment=null
 	host.camera.v_offset=0
 	host.beaver.show()
@@ -362,6 +368,7 @@ func show_controls() -> void:
 	shield.disabled="Tarcza" not in items
 
 func render() -> void:
+	clear_hint()
 	host.camera.environment=null
 	host.camera.v_offset=0
 	host.beaver.show()
@@ -420,8 +427,7 @@ func render() -> void:
 	if id() in ["lanterns","invitation","village","stable","stable_home"]:
 		origin=square.position
 		square.show()
-		square.lit_lanterns.visible=id()!="lanterns" or part==1
-		square.unlit_lanterns.visible=not square.lit_lanterns.visible
+		square.show_lamps(0 if id()=="lanterns" and part==0 else 5)
 	elif id() in ["mill","coop","dairy"]: origin=Vector3(220,0,{"mill":20,"coop":40,"dairy":60}[id()])
 	scene.position=origin
 	host.leo.position=origin+Vector3(-.8,0,1.2)
@@ -589,7 +595,7 @@ func render() -> void:
 			else: start_bank()
 		"chief":
 			actor("chief",Vector3(0,0,-1))
-			for x in [-1.8,-1.23,1.5]: host.orb(scene,Vector3(x,.35,0),.30,Color("#d2543c"))
+			for x in [-1.8,-1.23,1.5]: pickups.append(make_apple(Vector3(x,.35,0)))
 			for n in Data.number_choices(3): button(str(n),answer.bind(n))
 			say("chief")
 		"tobo":
@@ -696,6 +702,7 @@ func show_count() -> void:
 	host.label_line("Most dla Pestki",28)
 	var repair:=Repair.new()
 	repair.story_order=true
+	repair.wrong.connect(func(): hint_miss(repair.SPANS-repair.ON_HAND,repair.highlight_gaps))
 	var code:=marks
 	while code>0:
 		repair.counted.push_front(code%6-1)
@@ -721,9 +728,34 @@ func decline() -> void:
 	checkpoint()
 	render()
 
+func clear_hint() -> void:
+	if hint_display.is_valid(): hint_display.call(0)
+	if hint_errors>=2: host.chime.stop()
+	hint_errors=0
+	hint_lit=0
+	hint_total=0
+	hint_display=Callable()
+
+func hint_miss(total:int,display:Callable) -> void:
+	hint_errors+=1
+	if hint_errors!=2: return
+	hint_total=total
+	hint_display=display
+	display.call(0)
+	hint_delay=.45
+	host.narrator.stop()
+
+func glow_pickups(total:int) -> void:
+	for i in pickups.size():
+		var material:StandardMaterial3D=pickups[i].material_override
+		material.emission_enabled=i<total
+		material.emission=Color("#ffcd62")
+
 func answer(n:int) -> void:
 	if n==3: advance()
-	else: effect("story/again")
+	else:
+		if hint_errors==0: effect("story/again")
+		hint_miss(3,glow_pickups)
 
 func make_apple(at:Vector3) -> Node3D:
 	var apple=host.orb(scene,at,.25,Color("#de4939"))
@@ -763,6 +795,9 @@ func render_apple_chief() -> void:
 		2:
 			for n in Data.number_choices(TRAVEL_APPLES): button(str(n),apple_answer.bind(n))
 			say("sad_question")
+			if marks>0:
+				hint_errors=1
+				if marks>=2: hint_miss(TRAVEL_APPLES,glow_pickups)
 		3:
 			button("Dalej",advance)
 			say("sad_thanks")
@@ -791,12 +826,14 @@ func apple_answer(n:int) -> void:
 		return
 	marks+=1
 	checkpoint()
-	say("sad_hint" if marks>=2 else "sad_retry")
+	hint_miss(TRAVEL_APPLES,glow_pickups)
+	if marks>=2: return
+	say("sad_retry")
 	for i in pickups.size():
 		var apple:=pickups[i]
 		var pulse:=apple.create_tween()
-		pulse.tween_interval(.55*i if marks>=2 else .08)
-		if marks==1 and i>=n:
+		pulse.tween_interval(.08)
+		if i>=n:
 			pulse.tween_property(apple,"position:y",.93,.2)
 			pulse.tween_property(apple,"position:y",.55,.3)
 		pulse.tween_property(apple,"scale",Vector3.ONE*1.45,.2)
@@ -883,7 +920,8 @@ func count_pen(i:int) -> void:
 
 func stable_answer(n:int) -> void:
 	if n!=3:
-		effect("story/again")
+		if hint_errors==0: effect("story/again")
+		hint_miss(3,stable.highlight_empty)
 		return
 	go_to("stable",2,marks)
 
@@ -1030,6 +1068,13 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if hint_lit<hint_total:
+		hint_delay-=dt
+		if hint_delay<=0:
+			hint_lit+=1
+			hint_display.call(hint_lit)
+			effect("count_%d"%hint_lit)
+			hint_delay=.85
 	if id()=="chief_happy" and part==2:
 		return_trip.tick(dt)
 		return
@@ -1167,7 +1212,8 @@ func bank_done() -> void:
 
 func lantern_answer(n:int) -> void:
 	if n!=5:
-		effect("story/again")
+		if hint_errors==0: square.show_lamps(n)
+		hint_miss(5,square.show_lamps)
 		return
 	part=1
 	checkpoint()

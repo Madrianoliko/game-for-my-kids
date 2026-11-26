@@ -6,6 +6,7 @@ const EMPTY_MASK := (1<<1) | (1<<2) | (1<<4)
 const FULL_MASK := (1<<5)-1
 const WIDTH := 1.55
 var host
+var floors:Array[MeshInstance3D]=[]
 var horses:Array[Node3D]=[]
 var targets:Array[Button]=[]
 var smoke:=Node3D.new()
@@ -26,7 +27,7 @@ func setup(game) -> void:
 		host.box(self,Vector3(x,.65,.1),Vector3(.12,1.3,2.7),wood)
 	for i in 5:
 		var x:float=(i-2)*WIDTH
-		host.box(self,Vector3(x,.06,.28),Vector3(WIDTH-.16,.12,2.1),Color.WHEAT)
+		floors.append(host.box(self,Vector3(x,.06,.28),Vector3(WIDTH-.16,.12,2.1),Color.WHEAT))
 		host.box(self,Vector3(x,.38,1.4),Vector3(WIDTH,.12,.12),wood)
 		var horse:=preload("res://scripts/pony.gd").make(host,self,Vector3(x,.12,.23),[Color.PERU,Color.IVORY,Color.TAN][i%3])
 		horses.append(horse)
@@ -66,3 +67,11 @@ func _process(dt:float) -> void:
 		for i in smoke.get_child_count():
 			var puff:=smoke.get_child(i) as Node3D
 			puff.position.x=i*.13+.12*sin(clock+i)
+
+func highlight_empty(total:int) -> void:
+	var index:=0
+	for i in floors.size():
+		if EMPTY_MASK & (1<<i):
+			index+=1
+			floors[i].material_override.emission_enabled=index<=total
+			floors[i].material_override.emission=Color.GOLD

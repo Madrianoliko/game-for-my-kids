@@ -1,5 +1,6 @@
 extends VBoxContainer
 
+signal wrong
 signal ordered
 signal counted_slot
 var story_order := false
@@ -22,6 +23,16 @@ var cross := Button.new()
 var choices := HBoxContainer.new()
 var slots: Array[Button] = []
 var current_clip := "beaver_help"
+
+var preview:=0
+var highlighted:=0
+var helping:=false
+
+func highlight_gaps(total:int) -> void:
+	helping=true
+	preview=0
+	highlighted=total
+	river.queue_redraw()
 
 func _ready() -> void:
 	custom_minimum_size.x = 700
@@ -107,7 +118,11 @@ func touch_slot(i: int) -> void:
 func choose_boards(n: int) -> void:
 	if step!=Step.CHOOSE: return
 	if n!=SPANS-ON_HAND:
-		prompt("Policz puste miejsca obok dwóch desek.","beaver_retry")
+		if not helping:
+			preview=n
+			river.queue_redraw()
+			prompt("Policz puste miejsca obok dwóch desek.","beaver_retry")
+		wrong.emit()
 		return
 	if story_order:
 		ordered.emit()
@@ -130,7 +145,7 @@ func draw_bridge() -> void:
 		river.draw_line(Vector2(0,y),Vector2(river.size.x,y),Color("#b88c59"),6)
 	for i in slots.size():
 		var rect := slots[i].get_rect().grow(-5)
-		var wooden := step>=Step.FASTEN or (step==Step.CHOOSE and i<ON_HAND)
+		var wooden := step>=Step.FASTEN or (step==Step.CHOOSE and i<ON_HAND+preview)
 		if wooden:
 			river.draw_rect(rect,Color("#d29b5d"))
 			river.draw_rect(rect,Color("#613f2c"),false,3)
@@ -147,7 +162,7 @@ func draw_bridge() -> void:
 					river.draw_line(p+Vector2(0,10),p-Vector2(0,9),Color("#684831"),11)
 					river.draw_circle(p-Vector2(0,9),9,Color("#ffe4ac"))
 		else:
-			river.draw_rect(rect,Color("#245866c0"))
+			river.draw_rect(rect,Color.GOLDENROD if i>=ON_HAND and i<ON_HAND+highlighted else Color("#245866c0"))
 			river.draw_rect(rect,Color("#cce6d9"),false,3)
 			if step==Step.COUNT and counted.has(i):
 				var number := str(counted.find(i)+1)

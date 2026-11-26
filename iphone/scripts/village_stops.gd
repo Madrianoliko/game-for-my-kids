@@ -60,15 +60,17 @@ static func interior(story,kind:String) -> void:
 
 static func lanterns(host,parent:Node3D,lit:bool) -> void:
 	for x in [-2.65,-1.55,.55,1.65,2.75]:
-		host.box(parent,Vector3(x,.5,-.1),Vector3(.12,1,.12),WOOD)
-		host.box(parent,Vector3(x,1.35,-.1),Vector3(.42,.09,.42),WOOD)
-		host.orb(parent,Vector3(x,1.14,-.1),.27,Color("#ffda75") if lit else Color("#d4b897"),lit)
-		host.box(parent,Vector3(x,.94,-.1),Vector3(.42,.08,.42),WOOD)
+		var lamp:=Node3D.new()
+		parent.add_child(lamp)
+		host.box(lamp,Vector3(x,.5,-.1),Vector3(.12,1,.12),WOOD)
+		host.box(lamp,Vector3(x,1.35,-.1),Vector3(.42,.09,.42),WOOD)
+		host.orb(lamp,Vector3(x,1.14,-.1),.27,Color("#ffda75") if lit else Color("#d4b897"),lit)
+		host.box(lamp,Vector3(x,.94,-.1),Vector3(.42,.08,.42),WOOD)
 		for edge in [-1,1]:
-			host.box(parent,Vector3(x+edge*.19,1.15,.05),Vector3(.04,.43,.045),WOOD)
+			host.box(lamp,Vector3(x+edge*.19,1.15,.05),Vector3(.04,.43,.045),WOOD)
 		if lit:
 			var light:=OmniLight3D.new()
-			parent.add_child(light)
+			lamp.add_child(light)
 			light.position=Vector3(x,1.22,-.1)
 			light.light_color=Color("#ffe2a0")
 			light.omni_range=2.6
