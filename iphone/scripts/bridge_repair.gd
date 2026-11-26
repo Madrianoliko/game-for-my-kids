@@ -11,7 +11,7 @@ signal hammer_hit
 const Icons := preload("res://scripts/river_icons.gd")
 const Data := preload("res://scripts/river_story_data.gd")
 const SPANS := 5
-const ON_HAND := 2
+var on_hand := 2
 enum Step { COUNT, CHOOSE, FASTEN, DONE }
 
 var step := Step.COUNT
@@ -55,7 +55,7 @@ func _ready() -> void:
 	layout_slots()
 	choices.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(choices)
-	for n in Data.number_choices(SPANS - ON_HAND):
+	for n in Data.number_choices(SPANS - on_hand):
 		var pick := Button.new()
 		Icons.apply(pick,str(n))
 		choices.add_child(pick)
@@ -76,7 +76,7 @@ func _ready() -> void:
 	if story_order and counted.size()==SPANS:
 		choices.show()
 		step=Step.CHOOSE
-		prompt("Mam dwie deski. Ile jeszcze przynieść?","beaver_more")
+		ask_boards()
 		return
 	prompt("Dotknij każdego pustego miejsca na moście.","beaver_help")
 
@@ -98,7 +98,7 @@ func touch_slot(i: int) -> void:
 		if counted.size()==SPANS:
 			step=Step.CHOOSE
 			choices.show()
-			prompt("Mam dwie deski. Ile jeszcze przynieść?","beaver_more")
+			ask_boards()
 		else:
 			voice.emit("count_%d" % counted.size())
 	elif step==Step.FASTEN and not fixed.has(i):
@@ -117,11 +117,12 @@ func touch_slot(i: int) -> void:
 
 func choose_boards(n: int) -> void:
 	if step!=Step.CHOOSE: return
-	if n!=SPANS-ON_HAND:
+	if n!=SPANS-on_hand:
 		if not helping:
 			preview=n
 			river.queue_redraw()
-			prompt("Policz puste miejsca obok dwóch desek.","beaver_retry")
+			if on_hand==2: prompt("Policz puste miejsca obok dwóch desek.","beaver_retry")
+			else: prompt("Policz puste miejsca obok deski.","beaver_retry_alt")
 		wrong.emit()
 		return
 	if story_order:
@@ -145,7 +146,7 @@ func draw_bridge() -> void:
 		river.draw_line(Vector2(0,y),Vector2(river.size.x,y),Color("#b88c59"),6)
 	for i in slots.size():
 		var rect := slots[i].get_rect().grow(-5)
-		var wooden := step>=Step.FASTEN or (step==Step.CHOOSE and i<ON_HAND+preview)
+		var wooden := step>=Step.FASTEN or (step==Step.CHOOSE and i<on_hand+preview)
 		if wooden:
 			river.draw_rect(rect,Color("#d29b5d"))
 			river.draw_rect(rect,Color("#613f2c"),false,3)
@@ -162,8 +163,12 @@ func draw_bridge() -> void:
 					river.draw_line(p+Vector2(0,10),p-Vector2(0,9),Color("#684831"),11)
 					river.draw_circle(p-Vector2(0,9),9,Color("#ffe4ac"))
 		else:
-			river.draw_rect(rect,Color.GOLDENROD if i>=ON_HAND and i<ON_HAND+highlighted else Color("#245866c0"))
+			river.draw_rect(rect,Color.GOLDENROD if i>=on_hand and i<on_hand+highlighted else Color("#245866c0"))
 			river.draw_rect(rect,Color("#cce6d9"),false,3)
 			if step==Step.COUNT and counted.has(i):
 				var number := str(counted.find(i)+1)
 				river.draw_string(ThemeDB.fallback_font,Vector2(rect.position.x,rect.get_center().y+13),number,HORIZONTAL_ALIGNMENT_CENTER,rect.size.x,38,Color("#ffe79a"))
+
+func ask_boards() -> void:
+	if on_hand==2: prompt("Mam dwie deski. Ile jeszcze przynieść?","beaver_more")
+	else: prompt("Mam jedną deskę. Ile jeszcze przynieść?","beaver_more_alt")

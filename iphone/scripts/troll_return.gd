@@ -1,7 +1,7 @@
 extends Node3D
 
 const Pony := preload("res://scripts/pony.gd")
-const COATS := [Color.PERU, Color.IVORY, Color.TAN]
+const COATS := [Color.TAN, Color.FLORAL_WHITE, Color.PERU]
 const MAP := "Mapa Dymiącej Góry"
 const APPLES := "Jabłka herszta"
 const PONY_GAP := 1.8
@@ -70,7 +70,8 @@ func open_chest() -> void:
 func meet_chief() -> void:
 	game.hud.text="Jabłka herszta"
 	story.actor("chief",Vector3(1.05,0,-.4))
-	for i in 3: Pony.make(game,self,Vector3(-2.6+i*1.7,0,-2.1),COATS[i])
+	for i in COATS.size():
+		if story.numbers.get("camp",7) & (1<<i): Pony.make(game,self,Vector3(-2.6+i*1.7,0,-2.1),COATS[i])
 	for row in 4:
 		var rim:=TorusMesh.new()
 		rim.inner_radius=.52+row*.045
@@ -100,11 +101,12 @@ func build_crossing() -> void:
 	var center:Vector3=game.point(-1.5)
 	game.camera.look_at_from_position(center+Vector3(0,13,9),center,Vector3.UP)
 	hero_z=HERO_START if story.marks==0 else BRIDGE_START+story.marks*PONY_GAP
-	for coat in COATS: ponies.append(Pony.make(game,self,Vector3.ZERO,coat))
-	game.marker.global_position=game.point(1.8+3*PONY_GAP)+Vector3.UP*.22
+	for i in COATS.size():
+		if story.numbers.get("camp",7) & (1<<i): ponies.append(Pony.make(game,self,Vector3.ZERO,COATS[i]))
+	game.marker.global_position=game.point(1.8+ponies.size()*PONY_GAP)+Vector3.UP*.22
 	game.marker.show()
 	position_party()
-	story.say("ponies_bridge")
+	story.say("ponies_bridge" if ponies.size()==3 else "ponies_bridge_alt")
 
 func position_party() -> void:
 	game.leo.global_position=trail_point(hero_z)
@@ -125,10 +127,10 @@ func tick(dt:float) -> void:
 	position_party()
 	for i in ponies.size(): ponies[i].position.y+=.065*absf(sin(hero_z*3.2-i))*stride
 	for i in game.limbs.size(): game.limbs[i].rotation.x=.38*sin(hero_z*3.2+i*PI)*stride
-	if story.marks<3 and hero_z-(story.marks+1)*PONY_GAP>=BRIDGE_START:
+	if story.marks<ponies.size() and hero_z-(story.marks+1)*PONY_GAP>=BRIDGE_START:
 		story.marks+=1
 		story.checkpoint()
 		if game.sound: game.play_clip(game.chime,"count_%d"%story.marks)
-	if hero_z>=1.8+3*PONY_GAP:
+	if hero_z>=1.8+ponies.size()*PONY_GAP:
 		for limb in game.limbs: limb.rotation.x=0
 		story.advance()

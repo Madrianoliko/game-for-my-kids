@@ -53,6 +53,10 @@ const WORDS := {
 	"follow":"Kucyk idzie za tobą! Wracaj do Toba.",
 	"one":"Jeden kucyk jest już u mnie! Zostały jeszcze dwa.",
 	"two":"Dwa kucyki! Został jeszcze jeden.",
+	"tree_pair":"Tam są! Przy drzewie i obok ogniska.",
+	"cart_pair":"Tam są! Przy wozie i obok ogniska.",
+	"one_left":"Jeden kucyk jest już u mnie! Został jeszcze jeden.",
+	"done_pair":"Oba kucyki są bezpieczne, Bilbo!",
 	"done":"Wszystkie trzy kucyki są bezpieczne, Bilbo!"
 }
 enum Phase { INTRO, FIRST, DEMO_TURN, DEMO_LOOK, BACK, TURN, LOOK, CAUGHT, DONE }
@@ -68,6 +72,7 @@ var original_pose:Transform3D
 var gapa:Node3D
 signal rescued(mask:int)
 signal closed(complete:bool)
+var available:=7
 var rescued_mask:=0
 var chosen:=-1
 var ponies:Array[Node3D]=[]
@@ -104,7 +109,8 @@ var finish_time := 0.0
 var catch_from:Vector3
 var pony_from:Vector3
 
-func begin(game, saved_mask:int) -> void:
+func begin(game, saved_mask:int, pony_mask:=7) -> void:
+	available=pony_mask
 	rescued_mask=saved_mask
 	host=game
 	position=ORIGIN
@@ -141,7 +147,7 @@ func begin(game, saved_mask:int) -> void:
 	hat.height=.42
 	hero.add_child(cap)
 	host.mesh(cap,hat,Vector3.UP*1.69,Color("#ae6540"))
-	if rescued_mask==7:
+	if rescued_mask==available:
 		finish_camp()
 	elif rescued_mask!=0:
 		back.disabled=false
@@ -228,6 +234,8 @@ func build_camp() -> void:
 		var line:MeshInstance3D=host.box(self,(post+at)*.5+Vector3.UP*.74,Vector3(.055,.055,tie.length()),Color.WHEAT)
 		line.rotation.y=atan2(tie.x,tie.z)
 		ropes.append(line)
+		horse.visible=bool(available & (1<<i))
+		line.visible=horse.visible
 		if rescued_mask & (1<<i): park_pony(i)
 
 func path_to(a:Vector3,b:Vector3) -> void:
@@ -313,6 +321,10 @@ func layout() -> void:
 	caption.size=Vector2(hand.position.x-caption.position.x-8,back.size.y)
 
 func speak(key:String) -> void:
+	if available!=7:
+		if key=="intro_there": key="tree_pair" if available==5 else "cart_pair"
+		if key=="one": key="one_left"
+		if key=="done": key="done_pair"
 	message=key
 	caption.text=WORDS[key]
 	cue.stop()
@@ -365,7 +377,7 @@ func introduction() -> void:
 	if intro_step==1: frame_path(START.lerp(TETHER,t))
 	elif intro_step==2:
 		frame_path(TETHER.lerp(START,t))
-		if elapsed>=FLY_TIME and message=="intro_there":
+		if elapsed>=FLY_TIME and message in ["intro_there","tree_pair","cart_pair"]:
 			speak("intro_run")
 			return
 	if speech_left>0 or (intro_step in [1,2] and elapsed<FLY_TIME): return
@@ -500,7 +512,7 @@ func _physics_process(dt:float) -> void:
 			rescued_mask|=1<<chosen
 			park_pony(chosen)
 			rescued.emit(rescued_mask)
-			if rescued_mask==7: finish_camp()
+			if rescued_mask==available: finish_camp()
 			else:
 				# Bezpieczny nowy start po krótkiej rozmowie z Tobem.
 				phase=Phase.FIRST
@@ -528,7 +540,7 @@ func _process(_dt:float) -> void:
 
 func nearby_pony() -> int:
 	for i in TETHERS.size():
-		if not (rescued_mask & (1<<i)) and ground.distance_to(TETHERS[i])<=HAND_REACH: return i
+		if (available & (1<<i)) and not (rescued_mask & (1<<i)) and ground.distance_to(TETHERS[i])<=HAND_REACH: return i
 	return -1
 
 func count_rescued() -> int:

@@ -108,7 +108,13 @@ func _process(dt:float) -> void:
 		# The axle is one unit above the mill wheel model's origin.
 		if mill_wheel: mill_wheel.rotation.z+=dt*.28
 
+var lamp_order:=[0,1,3,4,5]
+
+func arrange_lamps(total:int) -> void:
+	lamp_order=[0,1,2,3,4,5] if total==6 else [0,1,3,4,5].slice(0,total)
+
 func show_lamps(total:int) -> void:
 	for i in lit_lanterns.get_child_count():
-		lit_lanterns.get_child(i).visible=i<total
-		unlit_lanterns.get_child(i).visible=i>=total
+		var slot:=lamp_order.find(i)
+		lit_lanterns.get_child(i).visible=slot>=0 and slot<total
+		unlit_lanterns.get_child(i).visible=slot>=total

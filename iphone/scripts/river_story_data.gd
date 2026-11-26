@@ -41,6 +41,20 @@ const WORDS := {
 	"chief_give":"Dotknij dłoni, żeby oddać jabłka hersztowi.",
 	"chief_happy":"Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!",
 	"ponies_bridge":"Poprowadź kucyki przez most w stronę złotego kręgu.",
+	"sad_thanks_alt":"Cztery! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!",
+	"lanterns_four":"Dwie latarenki z lewej, dwie z prawej. Ile trzeba zapalić razem?",
+	"chief_alt":"Dość pojedynku! Dwa jabłka tutaj i jeszcze dwa. Ile razem?",
+	"lanterns_alt":"Po lewej są trzy latarenki. Po prawej też trzy. Ile razem?",
+	"stable_alt":"Miałem pięć kucyków. Trzy są tutaj. Ile zniknęło?",
+	"stable_ok_alt":"Dwa! Widzisz ten dym? Gapa ukradł moje kucyki!",
+	"stable_thanks_alt":"Wszystkie w domu! Dwa wróciły, trzy czekały w stajni. Pięć! Dziękuję, Bilbo!",
+	"ponies_bridge_alt":"Poprowadź oba kucyki przez most do złotego kręgu.",
+	"dawn_rocks_alt":"Ja mam trzy kamyki, Chrapek ma trzy. Ile razem?",
+	"dawn_argue_rocks_alt":"Sześć! A ty mówiłeś, że pięć!",
+	"dawn_skewer_alt":"Na patyku jest pięć kiełbasek. Mniam!",
+	"dawn_argue_food_alt":"Cztery! A kto zjadł piątą?",
+	"dawn_cones_alt":"Dwie szyszki w jednej łapie i dwie w drugiej. Ile razem?",
+	"dawn_argue_cones_alt":"Cztery! A ty jedną policzyłeś dwa razy!",
 	"stable_go":"Chodź, uratujemy je!",
 	"stable_home":"Wszystkie w domu! Policzmy je razem.",
 	"stable_thanks":"Wszystkie kucyki w domu! Raz, dwa, trzy… i dwa w stajni. Pięć! Dziękuję, Bilbo!",
@@ -88,3 +102,9 @@ const WORDS := {
 static func number_choices(answer:int) -> Array[int]:
 	var first := answer - randi_range(0, mini(2, answer - 1))
 	return [first, first + 1, first + 2]
+
+# Wartości domyślne odtwarzają układ z zapisów sprzed losowania.
+static func draw_numbers() -> Dictionary:
+	return {"chief":randi_range(3,4),"apples":randi_range(3,4),"lamps":randi_range(4,6),"boards":randi_range(3,4),
+		"camp":[5,6,7,7].pick_random(),"rocks":2*randi_range(2,3),
+		"sausages":randi_range(3,4),"cones":2*randi_range(2,3)}

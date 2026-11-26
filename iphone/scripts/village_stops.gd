@@ -59,7 +59,7 @@ static func interior(story,kind:String) -> void:
 			host.box(room,Vector3(x+.32,1.03,-1.30),Vector3(.12,.09,.19),STRAW)
 
 static func lanterns(host,parent:Node3D,lit:bool) -> void:
-	for x in [-2.65,-1.55,.55,1.65,2.75]:
+	for x in [-2.65,-1.55,-.55,.55,1.65,2.75]:
 		var lamp:=Node3D.new()
 		parent.add_child(lamp)
 		host.box(lamp,Vector3(x,.5,-.1),Vector3(.12,1,.12),WOOD)

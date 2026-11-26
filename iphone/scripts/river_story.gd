@@ -23,7 +23,13 @@ var hint_display:=Callable()
 var dawn:Node3D
 var fork_trail:Node3D
 var fork_path:=""
-const TRAVEL_APPLES := 3
+var numbers:Dictionary={}
+
+func pony_count() -> int:
+	return 3 if numbers.get("camp",7)==7 else 2
+
+var travel_apples:int:
+	get: return numbers.get("apples",3)
 var waving_paw:Node3D
 var chapters:=0
 var reward:=Label.new()
@@ -238,6 +244,7 @@ func checkpoint(ended:=false) -> void:
 	var cfg:=ConfigFile.new()
 	cfg.set_value("story","version",3)
 	cfg.set_value("story","route",id())
+	cfg.set_value("story","numbers",numbers)
 	cfg.set_value("story","chapters_completed",chapters)
 	cfg.set_value("story","ended",ended)
 	cfg.set_value("story","stone_hill",stone_hill.visible)
@@ -248,6 +255,7 @@ func checkpoint(ended:=false) -> void:
 func read_save() -> bool:
 	var cfg:=ConfigFile.new()
 	if cfg.load(FILE)!=OK: return false
+	numbers=cfg.get_value("story","numbers",{})
 	chapters=int(cfg.get_value("story","chapters_completed",0))
 	stone_hill.visible=bool(cfg.get_value("story","stone_hill",chapters>=2 or cfg.get_value("story","route","")=="stable_home"))
 	if cfg.get_value("story","ended",false):
@@ -297,6 +305,7 @@ func begin(resume:bool, start_step:="door") -> void:
 	if resume:
 		if not read_save(): return
 	else:
+		numbers=Data.draw_numbers()
 		index=Data.ROUTE.find(start_step)
 		part=0
 		marks=0
@@ -427,7 +436,8 @@ func render() -> void:
 	if id() in ["lanterns","invitation","village","stable","stable_home"]:
 		origin=square.position
 		square.show()
-		square.show_lamps(0 if id()=="lanterns" and part==0 else 5)
+		square.arrange_lamps(numbers.get("lamps",5))
+		square.show_lamps(0 if id()=="lanterns" and part==0 else numbers.get("lamps",5))
 	elif id() in ["mill","coop","dairy"]: origin=Vector3(220,0,{"mill":20,"coop":40,"dairy":60}[id()])
 	scene.position=origin
 	host.leo.position=origin+Vector3(-.8,0,1.2)
@@ -553,8 +563,8 @@ func render() -> void:
 			light_filter.exposure_multiplier=.30 if part==0 else 1.0
 			host.camera.attributes=light_filter
 			if part==0:
-				for n in Data.number_choices(5): button(str(n),lantern_answer.bind(n))
-				say("lanterns")
+				for n in Data.number_choices(numbers.get("lamps",5)): button(str(n),lantern_answer.bind(n))
+				say({4:"lanterns_four",5:"lanterns",6:"lanterns_alt"}[numbers.get("lamps",5)])
 			else:
 				button("Dalej",advance)
 				say("lit")
@@ -595,12 +605,12 @@ func render() -> void:
 			else: start_bank()
 		"chief":
 			actor("chief",Vector3(0,0,-1))
-			for x in [-1.8,-1.23,1.5]: pickups.append(make_apple(Vector3(x,.35,0)))
-			for n in Data.number_choices(3): button(str(n),answer.bind(n))
-			say("chief")
+			for x in [-1.8,-1.23,1.5,2.1].slice(0,numbers.get("chief",3)): pickups.append(make_apple(Vector3(x,.35,0)))
+			for n in Data.number_choices(numbers.get("chief",3)): button(str(n),answer.bind(n))
+			say("chief" if numbers.get("chief",3)==3 else "chief_alt")
 		"tobo":
 			actor("troll",Vector3(1,0,-1))
-			for i in 3: host.box(scene,Vector3(1,.15+i*.11,0),Vector3(2,.11,.4),Color("#ca985e"))
+			for i in numbers.get("boards",3): host.box(scene,Vector3(1,.15+i*.11,0),Vector3(2,.11,.4),Color("#ca985e"))
 			button("Dalej",advance)
 			say("tobo")
 		"bridge":
@@ -673,7 +683,7 @@ func render() -> void:
 					host.pause_button.show()
 					advance()
 				else: host.home())
-			camp.begin(host,marks)
+			camp.begin(host,marks,numbers.get("camp",7))
 		"homecoming":
 			actor("squirrel",Vector3(1.55,0,-.7))
 			host.hud.text="Urodziny Tygryska"
@@ -701,8 +711,9 @@ func show_count() -> void:
 	host.clear_panel()
 	host.label_line("Most dla Pestki",28)
 	var repair:=Repair.new()
+	repair.on_hand=5-numbers.get("boards",3)
 	repair.story_order=true
-	repair.wrong.connect(func(): hint_miss(repair.SPANS-repair.ON_HAND,repair.highlight_gaps))
+	repair.wrong.connect(func(): hint_miss(repair.SPANS-repair.on_hand,repair.highlight_gaps))
 	var code:=marks
 	while code>0:
 		repair.counted.push_front(code%6-1)
@@ -752,10 +763,10 @@ func glow_pickups(total:int) -> void:
 		material.emission=Color("#ffcd62")
 
 func answer(n:int) -> void:
-	if n==3: advance()
+	if n==numbers.get("chief",3): advance()
 	else:
 		if hint_errors==0: effect("story/again")
-		hint_miss(3,glow_pickups)
+		hint_miss(numbers.get("chief",3),glow_pickups)
 
 func make_apple(at:Vector3) -> Node3D:
 	var apple=host.orb(scene,at,.25,Color("#de4939"))
@@ -780,27 +791,27 @@ func render_apple_chief() -> void:
 		rim.outer_radius=rim.inner_radius+.1
 		var hoop=host.mesh(scene,rim,basket+Vector3.UP*(.12+row*.11),Props.WOOD)
 		hoop.scale.x=1.45
-	var given:=TRAVEL_APPLES-items.count("Jabłko")
-	for i in TRAVEL_APPLES:
-		var at:=basket+Vector3((i-1)*.55,.55,.02)
+	var given:=travel_apples-items.count("Jabłko")
+	for i in travel_apples:
+		var at:=basket+Vector3((i-(travel_apples-1)*.5)*.51,.55,.02)
 		if i>=given: at=Vector3(-2.2+(i-given)*.55,.45,.34)
 		pickups.append(make_apple(at))
 	match part:
 		0: say("sad_loss")
 		1:
-			if given<TRAVEL_APPLES: button("Ręka",give_apple)
+			if given<travel_apples: button("Ręka",give_apple)
 			if given==0: say("sad_give")
-			elif given<TRAVEL_APPLES: say("sad_next")
+			elif given<travel_apples: say("sad_next")
 			else: say("sad_question")
 		2:
-			for n in Data.number_choices(TRAVEL_APPLES): button(str(n),apple_answer.bind(n))
+			for n in Data.number_choices(travel_apples): button(str(n),apple_answer.bind(n))
 			say("sad_question")
 			if marks>0:
 				hint_errors=1
-				if marks>=2: hint_miss(TRAVEL_APPLES,glow_pickups)
+				if marks>=2: hint_miss(travel_apples,glow_pickups)
 		3:
 			button("Dalej",advance)
-			say("sad_thanks")
+			say("sad_thanks" if travel_apples==3 else "sad_thanks_alt")
 	transition_time=(host.narrator.stream.get_length() if host.sound and host.narrator.stream else 2.0)+.25
 
 func give_apple() -> void:
@@ -821,12 +832,12 @@ func give_apple() -> void:
 		if b.accessibility_name=="Ręka": b.disabled=true
 
 func apple_answer(n:int) -> void:
-	if n==TRAVEL_APPLES:
+	if n==travel_apples:
 		go_to("chief_sad",3)
 		return
 	marks+=1
 	checkpoint()
-	hint_miss(TRAVEL_APPLES,glow_pickups)
+	hint_miss(travel_apples,glow_pickups)
 	if marks>=2: return
 	say("sad_retry")
 	for i in pickups.size():
@@ -839,8 +850,8 @@ func apple_answer(n:int) -> void:
 		pulse.tween_property(apple,"scale",Vector3.ONE*1.45,.2)
 		pulse.tween_property(apple,"scale",Vector3.ONE,.25)
 
-	if n>TRAVEL_APPLES:
-		for i in range(TRAVEL_APPLES,n):
+	if n>travel_apples:
+		for i in range(travel_apples,n):
 			var ring:=TorusMesh.new()
 			ring.inner_radius=.19
 			ring.outer_radius=.24
@@ -869,6 +880,7 @@ func render_stable() -> void:
 	host.camera.size=maxf(8.8,12.8/host.ui.size.aspect())
 	host.camera.look_at_from_position(focus+Vector3(0,6.2,9),focus+Vector3(0,.1,1.2),Vector3.UP)
 	host.hud.text="Stajnia Toba"
+	stable.empty_mask=22 if pony_count()==3 else 18
 	var counting:=part==0 if home else part==1
 	stable.set_pens(home,marks,counting)
 	if home:
@@ -877,25 +889,25 @@ func render_stable() -> void:
 		if part==0: say("stable_home")
 		else:
 			reward.show()
-			say("stable_thanks")
+			say("stable_thanks" if pony_count()==3 else "stable_thanks_alt")
 	elif part==0:
 		say("evening")
 		curtain.color.a=.88
 	elif part==1:
-		if marks==stable.EMPTY_MASK:
-			for n in Data.number_choices(3): button(str(n),stable_answer.bind(n))
-		say("stable" if marks==0 or marks==stable.EMPTY_MASK else "empty_pens")
+		if marks==stable.empty_mask:
+			for n in Data.number_choices(pony_count()): button(str(n),stable_answer.bind(n))
+		say(("stable" if pony_count()==3 else "stable_alt") if marks==0 or marks==stable.empty_mask else "empty_pens")
 	elif part==2:
 		stable.smoke.show()
 		visitor.look_at(stable.smoke.global_position,Vector3.UP,true)
 		var smoke_focus:=focus.lerp(stable.smoke.global_position,.62)
 		host.camera.look_at_from_position(smoke_focus+Vector3(0,5.5,9),smoke_focus,Vector3.UP)
-		say("stable_ok")
+		say("stable_ok" if pony_count()==3 else "stable_ok_alt")
 	elif part==3:
-		for i in TRAVEL_APPLES:
+		for i in travel_apples:
 			make_apple(stable.position+Vector3(2.5+i*.48,.36,1.25))
 		button("Ręka",func():
-			for i in TRAVEL_APPLES: items.append("Jabłko")
+			for i in travel_apples: items.append("Jabłko")
 			go_to("stable",4,marks))
 		say("travel_apples")
 	else:
@@ -906,7 +918,7 @@ func render_stable() -> void:
 func count_pen(i:int) -> void:
 	if host.paused or not active or marks & (1<<i): return
 	var home:=id()=="stable_home"
-	if not ((home and part==0) or (id()=="stable" and part==1 and (stable.EMPTY_MASK & (1<<i)) != 0)): return
+	if not ((home and part==0) or (id()=="stable" and part==1 and (stable.empty_mask & (1<<i)) != 0)): return
 	marks|=1<<i
 	checkpoint()
 	var total:=0
@@ -914,14 +926,14 @@ func count_pen(i:int) -> void:
 		if marks & (1<<bit): total+=1
 	stable.set_pens(home,marks,true)
 	if host.sound: host.play_clip(host.narrator,"count_%d"%total)
-	if marks==(stable.FULL_MASK if home else stable.EMPTY_MASK):
+	if marks==(stable.FULL_MASK if home else stable.empty_mask):
 		age=0
 		transition_time=1.1
 
 func stable_answer(n:int) -> void:
-	if n!=3:
+	if n!=pony_count():
 		if hint_errors==0: effect("story/again")
-		hint_miss(3,stable.highlight_empty)
+		hint_miss(pony_count(),stable.highlight_empty)
 		return
 	go_to("stable",2,marks)
 
@@ -930,7 +942,7 @@ func stable_tick() -> void:
 	if age<transition_time: return
 	if id()=="stable":
 		if part==0: go_to("stable",1)
-		elif part==1 and marks==stable.EMPTY_MASK and options.get_child_count()==1: render()
+		elif part==1 and marks==stable.empty_mask and options.get_child_count()==1: render()
 		elif part==1 and marks==0 and voice=="route_stable": say("empty_pens")
 		elif part==2: go_to("stable",3,marks)
 	elif part==0 and marks==stable.FULL_MASK: go_to("stable_home",1,marks)
@@ -1092,7 +1104,7 @@ func _physics_process(dt:float) -> void:
 	if id()=="chief_sad":
 		if age>=transition_time:
 			if part==0: go_to("chief_sad",1)
-			elif part==1 and marks==TRAVEL_APPLES: go_to("chief_sad",2)
+			elif part==1 and marks==travel_apples: go_to("chief_sad",2)
 			elif part==1 and marks>0:
 				options.get_child(0).disabled=false
 		return
@@ -1211,9 +1223,9 @@ func bank_done() -> void:
 		else: advance()
 
 func lantern_answer(n:int) -> void:
-	if n!=5:
+	if n!=numbers.get("lamps",5):
 		if hint_errors==0: square.show_lamps(n)
-		hint_miss(5,square.show_lamps)
+		hint_miss(numbers.get("lamps",5),square.show_lamps)
 		return
 	part=1
 	checkpoint()

@@ -3,7 +3,8 @@ extends Node3D
 const WOOD := Color("#ce985b")
 const GOLD := Color("#ffdd89")
 const LOOSE := 3
-const YARD := [Vector3(2.65,.32,1.75), Vector3(-2.65,.32,1.75), Vector3(0,.32,1.75)]
+const YARD := [Vector3(2.65,.32,1.75), Vector3(-2.65,.32,1.75), Vector3(0,.32,1.75),Vector3(3.7,.32,.5)]
+var on_hand:=2
 var bank
 var host
 var boards:Array[Node3D]=[]
@@ -19,6 +20,7 @@ func dimensions(i:int) -> Vector3:
 
 func setup(owner_bank) -> void:
 	bank=owner_bank
+	on_hand=5-bank.host.bystra.numbers.get("boards",3)
 	host=bank.host
 	for z in [-1.18,-.22]:
 		host.box(self,Vector3(0,.25,z),Vector3(8.6,.22,.18),WOOD.darkened(.32))
@@ -35,8 +37,8 @@ func setup(owner_bank) -> void:
 		host.box(board,Vector3(-dims.x*.22,.091,0),Vector3(.028,.01,dims.z*.82),WOOD.darkened(.18))
 		if i==LOOSE:
 			bank.rock(board,Vector3(.23,.087,.38),.14,WOOD.darkened(.27),Vector3(1,.12,1.34))
-		if bank.mode()=="fit" and i>=2 and not (bank.marks & (1<<(i-2))):
-			board.position=YARD[i-2]
+		if bank.mode()=="fit" and i>=on_hand and not (bank.marks & (1<<(i-on_hand))):
+			board.position=YARD[i-on_hand]
 			host.box(self,at-Vector3.UP*.13,dims,Color("#425852"))
 			var outline:MeshInstance3D=bank.torus(at,.22,GOLD)
 			outline.scale=Vector3(dims.x,1,dims.z)
@@ -50,8 +52,8 @@ func setup(owner_bank) -> void:
 func press(at:Vector2) -> bool:
 	selected=-1
 	if bank.mode()=="fit":
-		for i in range(2,5):
-			if not (bank.marks & (1<<(i-2))) and bank.near(at,boards[i].position):
+		for i in range(on_hand,5):
+			if not (bank.marks & (1<<(i-on_hand))) and bank.near(at,boards[i].position):
 				selected=i
 				return true
 		return false
@@ -63,7 +65,7 @@ func drag(at:Vector2) -> void:
 
 func cancel() -> void:
 	if selected>=0:
-		boards[selected].position=YARD[selected-2]
+		boards[selected].position=YARD[selected-on_hand]
 		selected=-1
 
 func release(at:Vector2) -> void:
@@ -77,8 +79,8 @@ func release(at:Vector2) -> void:
 			selected=-1
 			boards[i].position=slot(i)
 			bank.sound.emit("wood_tap")
-			var mask:int=bank.marks | (1<<(i-2))
-			if mask==7: bank.next_part()
+			var mask:int=bank.marks | (1<<(i-on_hand))
+			if mask==(1<<(5-on_hand))-1: bank.next_part()
 			else: bank.save_marks(mask)
 		"pegs":
 			for i in 5:

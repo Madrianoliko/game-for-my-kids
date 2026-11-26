@@ -2,7 +2,7 @@ extends Node3D
 
 signal counted(index:int)
 const PLACE := Vector3(14,0,-1.2)
-const EMPTY_MASK := (1<<1) | (1<<2) | (1<<4)
+var empty_mask := (1<<1) | (1<<2) | (1<<4)
 const FULL_MASK := (1<<5)-1
 const WIDTH := 1.55
 var host
@@ -47,7 +47,7 @@ func setup(game) -> void:
 func set_pens(all_home:bool,mask:int,interactive:bool) -> void:
 	smoke.visible=not all_home and interactive
 	for i in 5:
-		horses[i].visible=all_home or not (EMPTY_MASK & (1<<i))
+		horses[i].visible=all_home or not (empty_mask & (1<<i))
 		var b:=targets[i]
 		b.visible=interactive and (all_home or not horses[i].visible)
 		b.disabled=bool(mask & (1<<i))
@@ -71,7 +71,7 @@ func _process(dt:float) -> void:
 func highlight_empty(total:int) -> void:
 	var index:=0
 	for i in floors.size():
-		if EMPTY_MASK & (1<<i):
+		if empty_mask & (1<<i):
 			index+=1
 			floors[i].material_override.emission_enabled=index<=total
 			floors[i].material_override.emission=Color.GOLD

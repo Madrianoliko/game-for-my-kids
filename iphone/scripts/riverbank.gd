@@ -177,7 +177,7 @@ func build() -> void:
 				else: markers.append(null)
 			porter=character("troll",Vector3(-4.6,.26,-.15),.65)
 			if id!="fork":
-				for i in 3:
+				for i in host.bystra.numbers.get("boards",3):
 					host.box(porter,Vector3(-.6,1.02+i*.13,0),Vector3(.48,.12,2.25),WOOD)
 				host.box(porter,Vector3(-.6,1.42,0),Vector3(.50,.06,.13),Color("#dbc298"))
 			if mode()!="stones":
@@ -187,7 +187,8 @@ func build() -> void:
 				bilbo.position=hop_origin()
 				porter.position=bilbo.position+Vector3(-.46,0,-.40)
 				if mode()=="hops": ring=torus(next_hop(),.55,LIGHT)
-	prompt.emit("bank_"+mode(),LINES[mode()])
+	if mode()=="fit" and bridge.on_hand==1: prompt.emit("bank_fit_alt","Tobo przyniósł cztery deski! Przesuń każdą na pasujący kształt.")
+	else: prompt.emit("bank_"+mode(),LINES[mode()])
 
 func hop_origin() -> Vector3:
 	return Vector3(-4.3,.45,1) if marks==0 else Vector3(STONE_TO[clampi(marks-1,0,2)])+Vector3.UP*.27
