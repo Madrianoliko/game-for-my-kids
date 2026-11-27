@@ -530,7 +530,7 @@ func run() -> void:
 	var cfg:=ConfigFile.new()
 	cfg.load(story.FILE)
 	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and game.atlas.stone_marker.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
-	if not check(game.atlas.chapter_three.visible,"Odblokowanie smoczka"): return
+	if not check(game.atlas.chapter_three.visible and not game.atlas.chapter_four.visible,"Odblokowanie smoczka przed kryształami"): return
 	await click(game.atlas.chapter_three)
 	if not check(story.id()=="dragon_map" and story.ReturnTrip.MAP in story.items,"Mapa w chatce"): return
 	await click(story.options.get_child(0))
@@ -635,6 +635,44 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	cfg.load(story.FILE)
 	if not check(game.atlas.visible and cfg.get_value("story","chapters_completed")==3 and cfg.get_value("story","ended"),"Zakończony trzeci rozdział"): return
+	# Reload the completed dragon_flight save as written before the cave existed.
+	reload_current_scene()
+	await scene_changed
+	game=current_scene
+	story=game.bystra
+	if not check(game.atlas.chapter_four.visible,"Kryształ dostępny po wczytaniu zapisu rozdziału 3"): return
+	await click(game.atlas.chapter_four)
+	if not check(story.id()=="whisper_cave" and "Latarka" in story.items,"Bilbo wchodzi z latarką"): return
+	await click(story.options.get_child(0))
+	if not check("Latarka" not in story.items,"Szeptek zabiera latarkę"): return
+	await click(story.options.get_child(0))
+	await tap_model(story.whisper.entrances[1])
+	if not check(story.id()=="crystal_hall","Zamknięte przejście"): return
+	await tap_model(story.whisper.entrances[0])
+	if not check(story.id()=="drip_tunnel" and story.whisper.answers[0].disabled,"Najpierw słuchanie"): return
+	for attempt in 3:
+		if not await verify_drops(3,attempt==2): return
+		if attempt<2: await click(numeric_button(story.options,3,false))
+	await tap_model(story.whisper.flashes[2])
+	if not check(story.whisper.counted==4,"Liczenie dotykiem po dwóch pomyłkach"): return
+	await click(numeric_button(story.options,3,true))
+	await reopen()
+	if not check(story.marks==1 and story.whisper.wall_gems[0].material_override.emission_enabled,"Pierwszy wielki kryształ po wznowieniu"): return
+	await click(story.options.get_child(0))
+	if not await verify_drops(5,false): return
+	await click(story.options.get_child(-1))
+	if not await verify_drops(5,false): return
+	await click(numeric_button(story.options,5,true))
+	await click(story.options.get_child(0))
+	await reopen()
+	if not check(story.id()=="crystal_hall" and story.marks==2 and story.whisper.wall_gems.all(func(g): return g.material_override.emission_enabled),"Obie nagrody zapisane przy wejściu"): return
+	await click(story.options.get_child(0))
+	if not check(game.atlas.visible and game.atlas.resume.visible,"Powrót do menu ze ścieżką wznowienia"): return
+	cfg.save(story.FILE)
+	reload_current_scene()
+	await scene_changed
+	game=current_scene
+	story=game.bystra
 	await click(game.atlas.chapter_two)
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
@@ -667,3 +705,13 @@ func place_step(piece:int,socket:int) -> void:
 	drag(game.ui,end)
 	touch(game.ui,end,false)
 	await process_frame
+
+func verify_drops(total:int, persistent:bool) -> bool:
+	var seen:=0
+	for frame in 1200:
+		await process_frame
+		if story.whisper.heard>seen:
+			seen+=1
+			if not check(story.whisper.flashes[seen-1].material_override.emission_enabled,"Błysk przy każdym kapnięciu"): return false
+		if not story.whisper.listening: break
+	return check(seen==total and not story.whisper.answers[0].disabled and story.whisper.flashes.all(func(g): return g.material_override.emission_enabled==persistent),"Liczba kropli, pomoc i odblokowane odpowiedzi")
