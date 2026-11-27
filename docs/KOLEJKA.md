@@ -108,7 +108,7 @@ Plan: rozdział 4, zagadki 2–5.
 - Po trzech tunelach: palce Szeptka (3 + 3) i wielka zagadka o nogach Bilba i kucyka (2 + 4).
 - Finał: Szeptek oddaje latarkę: „Wygrałeś… Masz latarkę. Ale wróć kiedyś!”. Koniec rozdziału 4.
 
-### [ ] G01 — Głosy z OpenAI: lista kwestii i próbki do odsłuchu
+### [x] G01 — Głosy z OpenAI: lista kwestii i próbki do odsłuchu (2026-11-27)
 Cel: zastąpić systemowy głos Zosi naturalnymi głosami postaci z OpenAI. Gra dalej odtwarza gotowe pliki mp3 z pakietu i NIGDY nie łączy się z API w trakcie gry.
 - **Lista kwestii:** utwórz `voice/kwestie.csv` (albo `.json`) ze wszystkimi kwestiami w grze: plik mp3 (ścieżka jak dziś, np. `audio/story/route_door.mp3`), postać, tekst. Wygeneruj ją skryptem z kodu (słowniki WORDS, LINES, GUIDE itd.), żeby nic nie umknęło. Wypisz w raporcie kwestie, których nie dało się przypisać do postaci.
 - **Postacie i ich opis głosu** w `voice/postacie.json`: narrator, bóbr, Tobo, herszt, Wiewiórka, Tygrysek, mali hobbici, Gapa, Burczyk, Chrapek, Iskierka, mama smoczyca, kret, Szeptek, Pestka. Każda postać ma głos OpenAI i krótką instrukcję po polsku (np. Gapa: „niski, powolny, dobroduszny troll, trochę głupkowaty, nie straszny”; Iskierka: „mała, wesoła smoczyca, wysoki głos”; narrator: „ciepły głos opowiadacza bajek dla pięciolatka, wyraźnie i spokojnie”). Wszystkie mówią po polsku, wyraźnie i niezbyt szybko.

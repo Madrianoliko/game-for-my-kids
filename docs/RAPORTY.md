@@ -1,3 +1,11 @@
+## 2026-11-27 — G01. Polskie próbki gotowe do odsłuchu
+
+W voice/probki/README.md są odsyłacze do 64 nagrań MP3. Dla każdej z 16 postaci przygotowano dwa warianty głosu na dwóch polskich kwestiach. Manifest pozwala wznowić generowanie bez ponownego zamawiania tych samych próbek.
+Sprawdzono dekodowanie, dodatni czas trwania i sumę kontrolną każdego pliku. Przy wyborze warto porównać wymowę imienia Pestki u bobra oraz pytania o kucyki u Toba, zwłaszcza w wariancie ash.
+Katalog obejmuje 196 kwestii. Do ustalenia przy obsadzie pozostały route_homecoming, route_dawn_dishes i trzy riposty route_dawn_argue_{rocks,food,cones} wraz z wariantami _alt.
+Próbki są poza grą. Pakiet iPhone ma 11 744 220 bajtów. Wszystkie trzy testy na pakiecie przeszły, z wcześniejszymi ostrzeżeniami przy zamknięciu testów doliny i obozu.
+Brak brakujących próbek i otwartych pytań technicznych. Zadanie G02 czeka na wybór głosów po odsłuchu.
+
 ## 2026-11-27 — G01. Katalog i generator głosów
 
 ### PYTANIE
