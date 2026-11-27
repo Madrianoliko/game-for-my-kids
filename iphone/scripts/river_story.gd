@@ -77,7 +77,7 @@ var attack_fired:=false
 var blocking:=false
 var guarding:=true
 var fingers:Dictionary={}
-var declined:=false
+var speech_end:=0.0
 var traveling:=false
 const GUARD_CUES := ["guard","guard_side","guard_sword"]
 var ingredient_list := VBoxContainer.new()
@@ -92,7 +92,7 @@ var origin:=Vector3.ZERO
 
 func id() -> String: return Data.ROUTE[index]
 
-func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and (part==2 or "Mleko" in items)) or (id()=="door" and declined)
+func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and (part==2 or "Mleko" in items))
 
 func setup(game) -> void:
 	host=game
@@ -244,6 +244,9 @@ func prompt(clip:String,words:String) -> void:
 	voice=clip
 	caption.text=words
 	if host.sound: host.play_clip(host.narrator,"story/"+clip)
+	if active and id() in ["valley_intro","door","kids_arrive"]:
+		var stream:AudioStream=host.narrator.stream if host.sound else AudioStreamMP3.load_from_file("res://audio/story/"+clip+".mp3")
+		speech_end=age+stream.get_length()+.35
 
 func say(key:String) -> void:
 	prompt("route_"+key,Data.WORDS[key])
@@ -259,7 +262,7 @@ func checkpoint(ended:=false) -> void:
 	cfg.set_value("story","chapters_completed",chapters)
 	cfg.set_value("story","ended",ended)
 	cfg.set_value("story","stone_hill",stone_hill.visible)
-	for key in ["blocked_door","part","marks","items","declined","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
+	for key in ["blocked_door","part","marks","items","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
 	if cfg.save(FILE+".tmp")==OK:
 		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK and not ended
 
@@ -292,10 +295,9 @@ func read_save() -> bool:
 		elif old<30: stage=["recipe","eggs","milk"][old-27]
 		else: stage="homecoming"
 		index=Data.ROUTE.find(stage)
-		items=PackedStringArray() if index==0 else PackedStringArray(Data.GEAR)
+		items=PackedStringArray() if stage=="door" else PackedStringArray(Data.GEAR)
 		part=0
 		marks=0
-		declined=false
 		traveling=false
 	else:
 		part=int(cfg.get_value("story","part",0))
@@ -303,7 +305,7 @@ func read_save() -> bool:
 		if id()=="recipe" and int(cfg.get_value("story","version",1))==1: marks=(1<<clampi(marks,0,2))-1
 		items=cfg.get_value("story","items",PackedStringArray())
 		if id()=="stable_home" and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
-		declined=bool(cfg.get_value("story","declined",false))
+		if id()=="door" and cfg.get_value("story","declined",false): index=Data.ROUTE.find("pack")
 		traveling=bool(cfg.get_value("story","traveling",false))
 		village_pos=cfg.get_value("story","village_pos",Square.ENTRY)
 		room_saves=cfg.get_value("story","room_saves",{})
@@ -319,7 +321,7 @@ func read_save() -> bool:
 		marks=0
 	return true
 
-func begin(resume:bool, start_step:="door") -> void:
+func begin(resume:bool, start_step:="valley_intro") -> void:
 	if resume:
 		if not read_save(): return
 	else:
@@ -334,7 +336,6 @@ func begin(resume:bool, start_step:="door") -> void:
 		room_saves.clear()
 		fork_path=""
 		village_pos=Square.ENTRY
-		declined=false
 		traveling=false
 	active=true
 	host.prepare_valley()
@@ -515,18 +516,30 @@ func render() -> void:
 		oak.scale=Vector3(.85,1,.21)
 		host.orb(scene,Vector3(.68,2.23,-2.74),.41,Color("#856541")).scale=Vector3(1,.55,.22)
 	match id():
+		"valley_intro":
+			square.show()
+			scene.position=square.position
+			host.hud.text="Dolina Bilba"
+			host.box(scene,Vector3(2,.03,6),Vector3(2.3,.05,9),Color("#70aeb8"))
+			for side in [-1,1]:
+				host.box(scene,Vector3(2+side*1.05,.24,6),Vector3(.5,.45,1.5),Village.WOOD)
+			for i in [-2,-1,1,2]:
+				host.box(scene,Vector3(2+i*.49,.49,6),Vector3(.46,.14,1.45),Village.WOOD)
+			var house:=Node3D.new()
+			scene.add_child(house)
+			house.position=Vector3(11,0,.5)
+			Village.building(host,house,"delivery")
+			host.orb(house,Vector3(0,.83,-.15),.83,Color("#547348")).scale.z=.14
+			host.leo.position=house.global_position+Vector3(.8,0,.75)
+			say("valley_intro")
+			intro_camera(0)
+			if host.save.get_value("valley","seen_bilbo_intro",false):
+				button("Dalej",advance).custom_minimum_size=Vector2(112,96)
 		"door":
 			visitor=actor("beaver",Vector3(0,0,-1.9))
-			if declined:
-				dock.hide()
-				say("wait")
-			else:
-				var arrival:=visitor.create_tween()
-				visitor.position.z-=.65
-				arrival.tween_property(visitor,"position:z",-1.9,.5)
-				button("Tak",accept_help)
-				button("Nie teraz",decline)
-				say("door")
+			visitor.position.z-=.65
+			visitor.create_tween().tween_property(visitor,"position:z",-1.9,.5)
+			say("door")
 		"pack":
 			dock.hide()
 			visitor=actor("beaver",Vector3(0,0,-2.45),.75)
@@ -543,16 +556,18 @@ func render() -> void:
 				item.visible=Data.GEAR[i] not in items
 			host.hud.text="Plecak   %d / 7"%items.size()
 			say("exit" if items.size()==7 else "pack")
-		"range","dummy":
+		"kids_arrive","range","dummy":
 			for x in [-2.0,-1.1]:
 				var kid:Node3D=preload("res://art/leo.glb").instantiate()
 				scene.add_child(kid)
 				kid.scale=Vector3.ONE*.55
 				kid.position=Vector3(x,0,-1)
-				var run:=kid.create_tween()
-				kid.position.z-=2
-				run.tween_property(kid,"position:z",-1,.7)
-			if id()=="range":
+				if id()=="kids_arrive":
+					kid.position.z-=3
+					kid.create_tween().tween_property(kid,"position:z",-1,1.4)
+			if id()=="kids_arrive":
+				host.hud.text="Przed chatką"
+			elif id()=="range":
 				actors.append(actor("barrel",Vector3(1,0,-.45)))
 				actors.append(actor("barrel",Vector3(1.85,0,-.8)))
 				if part>0: actors[0].rotation.z=PI*.45
@@ -801,14 +816,13 @@ func show_count() -> void:
 		render())
 	host.panel.add_child(repair)
 
-func accept_help() -> void:
-	declined=false
-	advance()
-
-func decline() -> void:
-	declined=true
-	checkpoint()
-	render()
+func intro_camera(t:float) -> void:
+	var stops:=[Vector3(2,0,6),Square.DOORS.mill,Vector3.ZERO,Vector3(11,.8,.5)]
+	var progress:=clampf(t,0,1)*3
+	var leg:=mini(floori(progress),2)
+	var focus:Vector3=square.position+stops[leg].lerp(stops[leg+1],smoothstep(0,1,progress-leg))
+	var offset:=Vector3(0,8,8).lerp(Vector3(0,3.3,6),smoothstep(2,3,progress))
+	host.camera.look_at_from_position(focus+offset,focus,Vector3.UP)
 
 func clear_hint() -> void:
 	if hint_display.is_valid(): hint_display.call(0)
@@ -1033,6 +1047,9 @@ func stable_tick() -> void:
 		host.home()
 
 func advance() -> void:
+	if id()=="valley_intro":
+		host.save.set_value("valley","seen_bilbo_intro",true)
+		host.save.save("user://valley.cfg")
 	if id()=="troll_dawn": stone_hill.show()
 	if id()=="invitation": village_pos=Square.DOORS.delivery+Vector3.BACK*.95
 	index+=1
@@ -1051,15 +1068,9 @@ func arrived() -> void:
 
 func interact() -> void:
 	if not active or busy or host.paused: return
-	if id() in ["pack","door"] and host.leo.position.distance_to(visitor.global_position)<1.45:
-		if declined:
-			declined=false
-			checkpoint()
-			render()
-			return
-		if items.size()==7:
-			advance()
-			return
+	if id()=="pack" and items.size()==7 and host.leo.position.distance_to(visitor.global_position)<1.45:
+		advance()
+		return
 	if traveling or bank.visible or field.visible: return
 	if id()=="village":
 		var door:=square.near_door(village_pos)
@@ -1165,6 +1176,10 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id() in ["valley_intro","door","kids_arrive"]:
+		if id()=="valley_intro": intro_camera(age/7.0)
+		if age>=speech_end and (id()!="valley_intro" or age>=7.5): advance()
+		return
 	if id()=="dragon_orchard":
 		if part<2: iskierka.walk(dt)
 		return

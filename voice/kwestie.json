@@ -492,7 +492,7 @@
   {
     "plik": "audio/story/route_door.mp3",
     "postać": "bóbr",
-    "tekst": "Bilbo, to ja, bóbr! Woda porwała deski z mostu. Pestka czeka na drugim brzegu. Pomożesz mi go naprawić?"
+    "tekst": "Proszę, Bilbo, pomóż mi! Woda zniszczyła most. Weź narzędzia i chodź za mną."
   },
   {
     "plik": "audio/story/route_dragon_fire.mp3",
@@ -618,6 +618,11 @@
     "plik": "audio/story/route_invitation.mp3",
     "postać": "Wiewiórka",
     "tekst": "Bilbo! Dziś urodziny Tygryska. Pomożesz mi upiec tort? Poszukaj mąki w młynie, jajek w kurniku i mleka w oborze. Przynieś je do mojej chatki z żołędziem!"
+  },
+  {
+    "plik": "audio/story/route_kids_arrive.mp3",
+    "postać": "narrator",
+    "tekst": "Gdy Bilbo wyszedł z chatki, podbiegły do niego dzieci."
   },
   {
     "plik": "audio/story/route_lanterns.mp3",
@@ -935,14 +940,14 @@
     "tekst": "Weź jabłka na drogę."
   },
   {
+    "plik": "audio/story/route_valley_intro.mp3",
+    "postać": "narrator",
+    "tekst": "W tej dolinie mieszka Bilbo, mały hobbit. Uwielbia przygody i liczenie. Dziś ktoś puka do jego drzwi!"
+  },
+  {
     "plik": "audio/story/route_village.mp3",
     "postać": "narrator",
     "tekst": "Rozejrzyj się. Sam wybierz dom. Podejdź do drzwi i dotknij dłoni."
-  },
-  {
-    "plik": "audio/story/route_wait.mp3",
-    "postać": "bóbr",
-    "tekst": "Dobrze, poczekam przy drzwiach. Kiedy będziesz gotowy, podejdź i dotknij dłoni."
   },
   {
     "plik": "audio/story/route_whisper_again.mp3",

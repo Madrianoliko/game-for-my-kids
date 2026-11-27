@@ -306,7 +306,7 @@ func exit_game() -> void:
 	else:
 		get_tree().quit()
 
-func open_story(start_step:="door") -> void:
+func open_story(start_step:="valley_intro") -> void:
 	if not bystra.saved:
 		bystra.begin(false,start_step)
 		return

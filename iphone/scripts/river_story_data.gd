@@ -1,8 +1,8 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]
+const ROUTE := ["valley_intro","door","pack","kids_arrive","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
-const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
+const POSITIONS := [Vector3(-3.15,0,-2.05),Vector3(-1.35,0,-2.05),Vector3(.95,0,-1.8),Vector3(3,0,-.55),Vector3(2.6,0,2),Vector3(-2.9,0,1.65),Vector3(0,0,2.05)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
 const WORDS := {
 	"evening":"Wieczorem, po przyjęciu…",
@@ -139,8 +139,9 @@ const WORDS := {
 	"take_eggs":"Lis uciekł! Podejdź do gniazda i zabierz dwa jajka.",
 	"road_dairy":"Zostało mleko. Idź do obory i pomóż nakarmić krowy.",
 
-	"door":"Bilbo, to ja, bóbr! Woda porwała deski z mostu. Pestka czeka na drugim brzegu. Pomożesz mi go naprawić?",
-	"wait":"Dobrze, poczekam przy drzwiach. Kiedy będziesz gotowy, podejdź i dotknij dłoni.",
+	"valley_intro":"W tej dolinie mieszka Bilbo, mały hobbit. Uwielbia przygody i liczenie. Dziś ktoś puka do jego drzwi!",
+	"door":"Proszę, Bilbo, pomóż mi! Woda zniszczyła most. Weź narzędzia i chodź za mną.",
+	"kids_arrive":"Gdy Bilbo wyszedł z chatki, podbiegły do niego dzieci.",
 	"pack":"Zbierz narzędzia i sprzęt na drogę. Podejdź do przedmiotu i dotknij dłoni.",
 	"exit":"Wszystko spakowane! Podejdź do bobra przy drzwiach i dotknij dłoni.",
 	"range":"Bilbo! Ale masz super łuk! Pokaż nam, jak strzelasz!",
