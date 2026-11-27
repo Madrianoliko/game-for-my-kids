@@ -1,0 +1,982 @@
+[
+  {
+    "plik": "audio/beaver_help.mp3",
+    "postać": "bóbr",
+    "tekst": "Dotknij każdego pustego miejsca na moście."
+  },
+  {
+    "plik": "audio/beaver_more.mp3",
+    "postać": "bóbr",
+    "tekst": "Mam dwie deski. Ile jeszcze przynieść?"
+  },
+  {
+    "plik": "audio/beaver_more_alt.mp3",
+    "postać": "bóbr",
+    "tekst": "Mam jedną deskę. Ile jeszcze przynieść?"
+  },
+  {
+    "plik": "audio/beaver_pegs.mp3",
+    "postać": "bóbr",
+    "tekst": "Stuknij w każdy kołek, żeby przybić deski."
+  },
+  {
+    "plik": "audio/beaver_ready.mp3",
+    "postać": "bóbr",
+    "tekst": "Most gotowy!"
+  },
+  {
+    "plik": "audio/beaver_retry.mp3",
+    "postać": "bóbr",
+    "tekst": "Policz puste miejsca obok dwóch desek."
+  },
+  {
+    "plik": "audio/beaver_retry_alt.mp3",
+    "postać": "bóbr",
+    "tekst": "Policz puste miejsca obok deski."
+  },
+  {
+    "plik": "audio/count_1.mp3",
+    "postać": "narrator",
+    "tekst": "Jeden"
+  },
+  {
+    "plik": "audio/count_2.mp3",
+    "postać": "narrator",
+    "tekst": "Dwa"
+  },
+  {
+    "plik": "audio/count_3.mp3",
+    "postać": "narrator",
+    "tekst": "Trzy"
+  },
+  {
+    "plik": "audio/count_4.mp3",
+    "postać": "narrator",
+    "tekst": "Cztery"
+  },
+  {
+    "plik": "audio/count_5.mp3",
+    "postać": "narrator",
+    "tekst": "Pięć"
+  },
+  {
+    "plik": "audio/count_6.mp3",
+    "postać": "narrator",
+    "tekst": "Sześć"
+  },
+  {
+    "plik": "audio/crossing.mp3",
+    "postać": "narrator",
+    "tekst": "Przejdź przez most"
+  },
+  {
+    "plik": "audio/story/again.mp3",
+    "postać": "narrator",
+    "tekst": "Spróbuj jeszcze raz. Posłuchaj wskazówki."
+  },
+  {
+    "plik": "audio/story/bank_crack.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Teraz dwa jajka. Stuknij palcem każde jajko, żeby je rozbić."
+  },
+  {
+    "plik": "audio/story/bank_fit.mp3",
+    "postać": "narrator",
+    "tekst": "Tobo przyniósł trzy deski! Przesuń każdą na pasujący ciemny kształt. Spójrz, która jest najdłuższa."
+  },
+  {
+    "plik": "audio/story/bank_fit_alt.mp3",
+    "postać": "narrator",
+    "tekst": "Tobo przyniósł cztery deski! Przesuń każdą na pasujący kształt."
+  },
+  {
+    "plik": "audio/story/bank_flip.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Biszkopt się upiekł! Lekko potrząśnij telefonem albo dotknij foremki. Połóż ostatnią warstwę na torcie Tygryska!"
+  },
+  {
+    "plik": "audio/story/bank_hay.mp3",
+    "postać": "narrator",
+    "tekst": "Krowy czekają na śniadanie. Przenieś siano do obu żłobów."
+  },
+  {
+    "plik": "audio/story/bank_hops.mp3",
+    "postać": "narrator",
+    "tekst": "Teraz przeprowadź Bilba. Dotykaj po kolei kamieni, żeby po nich skakał."
+  },
+  {
+    "plik": "audio/story/bank_milk_cow.mp3",
+    "postać": "narrator",
+    "tekst": "Podstawiliśmy wiaderko. Delikatnie pociągnij palcem w dół za strzyk trzy razy, żeby nalać mleka."
+  },
+  {
+    "plik": "audio/story/bank_nails.mp3",
+    "postać": "narrator",
+    "tekst": "Do naprawy potrzebujemy ośmiu gwoździ. Przeciągaj je z pudełka do plecaka, po jednym."
+  },
+  {
+    "plik": "audio/story/bank_pegs.mp3",
+    "postać": "narrator",
+    "tekst": "Deski się kołyszą! Masz młotek i gwoździe z chatki. Przybij każdą deskę, żeby przestała się ruszać."
+  },
+  {
+    "plik": "audio/story/bank_pour.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Jeszcze jedna porcja mleka. Przesuń dzbanek nad miskę i puść, żeby wlać mleko."
+  },
+  {
+    "plik": "audio/story/bank_scoop.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Mamy już składniki z wioski. Wsyp do miski trzy porcje mąki. Dotknij każdego woreczka."
+  },
+  {
+    "plik": "audio/story/bank_stir.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Pomieszaj ciasto! Rysuj palcem kółka w misce, aż żółtka znikną."
+  },
+  {
+    "plik": "audio/story/bank_stones.mp3",
+    "postać": "narrator",
+    "tekst": "Przenieś kamienie do pustych kręgów. Tobo przejdzie tędy z deskami do mostu."
+  },
+  {
+    "plik": "audio/story/camp_cart_pair.mp3",
+    "postać": "Tobo",
+    "tekst": "Tam są! Przy wozie i obok ogniska."
+  },
+  {
+    "plik": "audio/story/camp_caught.mp3",
+    "postać": "Gapa",
+    "tekst": "Aha! Widzę cię! Wracaj do stogu!"
+  },
+  {
+    "plik": "audio/story/camp_caught_again.mp3",
+    "postać": "Gapa",
+    "tekst": "Znowu ty? Hi, hi!"
+  },
+  {
+    "plik": "audio/story/camp_count.mp3",
+    "postać": "Gapa",
+    "tekst": "Raz… dwa… trzy…"
+  },
+  {
+    "plik": "audio/story/camp_done.mp3",
+    "postać": "Tobo",
+    "tekst": "Wszystkie trzy kucyki są bezpieczne, Bilbo!"
+  },
+  {
+    "plik": "audio/story/camp_done_pair.mp3",
+    "postać": "Tobo",
+    "tekst": "Oba kucyki są bezpieczne, Bilbo!"
+  },
+  {
+    "plik": "audio/story/camp_follow.mp3",
+    "postać": "narrator",
+    "tekst": "Kucyk idzie za tobą! Wracaj do Toba."
+  },
+  {
+    "plik": "audio/story/camp_hint.mp3",
+    "postać": "Tobo",
+    "tekst": "Kiedy Gapa mówi „Hmm?”, szybko do stogu!"
+  },
+  {
+    "plik": "audio/story/camp_intro_first.mp3",
+    "postać": "Tobo",
+    "tekst": "Wejdź do stogu."
+  },
+  {
+    "plik": "audio/story/camp_intro_hide.mp3",
+    "postać": "Tobo",
+    "tekst": "Kiedy Gapa mówi „Hmm?”, wskocz do stogu siana. W stogu cię nie zobaczy!"
+  },
+  {
+    "plik": "audio/story/camp_intro_run.mp3",
+    "postać": "Tobo",
+    "tekst": "Wybierz kucyka. Kiedy Gapa się odwraca i liczy, biegnij!"
+  },
+  {
+    "plik": "audio/story/camp_intro_safe.mp3",
+    "postać": "Tobo",
+    "tekst": "Widzisz? Nie zobaczył cię!"
+  },
+  {
+    "plik": "audio/story/camp_intro_stolen.mp3",
+    "postać": "Tobo",
+    "tekst": "Bilbo! Troll Gapa ukradł moje kucyki!"
+  },
+  {
+    "plik": "audio/story/camp_intro_there.mp3",
+    "postać": "Tobo",
+    "tekst": "Tam są! Przy drzewie, przy wozie i obok ogniska."
+  },
+  {
+    "plik": "audio/story/camp_one.mp3",
+    "postać": "Tobo",
+    "tekst": "Jeden kucyk jest już u mnie! Zostały jeszcze dwa."
+  },
+  {
+    "plik": "audio/story/camp_one_left.mp3",
+    "postać": "Tobo",
+    "tekst": "Jeden kucyk jest już u mnie! Został jeszcze jeden."
+  },
+  {
+    "plik": "audio/story/camp_pony.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij dłoni. Odwiąż kucyka i daj mu siana."
+  },
+  {
+    "plik": "audio/story/camp_tree_pair.mp3",
+    "postać": "Tobo",
+    "tekst": "Tam są! Przy drzewie i obok ogniska."
+  },
+  {
+    "plik": "audio/story/camp_turn.mp3",
+    "postać": "Gapa",
+    "tekst": "Hmm? Kto tu łazi?"
+  },
+  {
+    "plik": "audio/story/camp_two.mp3",
+    "postać": "Tobo",
+    "tekst": "Dwa kucyki! Został jeszcze jeden."
+  },
+  {
+    "plik": "audio/story/enc_aim_cone.mp3",
+    "postać": "narrator",
+    "tekst": "Przytrzymaj łuk, naciągnij cięciwę w stronę dłoni i puść."
+  },
+  {
+    "plik": "audio/story/enc_retry.mp3",
+    "postać": "narrator",
+    "tekst": "Spróbuj jeszcze raz. Popatrz na podpowiedź."
+  },
+  {
+    "plik": "audio/story/fork_murmur.mp3",
+    "postać": "Chrapek",
+    "tekst": "Mmm… Jeszcze chwilkę."
+  },
+  {
+    "plik": "audio/story/nail_5.mp3",
+    "postać": "narrator",
+    "tekst": "Pięć"
+  },
+  {
+    "plik": "audio/story/nail_6.mp3",
+    "postać": "narrator",
+    "tekst": "Sześć"
+  },
+  {
+    "plik": "audio/story/nail_7.mp3",
+    "postać": "narrator",
+    "tekst": "Siedem"
+  },
+  {
+    "plik": "audio/story/nail_8.mp3",
+    "postać": "narrator",
+    "tekst": "Osiem"
+  },
+  {
+    "plik": "audio/story/route_cave_boots.mp3",
+    "postać": "Szeptek",
+    "tekst": "Ile nóg ma Bilbo?"
+  },
+  {
+    "plik": "audio/story/route_cave_choose.mp3",
+    "postać": "narrator",
+    "tekst": "Wybierz tunel, który jeszcze nie świeci."
+  },
+  {
+    "plik": "audio/story/route_cave_color.mp3",
+    "postać": "narrator",
+    "tekst": "Który kolor pasuje? Wstaw kryształ w puste miejsce."
+  },
+  {
+    "plik": "audio/story/route_cave_count.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij przedmiotów, żeby je policzyć."
+  },
+  {
+    "plik": "audio/story/route_cave_final.mp3",
+    "postać": "Szeptek",
+    "tekst": "Wygrałeś… Masz latarkę. Ale wróć kiedyś!"
+  },
+  {
+    "plik": "audio/story/route_cave_find.mp3",
+    "postać": "narrator",
+    "tekst": "Jabłka herszta! I jakaś mapa… Na tej górze coś dymi."
+  },
+  {
+    "plik": "audio/story/route_cave_fish.mp3",
+    "postać": "narrator",
+    "tekst": "W jeziorku pływa sześć rybek. Patrz, co zrobi Szeptek!"
+  },
+  {
+    "plik": "audio/story/route_cave_fish_ask.mp3",
+    "postać": "narrator",
+    "tekst": "Dwie odpłynęły. Ile rybek zostało?"
+  },
+  {
+    "plik": "audio/story/route_cave_hooves.mp3",
+    "postać": "Szeptek",
+    "tekst": "Ile nóg ma kucyk Toba?"
+  },
+  {
+    "plik": "audio/story/route_cave_last.mp3",
+    "postać": "Szeptek",
+    "tekst": "Wszystkie tunele świecą! Teraz moja zagadka."
+  },
+  {
+    "plik": "audio/story/route_cave_lit.mp3",
+    "postać": "narrator",
+    "tekst": "Kolejny kryształ świeci!"
+  },
+  {
+    "plik": "audio/story/route_cave_open.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij dłoni, żeby otworzyć skrzynię."
+  },
+  {
+    "plik": "audio/story/route_cave_palms.mp3",
+    "postać": "Szeptek",
+    "tekst": "Na jednej ręce mam trzy palce. Ile mam na obu rękach?"
+  },
+  {
+    "plik": "audio/story/route_cave_pattern_hint.mp3",
+    "postać": "narrator",
+    "tekst": "Popatrz na jasny kryształ. Taki sam pasuje do drzwi."
+  },
+  {
+    "plik": "audio/story/route_cave_pattern_retry.mp3",
+    "postać": "narrator",
+    "tekst": "Drzwi się zatrzymały. Spróbuj innego kryształu."
+  },
+  {
+    "plik": "audio/story/route_cave_size.mp3",
+    "postać": "narrator",
+    "tekst": "Duży, mały, mały… Który kryształ pasuje na końcu?"
+  },
+  {
+    "plik": "audio/story/route_cave_together.mp3",
+    "postać": "Szeptek",
+    "tekst": "Ile nóg mają razem Bilbo i kucyk?"
+  },
+  {
+    "plik": "audio/story/route_chief.mp3",
+    "postać": "herszt",
+    "tekst": "Dość pojedynku! Przepuszczę was, jeśli policzycie moje jabłka. Dwa tutaj i jeszcze jedno. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_chief_alt.mp3",
+    "postać": "herszt",
+    "tekst": "Dość pojedynku! Dwa jabłka tutaj i jeszcze dwa. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_chief_give.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij dłoni, żeby oddać jabłka hersztowi."
+  },
+  {
+    "plik": "audio/story/route_chief_happy.mp3",
+    "postać": "herszt",
+    "tekst": "Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!"
+  },
+  {
+    "plik": "audio/story/route_coop.mp3",
+    "postać": "narrator",
+    "tekst": "Lis zakradł się do kurnika! Podejdź i machnij mieczem, żeby go przepłoszyć."
+  },
+  {
+    "plik": "audio/story/route_dawn_accept.mp3",
+    "postać": "Burczyk",
+    "tekst": "Umiemy! …Prawda, Chrapek?"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_cones.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Sześć! A ty jedną policzyłeś dwa razy!"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_cones_alt.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Cztery! A ty jedną policzyłeś dwa razy!"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_food.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Trzy! A kto zjadł czwartą? Masz sos na nosie!"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_food_alt.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Cztery! A kto zjadł piątą?"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_rocks.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Cztery! A ty mówiłeś, że pięć!"
+  },
+  {
+    "plik": "audio/story/route_dawn_argue_rocks_alt.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Sześć! A ty mówiłeś, że pięć!"
+  },
+  {
+    "plik": "audio/story/route_dawn_bet.mp3",
+    "postać": "Bilbo",
+    "tekst": "Założę się, że nie umiecie liczyć!"
+  },
+  {
+    "plik": "audio/story/route_dawn_caught.mp3",
+    "postać": "Gapa",
+    "tekst": "Złapałem włamywacza!"
+  },
+  {
+    "plik": "audio/story/route_dawn_cones.mp3",
+    "postać": "Gapa",
+    "tekst": "Trzy szyszki w jednej łapie i trzy w drugiej. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_dawn_cones_alt.mp3",
+    "postać": "Gapa",
+    "tekst": "Dwie szyszki w jednej łapie i dwie w drugiej. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_dawn_dishes.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Każmy mu pozmywać garnki!"
+  },
+  {
+    "plik": "audio/story/route_dawn_end.mp3",
+    "postać": "narrator",
+    "tekst": "Trolle zmieniły się w kamień!"
+  },
+  {
+    "plik": "audio/story/route_dawn_rocks.mp3",
+    "postać": "Burczyk",
+    "tekst": "Ja mam dwa kamyki, Chrapek ma dwa. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_dawn_rocks_alt.mp3",
+    "postać": "Burczyk",
+    "tekst": "Ja mam trzy kamyki, Chrapek ma trzy. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_dawn_sausages.mp3",
+    "postać": "Burczyk",
+    "tekst": "Ile kiełbasek zostało?"
+  },
+  {
+    "plik": "audio/story/route_dawn_skewer.mp3",
+    "postać": "Burczyk",
+    "tekst": "Na patyku są cztery kiełbaski. Mniam!"
+  },
+  {
+    "plik": "audio/story/route_dawn_skewer_alt.mp3",
+    "postać": "Burczyk",
+    "tekst": "Na patyku jest pięć kiełbasek. Mniam!"
+  },
+  {
+    "plik": "audio/story/route_dawn_stone.mp3",
+    "postać": "narrator",
+    "tekst": "Chrup… chrup… chrup!"
+  },
+  {
+    "plik": "audio/story/route_dawn_sun.mp3",
+    "postać": "Chrapek",
+    "tekst": "Chrrr… co? Słońce?! O nie…"
+  },
+  {
+    "plik": "audio/story/route_delivery.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Jesteś, Bilbo! Podejdź do mojego stołu i podaj mi składniki dłonią."
+  },
+  {
+    "plik": "audio/story/route_door.mp3",
+    "postać": "bóbr",
+    "tekst": "Bilbo, to ja, bóbr! Woda porwała deski z mostu. Pestka czeka na drugim brzegu. Pomożesz mi go naprawić?"
+  },
+  {
+    "plik": "audio/story/route_dragon_fire.mp3",
+    "postać": "Iskierka",
+    "tekst": "Dotknij płomyka, żebym kichnęła ogniem."
+  },
+  {
+    "plik": "audio/story/route_dragon_flight.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Wracajcie przez jaskinie, tam jest krócej. Tylko uważajcie na Szeptka…"
+  },
+  {
+    "plik": "audio/story/route_dragon_full.mp3",
+    "postać": "Iskierka",
+    "tekst": "Mrrrr… Po trzy jagody! Teraz mam siłę na dalszą drogę!"
+  },
+  {
+    "plik": "audio/story/route_dragon_hint.mp3",
+    "postać": "Iskierka",
+    "tekst": "Przenieś jedną jagodę z pełniejszego listka na ten jasny."
+  },
+  {
+    "plik": "audio/story/route_dragon_less.mp3",
+    "postać": "Iskierka",
+    "tekst": "Och… Na tym listku jest mniej."
+  },
+  {
+    "plik": "audio/story/route_dragon_lost.mp3",
+    "postać": "Iskierka",
+    "tekst": "Chlip… Zgubiłam się. Moja mama mieszka na górze, tam, gdzie dym."
+  },
+  {
+    "plik": "audio/story/route_dragon_map.mp3",
+    "postać": "narrator",
+    "tekst": "To mapa z jaskini trolli! Nad górą unosi się dym."
+  },
+  {
+    "plik": "audio/story/route_dragon_near.mp3",
+    "postać": "Iskierka",
+    "tekst": "Podejdź ze mną do latarni."
+  },
+  {
+    "plik": "audio/story/route_dragon_share.mp3",
+    "postać": "Iskierka",
+    "tekst": "Podzielmy się! Przeciągnij jagody na listki. Dla ciebie i dla mnie tyle samo."
+  },
+  {
+    "plik": "audio/story/route_dragon_tracks.mp3",
+    "postać": "narrator",
+    "tekst": "Przypalone ogryzki! Pójdź śladem małych łapek."
+  },
+  {
+    "plik": "audio/story/route_dragon_warm.mp3",
+    "postać": "Iskierka",
+    "tekst": "Apsik! Świeci! Aż zgłodniałam."
+  },
+  {
+    "plik": "audio/story/route_drawstring.mp3",
+    "postać": "narrator",
+    "tekst": "Naciągnij cięciwę i puść!"
+  },
+  {
+    "plik": "audio/story/route_dummy.mp3",
+    "postać": "mali hobbici",
+    "tekst": "A pokażesz nam swój miecz? Podejdź do słomianych kukieł i spróbuj je ściąć."
+  },
+  {
+    "plik": "audio/story/route_empty_pens.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij każdego pustego boksu."
+  },
+  {
+    "plik": "audio/story/route_evening.mp3",
+    "postać": "narrator",
+    "tekst": "Wieczorem, po przyjęciu…"
+  },
+  {
+    "plik": "audio/story/route_exit.mp3",
+    "postać": "narrator",
+    "tekst": "Wszystko spakowane! Podejdź do bobra przy drzwiach i dotknij dłoni."
+  },
+  {
+    "plik": "audio/story/route_fork_choose.mp3",
+    "postać": "narrator",
+    "tekst": "Wybierz ścieżkę do obozu."
+  },
+  {
+    "plik": "audio/story/route_fork_hint.mp3",
+    "postać": "narrator",
+    "tekst": "Przejdź obok Chrapka po zewnętrznej stronie jasnego koła."
+  },
+  {
+    "plik": "audio/story/route_fork_quiet.mp3",
+    "postać": "narrator",
+    "tekst": "Ciii, Chrapek śpi. Obejdź go cichutko."
+  },
+  {
+    "plik": "audio/story/route_fork_walk.mp3",
+    "postać": "narrator",
+    "tekst": "Idź ścieżką w stronę krzaków."
+  },
+  {
+    "plik": "audio/story/route_guard.mp3",
+    "postać": "narrator",
+    "tekst": "Ork zastąpił drogę! Osłoń się tarczą."
+  },
+  {
+    "plik": "audio/story/route_guard_side.mp3",
+    "postać": "narrator",
+    "tekst": "Teraz obejdź go z boku."
+  },
+  {
+    "plik": "audio/story/route_guard_sword.mp3",
+    "postać": "narrator",
+    "tekst": "Teraz! Dotknij miecza!"
+  },
+  {
+    "plik": "audio/story/route_homecoming.mp3",
+    "postać": "do ustalenia",
+    "tekst": "Sto lat, Tygrysku! Wiewiórka stawia tort na stole. Tygrysek uśmiecha się. Dziękuję za mój urodzinowy tort, Bilbo!"
+  },
+  {
+    "plik": "audio/story/route_invitation.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Bilbo! Dziś urodziny Tygryska. Pomożesz mi upiec tort? Poszukaj mąki w młynie, jajek w kurniku i mleka w oborze. Przynieś je do mojej chatki z żołędziem!"
+  },
+  {
+    "plik": "audio/story/route_lanterns.mp3",
+    "postać": "narrator",
+    "tekst": "We wiosce jest ciemno! Dwie latarenki stoją z lewej, a trzy z prawej. Ile trzeba zapalić razem?"
+  },
+  {
+    "plik": "audio/story/route_lanterns_alt.mp3",
+    "postać": "narrator",
+    "tekst": "Po lewej są trzy latarenki. Po prawej też trzy. Ile razem?"
+  },
+  {
+    "plik": "audio/story/route_lanterns_four.mp3",
+    "postać": "narrator",
+    "tekst": "Dwie latarenki z lewej, dwie z prawej. Ile trzeba zapalić razem?"
+  },
+  {
+    "plik": "audio/story/route_leave_coop.mp3",
+    "postać": "narrator",
+    "tekst": "Jajka są w koszyku! Wyjdź na plac."
+  },
+  {
+    "plik": "audio/story/route_leave_dairy.mp3",
+    "postać": "narrator",
+    "tekst": "Wiaderko pełne! Zabierz mleko i wyjdź na plac."
+  },
+  {
+    "plik": "audio/story/route_leave_mill.mp3",
+    "postać": "narrator",
+    "tekst": "Mąka spakowana! Wróć na plac przez drzwi."
+  },
+  {
+    "plik": "audio/story/route_lit.mp3",
+    "postać": "narrator",
+    "tekst": "Pięć! Wioska rozświetlona. Przy zielonej chatce macha do nas Wiewiórka."
+  },
+  {
+    "plik": "audio/story/route_mill.mp3",
+    "postać": "narrator",
+    "tekst": "W młynie pająki zasłoniły worki. Wyjmij łuk i strzel do dwóch pająków!"
+  },
+  {
+    "plik": "audio/story/route_mole_ask.mp3",
+    "postać": "kret",
+    "tekst": "Ile razy musi kichnąć Iskierka?"
+  },
+  {
+    "plik": "audio/story/route_mole_count.mp3",
+    "postać": "kret",
+    "tekst": "Dotknij każdej świeczki."
+  },
+  {
+    "plik": "audio/story/route_mole_done.mp3",
+    "postać": "kret",
+    "tekst": "Wszystkie świecą! Mama Iskierki czeka na szczycie."
+  },
+  {
+    "plik": "audio/story/route_mole_high.mp3",
+    "postać": "kret",
+    "tekst": "Apsik! Ojej, moja czapka!"
+  },
+  {
+    "plik": "audio/story/route_mole_intro.mp3",
+    "postać": "kret",
+    "tekst": "Kto zapali moje świeczki, ten przejdzie. Trzy na torcie, dwie na półce!"
+  },
+  {
+    "plik": "audio/story/route_mole_low.mp3",
+    "postać": "kret",
+    "tekst": "Ojej! Jedna świeczka jeszcze nie świeci."
+  },
+  {
+    "plik": "audio/story/route_mountain_burn.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij płomyka. Iskierka wypali przejście."
+  },
+  {
+    "plik": "audio/story/route_mountain_choose.mp3",
+    "postać": "narrator",
+    "tekst": "Którędy pójdziemy? Dotknij strumienia albo krzaka jeżyn."
+  },
+  {
+    "plik": "audio/story/route_mountain_coal.mp3",
+    "postać": "Iskierka",
+    "tekst": "Brrr! Na której kupce jest więcej węgielków?"
+  },
+  {
+    "plik": "audio/story/route_mountain_cold.mp3",
+    "postać": "Iskierka",
+    "tekst": "Mały płomyczek… Dalej mi zimno! Spróbuj jeszcze raz."
+  },
+  {
+    "plik": "audio/story/route_mountain_help.mp3",
+    "postać": "narrator",
+    "tekst": "Spójrz na jasne miejsce. Tu pasuje ten kamień."
+  },
+  {
+    "plik": "audio/story/route_mountain_jump.mp3",
+    "postać": "narrator",
+    "tekst": "Dotknij kolejnego kamienia w strumieniu."
+  },
+  {
+    "plik": "audio/story/route_mountain_point.mp3",
+    "postać": "narrator",
+    "tekst": "Popatrz na jasną kupkę. Tu jest więcej węgielków!"
+  },
+  {
+    "plik": "audio/story/route_mountain_ready.mp3",
+    "postać": "narrator",
+    "tekst": "Schody gotowe! Chodźmy do jaskini."
+  },
+  {
+    "plik": "audio/story/route_mountain_steps.mp3",
+    "postać": "narrator",
+    "tekst": "Wstaw kamień w schody tam, gdzie pasuje liczba kropek."
+  },
+  {
+    "plik": "audio/story/route_mountain_warm.mp3",
+    "postać": "Iskierka",
+    "tekst": "Apsik! Jak cieplutko! Dziękuję, Bilbo!"
+  },
+  {
+    "plik": "audio/story/route_mountain_wobble.mp3",
+    "postać": "narrator",
+    "tekst": "Oj, chwieje się! Poszukaj innego miejsca."
+  },
+  {
+    "plik": "audio/story/route_need_coop.mp3",
+    "postać": "narrator",
+    "tekst": "Brakuje jajek. Poszukaj domu, przy którym chodzą kury."
+  },
+  {
+    "plik": "audio/story/route_need_dairy.mp3",
+    "postać": "narrator",
+    "tekst": "Brakuje mleka. Znajdź oborę ze snopkami siana."
+  },
+  {
+    "plik": "audio/story/route_need_mill.mp3",
+    "postać": "narrator",
+    "tekst": "Brakuje mąki. Rozejrzyj się za młynem z dużym kołem."
+  },
+  {
+    "plik": "audio/story/route_nest_ask.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Mam pięcioro dzieci, a w gnieździe są cztery. Kogo brakuje?"
+  },
+  {
+    "plik": "audio/story/route_nest_count.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Dotknij dzieci w gnieździe."
+  },
+  {
+    "plik": "audio/story/route_nest_hug.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Jednego! Iskierko, moje maleństwo!"
+  },
+  {
+    "plik": "audio/story/route_nest_retry.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Spójrz, ile zostało pustych miejsc."
+  },
+  {
+    "plik": "audio/story/route_night_bridge.mp3",
+    "postać": "bóbr",
+    "tekst": "Twoje deski trzymają się świetnie, Bilbo! Uważaj w lesie!"
+  },
+  {
+    "plik": "audio/story/route_pack.mp3",
+    "postać": "narrator",
+    "tekst": "Zbierz narzędzia i sprzęt na drogę. Podejdź do przedmiotu i dotknij dłoni."
+  },
+  {
+    "plik": "audio/story/route_pattern_open.mp3",
+    "postać": "narrator",
+    "tekst": "Kryształ pasuje! Drzwi się otwierają!"
+  },
+  {
+    "plik": "audio/story/route_ponies_bridge.mp3",
+    "postać": "narrator",
+    "tekst": "Poprowadź kucyki przez most w stronę złotego kręgu."
+  },
+  {
+    "plik": "audio/story/route_ponies_bridge_alt.mp3",
+    "postać": "narrator",
+    "tekst": "Poprowadź oba kucyki przez most do złotego kręgu."
+  },
+  {
+    "plik": "audio/story/route_range.mp3",
+    "postać": "mali hobbici",
+    "tekst": "Bilbo! Ale masz super łuk! Pokaż nam, jak strzelasz!"
+  },
+  {
+    "plik": "audio/story/route_return_home.mp3",
+    "postać": "narrator",
+    "tekst": "Masz wszystko! Zanieś składniki Wiewiórce. Szukaj zielonego dachu i żołędzia nad drzwiami."
+  },
+  {
+    "plik": "audio/story/route_sad_give.mp3",
+    "postać": "herszt",
+    "tekst": "Mam pusty kosz. Dasz mi jabłka? Ile ich masz?"
+  },
+  {
+    "plik": "audio/story/route_sad_hint.mp3",
+    "postać": "herszt",
+    "tekst": "Policz ze mną. Jedno, dwa, trzy. Ile mi dałeś?"
+  },
+  {
+    "plik": "audio/story/route_sad_loss.mp3",
+    "postać": "herszt",
+    "tekst": "Ty znowu? Trolle zabrały mi wszystkie jabłka!"
+  },
+  {
+    "plik": "audio/story/route_sad_next.mp3",
+    "postać": "herszt",
+    "tekst": "Podaj mi kolejne jabłko."
+  },
+  {
+    "plik": "audio/story/route_sad_question.mp3",
+    "postać": "herszt",
+    "tekst": "Ile mi dałeś?"
+  },
+  {
+    "plik": "audio/story/route_sad_retry.mp3",
+    "postać": "herszt",
+    "tekst": "Spójrz do kosza. Ile tu jest jabłek?"
+  },
+  {
+    "plik": "audio/story/route_sad_thanks.mp3",
+    "postać": "herszt",
+    "tekst": "Trzy! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!"
+  },
+  {
+    "plik": "audio/story/route_sad_thanks_alt.mp3",
+    "postać": "herszt",
+    "tekst": "Cztery! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!"
+  },
+  {
+    "plik": "audio/story/route_stable.mp3",
+    "postać": "Tobo",
+    "tekst": "Bilbo! Miałem pięć kucyków. Dwa są tutaj. Ile zniknęło?"
+  },
+  {
+    "plik": "audio/story/route_stable_alt.mp3",
+    "postać": "Tobo",
+    "tekst": "Miałem pięć kucyków. Trzy są tutaj. Ile zniknęło?"
+  },
+  {
+    "plik": "audio/story/route_stable_go.mp3",
+    "postać": "narrator",
+    "tekst": "Chodź, uratujemy je!"
+  },
+  {
+    "plik": "audio/story/route_stable_home.mp3",
+    "postać": "Tobo",
+    "tekst": "Wszystkie w domu! Policzmy je razem."
+  },
+  {
+    "plik": "audio/story/route_stable_ok.mp3",
+    "postać": "Tobo",
+    "tekst": "Trzy! Widzisz ten dym na wzgórzu? Troll Gapa ukradł moje kucyki!"
+  },
+  {
+    "plik": "audio/story/route_stable_ok_alt.mp3",
+    "postać": "Tobo",
+    "tekst": "Dwa! Widzisz ten dym? Gapa ukradł moje kucyki!"
+  },
+  {
+    "plik": "audio/story/route_stable_thanks.mp3",
+    "postać": "Tobo",
+    "tekst": "Wszystkie kucyki w domu! Raz, dwa, trzy… i dwa w stajni. Pięć! Dziękuję, Bilbo!"
+  },
+  {
+    "plik": "audio/story/route_stable_thanks_alt.mp3",
+    "postać": "Tobo",
+    "tekst": "Wszystkie w domu! Dwa wróciły, trzy czekały w stajni. Pięć! Dziękuję, Bilbo!"
+  },
+  {
+    "plik": "audio/story/route_take_eggs.mp3",
+    "postać": "narrator",
+    "tekst": "Lis uciekł! Podejdź do gniazda i zabierz dwa jajka."
+  },
+  {
+    "plik": "audio/story/route_take_flour.mp3",
+    "postać": "narrator",
+    "tekst": "Droga wolna! Podejdź do worków i dotknij dłoni, żeby zabrać mąkę."
+  },
+  {
+    "plik": "audio/story/route_thanks.mp3",
+    "postać": "Wiewiórka",
+    "tekst": "Trzy woreczki mąki, dwa jajka i mleko! Dziękuję! Teraz upieczemy tort dla Tygryska."
+  },
+  {
+    "plik": "audio/story/route_tobo.mp3",
+    "postać": "Tobo",
+    "tekst": "Jestem Tobo. Mam deski dla bobra, ale nie przejdę przez wodę. Ułożysz kamienie, żebyśmy mogli je zanieść?"
+  },
+  {
+    "plik": "audio/story/route_trail_guard.mp3",
+    "postać": "narrator",
+    "tekst": "Ścieżka do mostu biegnie obok orka. Chodźmy do niego."
+  },
+  {
+    "plik": "audio/story/route_trail_tobo.mp3",
+    "postać": "narrator",
+    "tekst": "Za orkami czeka Tobo. Podejdź do niego. Ma deski dla bobra!"
+  },
+  {
+    "plik": "audio/story/route_travel_apples.mp3",
+    "postać": "Tobo",
+    "tekst": "Weź jabłka na drogę."
+  },
+  {
+    "plik": "audio/story/route_village.mp3",
+    "postać": "narrator",
+    "tekst": "Rozejrzyj się. Sam wybierz dom. Podejdź do drzwi i dotknij dłoni."
+  },
+  {
+    "plik": "audio/story/route_wait.mp3",
+    "postać": "bóbr",
+    "tekst": "Dobrze, poczekam przy drzwiach. Kiedy będziesz gotowy, podejdź i dotknij dłoni."
+  },
+  {
+    "plik": "audio/story/route_whisper_again.mp3",
+    "postać": "Szeptek",
+    "tekst": "Posłuchaj kropli jeszcze raz."
+  },
+  {
+    "plik": "audio/story/route_whisper_done.mp3",
+    "postać": "Szeptek",
+    "tekst": "Dwa wielkie kryształy świecą! Wróćmy do wejścia."
+  },
+  {
+    "plik": "audio/story/route_whisper_drops.mp3",
+    "postać": "Szeptek",
+    "tekst": "Słuchaj… Ile kropli spadło?"
+  },
+  {
+    "plik": "audio/story/route_whisper_enter.mp3",
+    "postać": "Szeptek",
+    "tekst": "Dotknij tunelu, w którym kapie woda."
+  },
+  {
+    "plik": "audio/story/route_whisper_first.mp3",
+    "postać": "Szeptek",
+    "tekst": "Jeden wielki kryształ już świeci! Posłuchamy dalej?"
+  },
+  {
+    "plik": "audio/story/route_whisper_game.mp3",
+    "postać": "Szeptek",
+    "tekst": "Oddam, jeśli wygrasz w zagadki."
+  },
+  {
+    "plik": "audio/story/route_whisper_help.mp3",
+    "postać": "Szeptek",
+    "tekst": "Teraz kryształy zostaną jasne. Możesz je policzyć."
+  },
+  {
+    "plik": "audio/story/route_whisper_steal.mp3",
+    "postać": "Szeptek",
+    "tekst": "Ciii… Kto tu chodzi z latarką? Teraz to moja latarka! Hi, hi."
+  }
+]

@@ -1,0 +1,194 @@
+{
+  "narrator": {
+    "glos": "marin",
+    "warianty": [
+      "marin",
+      "cedar"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Ciepły opowiadacz bajek. Daj dziecku chwilę po każdym poleceniu.",
+    "probki": [
+      "Wstaw kamień w schody tam, gdzie pasuje liczba kropek.",
+      "Wieczorem, po przyjęciu…"
+    ]
+  },
+  "bóbr": {
+    "glos": "cedar",
+    "warianty": [
+      "cedar",
+      "fable"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Życzliwy majster. Mów rzeczowo, z pogodną energią.",
+    "probki": [
+      "Bilbo, to ja, bóbr! Woda porwała deski z mostu. Pestka czeka na drugim brzegu. Pomożesz mi go naprawić?",
+      "Twoje deski trzymają się świetnie, Bilbo! Uważaj w lesie!"
+    ]
+  },
+  "Tobo": {
+    "glos": "ash",
+    "warianty": [
+      "ash",
+      "sage"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Troskliwy opiekun kucyków. Zwracaj się do Bilba jak do przyjaciela.",
+    "probki": [
+      "Bilbo! Miałem pięć kucyków. Dwa są tutaj. Ile zniknęło?",
+      "Weź jabłka na drogę."
+    ]
+  },
+  "herszt": {
+    "glos": "onyx",
+    "warianty": [
+      "onyx",
+      "echo"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Niski głos dumnego orka. Brzmij stanowczo, ale przyjaźnie.",
+    "probki": [
+      "Dość pojedynku! Przepuszczę was, jeśli policzycie moje jabłka. Dwa tutaj i jeszcze jedno. Ile razem?",
+      "Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!"
+    ]
+  },
+  "Wiewiórka": {
+    "glos": "coral",
+    "warianty": [
+      "coral",
+      "nova"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Serdeczna i ruchliwa gospodyni. W głosie słychać radość ze wspólnego pieczenia.",
+    "probki": [
+      "Jesteś, Bilbo! Podejdź do mojego stołu i podaj mi składniki dłonią.",
+      "Trzy woreczki mąki, dwa jajka i mleko! Dziękuję! Teraz upieczemy tort dla Tygryska."
+    ]
+  },
+  "Tygrysek": {
+    "glos": "verse",
+    "warianty": [
+      "verse",
+      "shimmer"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Radosny mały tygrys. Mów z uśmiechem i autentyczną wdzięcznością.",
+    "probki": [
+      "Dziękuję za mój urodzinowy tort, Bilbo!",
+      "Ale piękny tort! To naprawdę dla mnie?"
+    ]
+  },
+  "mali hobbici": {
+    "glos": "nova",
+    "warianty": [
+      "nova",
+      "verse"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Zachwycony mały hobbit. Pytaj z zaciekawieniem, bez krzyku.",
+    "probki": [
+      "Bilbo! Ale masz super łuk! Pokaż nam, jak strzelasz!",
+      "A pokażesz nam swój miecz? Podejdź do słomianych kukieł i spróbuj je ściąć."
+    ]
+  },
+  "Gapa": {
+    "glos": "onyx",
+    "warianty": [
+      "onyx",
+      "ballad"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Dobroduszny troll o niskim głosie. Rób zabawne pauzy, unikaj groźnego tonu.",
+    "probki": [
+      "Hmm? Kto tu łazi?",
+      "Aha! Widzę cię! Wracaj do stogu!"
+    ]
+  },
+  "Burczyk": {
+    "glos": "cedar",
+    "warianty": [
+      "cedar",
+      "ash"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Mrukliwy kucharz trolli. Licz dokładnie, z rozbawioną pewnością siebie.",
+    "probki": [
+      "Ja mam dwa kamyki, Chrapek ma dwa. Ile razem?",
+      "Na patyku są cztery kiełbaski. Mniam!"
+    ]
+  },
+  "Chrapek": {
+    "glos": "ballad",
+    "warianty": [
+      "ballad",
+      "onyx"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Senny troll, łagodny i zdziwiony. Przeciągnij ziewnięcie, zachowując wyraźne słowa.",
+    "probki": [
+      "Chrrr… co? Słońce?! O nie…",
+      "Jeszcze chwilkę… Dopiero co zasnąłem."
+    ]
+  },
+  "Iskierka": {
+    "glos": "shimmer",
+    "warianty": [
+      "shimmer",
+      "nova"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Mała wesoła smoczyca. Lekki wysoki głos, pełen ciekawości.",
+    "probki": [
+      "Chlip… Zgubiłam się. Moja mama mieszka na górze, tam, gdzie dym.",
+      "Apsik! Świeci! Aż zgłodniałam."
+    ]
+  },
+  "mama smoczyca": {
+    "glos": "marin",
+    "warianty": [
+      "marin",
+      "sage"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Spokojny, pełny głos mamy. Przytul dziecko słowami.",
+    "probki": [
+      "Mam pięcioro dzieci, a w gnieździe są cztery. Kogo brakuje?",
+      "Jednego! Iskierko, moje maleństwo!"
+    ]
+  },
+  "kret": {
+    "glos": "fable",
+    "warianty": [
+      "fable",
+      "echo"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Starszy pustelnik, odrobinę uroczysty, z cichym poczuciem humoru.",
+    "probki": [
+      "Kto zapali moje świeczki, ten przejdzie. Trzy na torcie, dwie na półce!",
+      "Apsik! Ojej, moja czapka!"
+    ]
+  },
+  "Szeptek": {
+    "glos": "ash",
+    "warianty": [
+      "ash",
+      "fable"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Psotny stworek. Mów jak przy zdradzaniu sekretu, jednak wystarczająco głośno.",
+    "probki": [
+      "Ciii… Kto tu chodzi z latarką? Teraz to moja latarka! Hi, hi.",
+      "Wygrałeś… Masz latarkę. Ale wróć kiedyś!"
+    ]
+  },
+  "Pestka": {
+    "glos": "coral",
+    "warianty": [
+      "coral",
+      "shimmer"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Ciekawska mała przyjaciółka Bilba. Lekki i pogodny głos.",
+    "probki": [
+      "Bilbo! Teraz mogę przejść na drugi brzeg!",
+      "Ale miękka grzywa! Mogę pogłaskać kucyka?"
+    ]
+  },
+  "Bilbo": {
+    "glos": "verse",
+    "warianty": [
+      "verse",
+      "cedar"
+    ],
+    "instrukcja": "Mów po polsku, wyraźnie i niezbyt szybko. Odważny, serdeczny hobbit. Mów z naturalnym zdziwieniem i humorem.",
+    "probki": [
+      "Założę się, że nie umiecie liczyć!",
+      "Chodź, Iskierko. Znajdziemy twoją mamę."
+    ]
+  }
+}
