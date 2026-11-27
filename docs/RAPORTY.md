@@ -1,3 +1,15 @@
+## 2026-11-27 — G01. Katalog i generator głosów
+
+### PYTANIE
+
+Czy możesz ustawić `OPENAI_API_KEY` lokalnie na Macu tak, żeby widziała go sesja Codexa? G01 pozostaje otwarte do wygenerowania próbek.
+Z 203 plików MP3 w grze skatalogowano 196 kwestii i wyłączono 7 efektów. Uwzględniono nazwy składane w kodzie. Sześć wpisów WORDS bez nagrań to starsze warianty have/road dla młyna, kurnika i obory.
+Osiem nagrań wymaga decyzji o mówcy: `route_homecoming` (narracja i Tygrysek razem), `route_dawn_dishes`, `route_dawn_argue_rocks`, `route_dawn_argue_food`, `route_dawn_argue_cones` oraz warianty `_alt` trzech ostatnich.
+Przygotowano 16 profili, w tym Bilba, który sam rzuca trollom wyzwanie. Dla każdej postaci zaplanowano dwa głosy i dwa teksty. Dla ról z małą liczbą samodzielnych kwestii dodano zdania wyłącznie do odsłuchu.
+Brakuje 64 próbek. Brak klucza potwierdzono uruchomieniem generatora. Test lokalny sprawdził pomijanie gotowych nagrań, zmianę instrukcji i odtworzenie uszkodzonego pliku.
+Eksport iPhone dał identyczny pakiet 11 744 220 bajtów. Wszystkie trzy testy na pakiecie przeszły. Przy zamknięciu obozu i doliny Godot ostrzegł o pozostających obiektach.
+Brak nowych uwag z gry i nowych kroków ROUTE. Wpisy G01/G02 oraz dopisek do Z14 były już opublikowane.
+
 ## 2026-11-27 — Z11. Drzwi, rybki i finał Szeptka
 
 Gracz wybiera jeden z trzech tuneli. Dwa wzory na drzwiach rozwiązuje przez przeciągnięcie kryształu, najpierw według koloru, potem wielkości. Położenie pasującego kryształu jest losowane i zapisane.
