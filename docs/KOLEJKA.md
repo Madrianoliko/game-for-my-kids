@@ -134,7 +134,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Pakowanie:** rozłóż przedmioty w chatce tak, żeby żaden nie zasłaniał innego z perspektywy kamery (minimalny odstęp, sprawdzony testem pozycji).
 - **Po wyjściu z chatki:** narrator: „Gdy Bilbo wyszedł z chatki, podbiegły do niego dzieci.” Potem kwestie dzieci (postać „mali hobbici”).
 
-### [ ] U03 — Uwagi z testu: urodziny, stajnia i herszt (uwagi 10, 12, 13, 14)
+### [x] U03 — Uwagi z testu: urodziny, stajnia i herszt (uwagi 10, 12, 13, 14) (2026-11-27)
 - **Urodziny:** po ostatniej warstwie tortu krótka scenka: Wiewiórka gasi światło, wchodzi Tygrysek, wszyscy wołają „Niespodzianka!”, zapalają się świeczki, a dopiero potem „Sto lat”.
 - **Dym:** przenieś dym z ogniska trolli dużo dalej, na wzgórze za mostem, żeby nie wyglądał jak ognisko za stodołą.
 - **Jabłka na drogę:** w stajni stoi koszyk jabłek. Tobo mówi „Weź jabłka na drogę”, Bilbo podchodzi do koszyka i bierze je dłonią (trafiają do paska plecaka).

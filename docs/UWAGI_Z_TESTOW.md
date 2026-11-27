@@ -13,11 +13,11 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 7. Wychodzenie z obory: daję rękę, Bilbo wychodzi i od razu wchodzi z powrotem. Dopiero gdy trzymam i się odsunę, odchodzi od chatki. — uwzględnione (2026-11-27, d512739)
 8. W młynie worki po podniesieniu powinny zniknąć i pokazać się jako zebrane. Gracz sam musi wyjść z domku. — uwzględnione (2026-11-27, d512739)
 9. Z jajami wszystko w porządku.
-10. Po upieczeniu tortu gra szybko przeskakuje do urodzin. Przydałaby się scenka: wchodzi Tygrysek, w środku niespodzianka i wtedy „Sto lat”.
+10. Po upieczeniu tortu gra szybko przeskakuje do urodzin. Przydałaby się scenka: wchodzi Tygrysek, w środku niespodzianka i wtedy „Sto lat”. — uwzględnione (2026-11-27, d8bf080)
 11. Liczenie kucyków, których nie ma: zaznaczone puste boksy powinny robić się czerwone. — uwzględnione (2026-11-27, d512739)
-12. Dym na wzgórzu jest za blisko. Wygląda, jakby ognisko paliło się za stodołą.
-13. „Weź jabłka na drogę”: Bilbo powinien podejść po te jabłka i je wziąć.
-14. Jabłka do kosza: zwiększyć do 6. Np. herszt miał 2, a ja dałem 4, i pytania: „Ile mi dałeś?” oraz „Ile teraz mam?”.
+12. Dym na wzgórzu jest za blisko. Wygląda, jakby ognisko paliło się za stodołą. — uwzględnione (2026-11-27, d8bf080)
+13. „Weź jabłka na drogę”: Bilbo powinien podejść po te jabłka i je wziąć. — uwzględnione (2026-11-27, d8bf080)
+14. Jabłka do kosza: zwiększyć do 6. Np. herszt miał 2, a ja dałem 4, i pytania: „Ile mi dałeś?” oraz „Ile teraz mam?”. — uwzględnione (2026-11-27, d8bf080)
 15. Wybór ścieżki do obozu: chrapanie słabo wychodzi. Lepiej to usunąć.
 16. Ścieżka między stogami jest niepotrzebna.
 17. Przy pierwszych stogach nie widać, gdzie patrzy troll, bo stoi za daleko z przodu. Niech nie mówi „Hmm” i „raz, dwa, trzy”, tylko chodzi po polu z widocznym, przezroczystym wzrokiem.

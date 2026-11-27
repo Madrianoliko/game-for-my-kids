@@ -1,3 +1,12 @@
+## 2026-11-27 — U03. Urodziny Tygryska i kosz herszta
+
+Światło w chatce gaśnie, Tygrysek wchodzi, słychać „Niespodzianka!”, zapalają się trzy świeczki i dopiero wtedy pada „Sto lat”. Dym nad wzgórzem widać za mostkiem, około 24 m od stajni.
+Bilbo bierze prowiant dłonią po podejściu na 1,25 m do koszyka. Zgodnie z U03 herszt ma już 1–3 złote jabłka, a Bilbo dokłada kolejno 3–6 czerwonych. Dawny plan zakładał pusty kosz i trzy jabłka Bilba.
+Herszt pyta osobno o dar i o wszystkie jabłka. Obie grupy można rozpoznać po miejscu i kolorze. Przy pytaniu o sumę każde jabłko można wskazać i ponumerować. Liczby i etap pytań przeżywają wznowienie gry.
+Bez nowych kroków ROUTE. W starszym zapisie zachowujemy liczbę jabłek Bilba i przyjmujemy jedno początkowe jabłko herszta. Wszystkie nowe kwestie mają polskie nagrania.
+Pakiet iPhone ma 11 967 004 bajty. Wszystkie trzy testy przeszły. Dodatkowe przejście w widoku 960 × 540 potwierdziło dotyk każdego jabłka przy innej sumie. Przy zamykaniu testów obozu i doliny pozostały wcześniejsze ostrzeżenia Godota o obiektach.
+Do próby z dzieckiem na iPhonie pozostają czytelność koszyka i rozróżnienie dwóch pytań.
+
 ## 2026-11-27 — U02. Początek przygody Bilba
 
 Kamera pokazuje uszkodzony most, młyn, wioskę i chatkę Bilba. Narrator przedstawia bohatera. Od drugiego przejścia przelot można pominąć strzałką.
