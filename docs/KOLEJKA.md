@@ -23,6 +23,9 @@ Plany fabuły, z których korzystają zadania:
 11. **Raport** w `docs/RAPORTY.md` (najnowszy na górze): numer zadania, co zrobiono, co pominięto i dlaczego, nowe kroki ROUTE, wartości do strojenia, wyniki testów, brakujące nagrania, rozmiar `.pck`. Maksymalnie 15 linijek.
 12. **Kolejka ma pierwszeństwo przed planem.** Jeśli opis zadania w kolejce różni się od planu fabuły w `docs/`, rób według kolejki, a w raporcie zapisz, czym się różniły. Pytaj tylko wtedy, gdy kolejka sama jest niejasna albo sprzeczna.
 13. **Drobne decyzje podejmuj sam.** Jeśli zadanie zostawia wybór, który nie zmienia celu rozdziału (np. jak dopasować liczby, kwestie albo rozstawienie do losowania), wybierz wariant, który daje dziecku więcej liczenia i nie skraca zabawy, i opisz decyzję w raporcie. Zatrzymuj się z pytaniem tylko przy sprzecznościach, których nie da się pogodzić, albo przy zmianach, które usuwają lub skracają istniejącą scenę.
+14. **Liczenie dotykiem zawsze widać.** Każdy dotknięty przedmiot, który się liczy, lekko się podświetla i pokazuje nad sobą kolejną cyfrę (1, 2, 3…). Zielony oznacza „jest”, czerwony „brakuje / puste”. Dotyczy to wszystkich obecnych i przyszłych zagadek.
+15. **Zebrane rzeczy trafiają do paska plecaka.** Podniesiony przedmiot znika ze sceny, a jego obrazek pojawia się w pasku po lewej stronie ekranu. Gra nie wyprowadza Bilba sama. Gracz sam idzie do drzwi albo dalej.
+16. **Chodzenie zamiast przeskoków.** Sceny łączy chodzenie gałką między oddalonymi miejscami. Przejścia między rozdziałami są krótkimi scenkami filmowymi z narratorem, a historia płynie dalej bez wracania do menu. Menu i „Wznów” wracają do ostatniego momentu.
 
 ---
 
@@ -116,6 +119,48 @@ Cel: zastąpić systemowy głos Zosi naturalnymi głosami postaci z OpenAI. Gra 
 - **Próbki:** dla każdej postaci wygeneruj 2–3 warianty głosu (różne głosy OpenAI) na 2 jej typowych kwestiach do `voice/probki/<postać>_<głos>_N.mp3`, plus `voice/probki/README.md` z listą do odsłuchu. NIE podmieniaj jeszcze nagrań w grze.
 - Jeśli brakuje `OPENAI_API_KEY`, przygotuj listę, postacie i skrypt, zapisz PYTANIE z prośbą o klucz i zakończ.
 - Uwaga: modele `/v1/audio/speech` mają zostać wyłączone 6 stycznia 2027. Skrypt ma pozwalać łatwo zmienić model albo dostawcę w jednym miejscu.
+
+### [ ] U01 — Uwagi z testu: wspólne mechanizmy (uwagi 2, 6, 7, 8, 11, 22, 31)
+Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
+- **Pasek plecaka (zasada 15):** po lewej stronie ekranu pasek z obrazkami zebranych rzeczy. Wiaderko z mlekiem, worki mąki i jajka po podniesieniu dłonią znikają ze sceny i pojawiają się w pasku. Gracz sam wychodzi z budynku. Lista składników Wiewiórki może być częścią tego paska.
+- **Drzwi:** po wyjściu z budynku Bilbo staje kawałek przed drzwiami, a drzwi nie reagują na dłoń, dopóki Bilbo nie odejdzie od nich i nie podejdzie ponownie. Nie może się zdarzyć, że wychodzi i od razu wchodzi z powrotem.
+- **Pauza:** duże przyciski z samymi obrazkami (wznów, dźwięk, domek-menu, wyjście), co najmniej tak duże jak przyciski akcji. Bez polegania na napisach.
+- **Liczenie dotykiem (zasada 14):** wspólny mechanizm podświetlenia i cyfry nad przedmiotem. Puste boksy w stajni na czerwono, boksy z kucykami po powrocie na zielono, smoczątka w gnieździe z numerkiem. Wprowadź go we wszystkich istniejących zagadkach z liczeniem dotykiem.
+- Testy: wyjście z obory nie wraca od razu do środka, przedmiot po podniesieniu jest w pasku i znika ze sceny, cyfry pojawiają się po kolei.
+
+### [ ] U02 — Uwagi z testu: początek rozdziału 1 (uwagi 1, 3, 4, 5)
+- **Wstęp:** przed chatką krótka scenka filmowa: kamera przelatuje nad doliną (most, młyn, wioska) i zatrzymuje się przy chatce Bilba. Narrator (2–3 krótkie zdania): kim jest Bilbo (mały hobbit z Doliny), że lubi przygody i liczenie, i że dziś ktoś puka do drzwi. Przy kolejnych przejściach można ją pominąć dużym przyciskiem ze strzałką.
+- **Bóbr:** usuń pytanie z kciukiem w górę/w dół i ścieżkę odmowy. Bóbr mówi: „Proszę, Bilbo, pomóż mi! Woda zniszczyła most. Weź narzędzia i chodź za mną.” Dalej pakowanie jak dotąd. Starsze zapisy z krokiem odmowy mają się wczytać normalnie.
+- **Pakowanie:** rozłóż przedmioty w chatce tak, żeby żaden nie zasłaniał innego z perspektywy kamery (minimalny odstęp, sprawdzony testem pozycji).
+- **Po wyjściu z chatki:** narrator: „Gdy Bilbo wyszedł z chatki, podbiegły do niego dzieci.” Potem kwestie dzieci (postać „mali hobbici”).
+
+### [ ] U03 — Uwagi z testu: urodziny, stajnia i herszt (uwagi 10, 12, 13, 14)
+- **Urodziny:** po ostatniej warstwie tortu krótka scenka: Wiewiórka gasi światło, wchodzi Tygrysek, wszyscy wołają „Niespodzianka!”, zapalają się świeczki, a dopiero potem „Sto lat”.
+- **Dym:** przenieś dym z ogniska trolli dużo dalej, na wzgórze za mostem, żeby nie wyglądał jak ognisko za stodołą.
+- **Jabłka na drogę:** w stajni stoi koszyk jabłek. Tobo mówi „Weź jabłka na drogę”, Bilbo podchodzi do koszyka i bierze je dłonią (trafiają do paska plecaka).
+- **Herszt:** w koszu herszta leżą już jabłka (losowo 1–3, widoczne). Bilbo ma przy sobie 3–6 jabłek (losowo, razem w koszu najwyżej 9) i podaje je po jednym z liczeniem na głos. Pytania: „Ile mi dałeś?”, a potem „Ile teraz mam w koszu?”. Przy drugim pytaniu można dotknąć jabłek w koszu (zasada 14). Kwestie w wariantach liczb.
+
+### [ ] U04 — Uwagi z testu: przebudowa obozu trolli (uwagi 15, 16, 17, 18)
+- **Rozwidlenie:** usuń drogę obok chrapiącego Chrapka. Krok `fork` zostaje, ale prowadzi tylko przez strumień po kamieniach. Zapisy z wybraną drogą obok Chrapka wznawiają się na drodze przez strumień.
+- **Pole:** usuń wydeptaną ścieżkę między stogami. Stogi ustaw w polu mniej więcej w kwadrat (np. siatka 3×3 lub podobna), kucyki przy krawędziach pola.
+- **Nowa zasada patrolu (zastępuje liczenie i „Hmm”):** Gapa nie stoi w miejscu i nie liczy. Chodzi powoli po polu wokół stogów i między nimi po stałej trasie (np. po kwadracie) z latarnią. Przed nim na ziemi widać przezroczysty pomarańczowy stożek wzroku. Kto jest poza stogiem w stożku, zostaje złapany (łagodnie, jak dotąd). Za plecami Gapy i poza stożkiem można spokojnie biegać. Tempo patrolu dobierz tak, żeby między stogami było średnio ok. 5 sekund bezpiecznego biegu. Prędkość, długość stożka i kąt jako stałe do strojenia.
+- Wprowadzenie Toba zmień na: „To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!”. Nauka w pierwszym stogu zostaje.
+- Testy: złapanie w stożku, bezpieczny bieg za plecami Gapy, stóg chroni w stożku, ratunek wszystkich kucyków przy patrolu.
+
+### [ ] U05 — Uwagi z testu: kłótnia trolli, szyszki, mapa i przejście do rozdziału 3 (uwagi 19, 20, 21, 23)
+- **Kłótnia:** po każdej odpowiedzi trolle wyraźnie się kłócą: stają naprzeciw siebie, machają łapami, mówią jeden po drugim (np. Burczyk: „Cztery!” — Chrapek: „Nieprawda, pięć!” — Gapa: „Cicho! Bilbo ma rację!”). Ma być jasne i śmieszne, że to sprzeczka.
+- **Szyszki:** Gapa trzyma szyszki na otwartych, wyciągniętych na boki łapach, szyszki są większe i wyraźnie rozdzielone. Po dotknięciu pojawia się cyfra (zasada 14).
+- **Mapa:** po wyjęciu ze skrzyni mapa rozwija się na cały ekran: dolina, most, dymiąca góra i znak X. Bilbo: „Hmm… Tam może być coś ciekawego.” Dotknięcie zwija mapę do paska plecaka.
+- **Przejście do rozdziału 3:** po policzeniu kucyków w stajni nie wracaj do menu. Scenka: wieczór, Bilbo w chatce zasypia z mapą, rano narrator zaczyna rozdział 3. Gra płynie dalej, a zapis i „Wznów” wracają do ostatniego momentu. To samo zrób na końcu rozdziału 3 (przejście do rozdziału 4) i 4 (do rozdziału 5 albo na razie do napisu „Ciąg dalszy nastąpi”). Przyciski rozdziałów w menu zostają do powtórek.
+
+### [ ] U06 — Uwagi z testu: rozdział 3 (uwagi 24, 25, 26, 28, 29, 30, 31, 32)
+- **Ślad łapek:** droga od sadu do Iskierki ma trwać co najmniej ok. 10 sekund marszu, ślady widoczne na ziemi.
+- **Latarnia:** usuń niezrozumiałe ikonki (dwa ogniska i głośnik). Bilbo idzie za Iskierką do latarni. Iskierka wyjaśnia: „Patrz! Umiem kichać ogniem!”, pokazuje kichnięcie, a potem: „Dotknij płomyka, a ja kichnę.” Przycisk z płomykiem pojawia się dopiero wtedy, z delikatnym pulsowaniem.
+- **Więcej chodzenia:** sad, krzaki, latarnia i jagody są oddalone od siebie i połączone chodzeniem gałką (zasada 16).
+- **Droga na górę:** bez wyboru. Najpierw strumień po kamieniach, potem dalej w prawo krzak jeżyn do wypalenia, potem schody.
+- **Schody:** po ułożeniu stopni Bilbo sam wchodzi po nich gałką do jaskini.
+- **Świeczki kreta:** jest 5 świeczek, część już się pali (losowo, np. 1. i 3.). Pytanie: „Ile razy musi kichnąć Iskierka, żeby paliło się wszystkie pięć?”. Przyciski z kropkami. Dobra odpowiedź: Iskierka kicha tyle razy, a świeczki zapalają się po kolei z liczeniem. Pomyłki jak dotąd (za mało: jedna zostaje zgaszona, za dużo: przypalona czapka).
+- **Gniazdo:** dotknięte smoczątko lekko się podświetla i ma numerek (zasada 14). Pytanie: „Ile dzieci brakuje?” z przyciskami z kropkami (losowo: 1 lub 2 brakujące, mama mówi, ile ma dzieci razem).
 
 ### [ ] G02 — Głosy z OpenAI: podmiana nagrań w grze
 Zaczynaj dopiero, gdy w `docs/UWAGI_Z_TESTOW.md` jest wybór głosów z próbek (np. „Gapa: onyx, Iskierka: shimmer…”). Jeśli wyboru jeszcze nie ma, pomiń to zadanie (zostaw je jako `[ ]`) i weź następne zadanie z kolejki. Wróć do G02, gdy wybór się pojawi.
