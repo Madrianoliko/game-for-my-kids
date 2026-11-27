@@ -1,3 +1,13 @@
+## 2026-11-27 — Z11. Drzwi, rybki i finał Szeptka
+
+Gracz wybiera jeden z trzech tuneli. Dwa wzory na drzwiach rozwiązuje przez przeciągnięcie kryształu, najpierw według koloru, potem wielkości. Położenie pasującego kryształu jest losowane i zapisane.
+Po klaśnięciu Szeptka z sześciu rybek odpływają dwie. Po przejściu tuneli Szeptek pokazuje obie trzypalczaste dłonie. W ostatniej zagadce dziecko liczy nogi Bilba, kucyka i wreszcie wszystkie razem.
+Każda z dwóch rund kropli, obu wzorów i trzech zagadek liczbowych zapala kryształ. Siedem świateł rozjaśnia finał. Szeptek oddaje latarkę, a gra zapisuje ukończenie rozdziału 4.
+Nowe kroki ROUTE to `pattern_door`, `fish_pool`, `whisper_hands`, `whisper_legs` i `whisper_exit`. Zapis Z10 z dwiema wygranymi rundami zachowuje obie nagrody.
+Do sprawdzenia na telefonie: promień upuszczenia kryształu 42 jednostki ekranu i czas odpływania rybek 0,92 s. Wszystkie 16 nowych kwestii ma nagrania Zosi.
+Pakiet iPhone ma 11 744 220 bajtów. Wszystkie trzy testy przeszły przy 60 kl./s, w tym wejście najpierw do rybek, powrót ze starego zapisu, podpowiedzi i odzyskanie latarki.
+Przy zamykaniu testów obozu i doliny Godot ostrzegł o pozostających obiektach. Nie instalowano na telefonie. Brak nowych uwag, pominiętych elementów Z11 i otwartych pytań.
+
 ## 2026-11-27 — Z10. Szeptek i liczenie kropli
 
 Po ukończeniu lotu Iskierki kryształ w menu otwiera rozdział 4. Działa także po wczytaniu wcześniejszego zapisu. Szeptek zabiera Bilbowi latarkę i zaprasza do zagadek.

@@ -101,7 +101,7 @@ Plan: rozdział 4. Przycisk w menu (obrazek kryształu) po ukończeniu rozdział
 - Trzy tunele w dowolnej kolejności. W tym zadaniu zbuduj tunel z kroplami (3, potem 5 kropli) i układ trzech wejść. Pozostałe tunele mogą być na razie zamknięte kamieniem.
 - Każda wygrana zapala na stałe wielki kryształ na ścianie.
 
-### [ ] Z11 — Rozdział 4, część 2: drzwi, rybki i palce Szeptka
+### [x] Z11 — Rozdział 4, część 2: drzwi, rybki i palce Szeptka (2026-11-27)
 Plan: rozdział 4, zagadki 2–5.
 - Tunel z kryształowymi drzwiami (wzór czerwony-niebieski, potem duży-mały-mały).
 - Tunel z rybkami: 6 rybek, 2 odpływają, „Ile zostało?”.
