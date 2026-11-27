@@ -20,6 +20,7 @@ var hint_total:=0
 var hint_lit:=0
 var hint_delay:=0.0
 var hint_display:=Callable()
+var whisper:Node3D
 var iskierka:Node3D
 var dawn:Node3D
 var fork_trail:Node3D
@@ -317,6 +318,7 @@ func begin(resume:bool, start_step:="door") -> void:
 		part=0
 		marks=0
 		items.clear()
+		if start_step=="whisper_cave": items.append("Latarka")
 		if start_step=="dragon_map": items.append(ReturnTrip.MAP)
 		room_saves.clear()
 		fork_path=""
@@ -436,7 +438,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
-	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest"]: origin=Vector3(400,0,90)
+	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","whisper_cave","crystal_hall","drip_tunnel"]: origin=Vector3(400,0,90)
 	if id()=="troll_cave": origin=Vector3(324,0,100)
 	if id()=="chief_happy": origin=host.point(-7)
 	if id()=="troll_dawn": origin=Vector3(310,0,100)
@@ -671,6 +673,10 @@ func render() -> void:
 			return_trip=ReturnTrip.new()
 			scene.add_child(return_trip)
 			return_trip.setup(self)
+		"whisper_cave","crystal_hall","drip_tunnel":
+			whisper=preload("res://scripts/whisper_cave.gd").new()
+			scene.add_child(whisper)
+			whisper.setup(self)
 		"mole_candles","dragon_nest","dragon_flight":
 			iskierka=preload("res://scripts/dragon_reunion.gd").new()
 			scene.add_child(iskierka)
@@ -722,6 +728,8 @@ func render() -> void:
 		outside.position=host.pause_button.position+Vector2(0,host.pause_button.size.y+8)
 	if dock.visible and id()=="troll_dawn":
 		button("Posłuchaj",dawn.narrate)
+	elif dock.visible and id()=="drip_tunnel":
+		button("Posłuchaj",whisper.listen)
 	elif dock.visible:
 		button("Posłuchaj",func(): prompt(voice,caption.text))
 

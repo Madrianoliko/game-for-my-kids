@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -55,6 +55,14 @@ const WORDS := {
 	"dawn_argue_food_alt":"Cztery! A kto zjadł piątą?",
 	"dawn_cones_alt":"Dwie szyszki w jednej łapie i dwie w drugiej. Ile razem?",
 	"dawn_argue_cones_alt":"Cztery! A ty jedną policzyłeś dwa razy!",
+	"whisper_steal":"Ciii… Kto tu chodzi z latarką? Teraz to moja latarka! Hi, hi.",
+	"whisper_game":"Oddam, jeśli wygrasz w zagadki.",
+	"whisper_enter":"Dotknij tunelu, w którym kapie woda.",
+	"whisper_drops":"Słuchaj… Ile kropli spadło?",
+	"whisper_again":"Posłuchaj kropli jeszcze raz.",
+	"whisper_help":"Teraz kryształy zostaną jasne. Możesz je policzyć.",
+	"whisper_first":"Jeden wielki kryształ już świeci! Posłuchamy dalej?",
+	"whisper_done":"Dwa wielkie kryształy świecą! Wróćmy do wejścia.",
 	"mole_intro":"Kto zapali moje świeczki, ten przejdzie. Trzy na torcie, dwie na półce!",
 	"mole_count":"Dotknij każdej świeczki.",
 	"mole_ask":"Ile razy musi kichnąć Iskierka?",

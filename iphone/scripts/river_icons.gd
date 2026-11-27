@@ -2,6 +2,7 @@ extends RefCounted
 
 const MARKS := {
 	"Most": '<path d="M3 29q17-21 34 0M3 34V16m34 18V16M5 18q15-10 30 0M12 16v6m8-9v6m8-4v7" fill="none" stroke="#c18a48" stroke-width="4"/>',
+	"Kryształ": '<path fill="#a080e6" stroke="#eddbff" stroke-width="2" d="m20 2 13 11-4 16-9 9L8 27 6 12Z"/><path fill="#76d5ed" d="m20 4 5 11-5 20-6-21Z"/>',
 	"Iskierka": '<path fill="#ef9756" stroke="#783c35" d="M5 29q0-12 10-15L12 3l10 9 7-7 1 10q8 1 8 10l-6 6-10-1-8 7Z"/><circle cx="26" cy="18" r="3" fill="#332138"/><circle cx="34" cy="24" r="1.6"/>',
 	"Płomień": '<path fill="#f78339" d="M20 1q4 12 11 15l2-8q12 25-8 30Q0 41 5 21l6-10q-1 9 4 11Z"/><path fill="#ffdc70" d="M21 18q1 6 5 10 4 9-5 10-12-1-7-11Z"/>',
 	"Troll": '<path fill="#80adba" stroke="#365465" stroke-width="2" d="M7 14 2 9v13l6 2q-1 13 12 13t13-13l5-2V9l-6 5Q28 4 20 5T7 14Z"/><circle cx="14" cy="18" r="2"/><circle cx="26" cy="18" r="2"/><ellipse cx="20" cy="24" rx="6" ry="4" fill="#b3ccaf"/><path d="M14 29q6 5 12 0" fill="none" stroke="#334d55" stroke-width="2"/>',

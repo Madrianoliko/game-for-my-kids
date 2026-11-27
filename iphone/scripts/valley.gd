@@ -95,6 +95,7 @@ func _ready() -> void:
 	ui.add_child(atlas)
 	atlas.play_requested.connect(open_story)
 	atlas.resume_requested.connect(func(): bystra.begin(true))
+	atlas.chapter_four_requested.connect(open_story.bind("whisper_cave"))
 	atlas.chapter_three_requested.connect(open_story.bind("dragon_map"))
 	atlas.chapter_two_requested.connect(open_story.bind("stable"))
 	atlas.sound_requested.connect(toggle_sound)
@@ -323,6 +324,7 @@ func home() -> void:
 	bystra.stop()
 	atlas.can_resume=bystra.saved
 	atlas.unlocked_chapter_two=bystra.chapters>=1
+	atlas.unlocked_chapter_four=bystra.chapters>=3
 	atlas.unlocked_chapter_three=bystra.chapters>=2
 	cottage.reset()
 	state=State.HOME

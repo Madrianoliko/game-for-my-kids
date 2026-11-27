@@ -1,6 +1,7 @@
 extends ColorRect
 
 signal resume_requested
+signal chapter_four_requested
 signal chapter_three_requested
 signal chapter_two_requested
 signal play_requested
@@ -23,6 +24,8 @@ var stone_marker:=HBoxContainer.new()
 var knows_stone_hill:=false
 var selected_world := 0
 var resume := Button.new()
+var chapter_four:=Button.new()
+var unlocked_chapter_four:=false
 var chapter_three:=Button.new()
 var unlocked_chapter_three:=false
 var chapter_two := Button.new()
@@ -150,6 +153,11 @@ func _ready() -> void:
 	chapter_three.icon=preload("res://scripts/river_icons.gd").picture("Iskierka")
 	format_button(chapter_three)
 	chapter_three.pressed.connect(func(): chapter_three_requested.emit())
+	actions.add_child(chapter_four)
+	chapter_four.accessibility_name="Rozdział 4. Zagadki w ciemności"
+	chapter_four.icon=preload("res://scripts/river_icons.gd").picture("Kryształ")
+	format_button(chapter_four)
+	chapter_four.pressed.connect(func(): chapter_four_requested.emit())
 	play.pressed.connect(func(): play_requested.emit())
 
 	var choose := Label.new()
@@ -180,6 +188,7 @@ func select_world(index: int) -> void:
 	heading.text = TITLES[index]
 	story.text = STORIES[index]
 	resume.visible=index==0 and can_resume
+	chapter_four.visible=index==0 and unlocked_chapter_four
 	chapter_three.visible=index==0 and unlocked_chapter_three
 	chapter_two.visible=index==0 and unlocked_chapter_two
 	play.icon=preload("res://scripts/river_icons.gd").picture("Most") if index==0 else null
