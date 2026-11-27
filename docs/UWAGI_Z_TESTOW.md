@@ -4,11 +4,11 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 
 **Przeniesione do kolejki jako zadania U01–U06 (`docs/KOLEJKA.md`). Nie wprowadzaj ich osobno według zasady 1. Rób je po kolei jako zadania z kolejki.**
 
-1. Na początku przydałby się dłuższy wstęp narratora: kim jesteś, co tu robisz, może krótka scenka filmowa.
+1. Na początku przydałby się dłuższy wstęp narratora: kim jesteś, co tu robisz, może krótka scenka filmowa. — uwzględnione (2026-11-27, 67a6670)
 2. Przyciski w pauzie są za małe. Dziecko nie umie czytać, więc to muszą być obrazki. — uwzględnione (2026-11-27, d512739)
-3. Pytanie na początku (kciuk w górę/w dół) jest bez sensu. Niech bóbr kończy po prostu: „Proszę, Bilbo, pomóż mi! Weź narzędzia i chodź za mną.”
-4. Pakowanie sprzętu jest super, ale przedmioty trzeba lepiej rozłożyć w pokoju, bo czasem jedne zasłaniają drugie.
-5. Po wyjściu z chatki brakuje głosu narratora: „Po wyjściu z chatki podbiegają do ciebie dzieci”, a potem mówią dzieci.
+3. Pytanie na początku (kciuk w górę/w dół) jest bez sensu. Niech bóbr kończy po prostu: „Proszę, Bilbo, pomóż mi! Weź narzędzia i chodź za mną.” — uwzględnione (2026-11-27, 67a6670)
+4. Pakowanie sprzętu jest super, ale przedmioty trzeba lepiej rozłożyć w pokoju, bo czasem jedne zasłaniają drugie. — uwzględnione (2026-11-27, 67a6670)
+5. Po wyjściu z chatki brakuje głosu narratora: „Po wyjściu z chatki podbiegają do ciebie dzieci”, a potem mówią dzieci. — uwzględnione (2026-11-27, 67a6670)
 6. Obora: „Wiaderko pełne, zabierz je i wyjdź na plac”. Gdy podchodzę do wiaderka i daję rękę, nic się nie dzieje. Wiaderko powinno zniknąć, a po lewej powinno się pokazać, że je mam. — uwzględnione (2026-11-27, d512739)
 7. Wychodzenie z obory: daję rękę, Bilbo wychodzi i od razu wchodzi z powrotem. Dopiero gdy trzymam i się odsunę, odchodzi od chatki. — uwzględnione (2026-11-27, d512739)
 8. W młynie worki po podniesieniu powinny zniknąć i pokazać się jako zebrane. Gracz sam musi wyjść z domku. — uwzględnione (2026-11-27, d512739)

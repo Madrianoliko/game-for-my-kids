@@ -1,3 +1,12 @@
+## 2026-11-27 — U02. Początek przygody Bilba
+
+Kamera pokazuje uszkodzony most, młyn, wioskę i chatkę Bilba. Narrator przedstawia bohatera. Od drugiego przejścia przelot można pominąć strzałką.
+Po prośbie bobra zaczyna się pakowanie. Starszy zapis po odmowie wznawia się przy półkach. Po wyjściu narrator zapowiada dzieci, które podbiegają i proszą o pokaz łuku.
+Dodano kroki ROUTE `valley_intro` i `kids_arrive`. Przelot trwa 7 s, końcowe ujęcie pozostaje co najmniej 0,5 s. Minimalny testowany odstęp między środkami narzędzi na ekranie wynosi 12% wysokości widoku.
+Przygotowano trzy polskie nagrania Zosi. Wszystkie kwestie U02 są w pakiecie.
+Pakiet iPhone ma 11 760 976 bajtów. Wszystkie trzy testy przeszły, w tym pominięcie powtórki, wczytanie zapisu po odmowie i zebranie siedmiu narzędzi. Godot przy zamknięciu testów doliny i obozu zgłosił pozostające obiekty.
+Test na fizycznym telefonie pozostaje do wykonania z dzieckiem. Warto obejrzeć pierwszy przelot i sprawdzić, czy dziecko samodzielnie odnajduje sprzęt.
+
 ## 2026-11-27 — U01. Plecak, drzwi, pauza i liczenie dotykiem
 
 Mąka, jajka i mleko znikają po podniesieniu dłonią i pojawiają się w pasku po lewej. Gracz sam wychodzi. Bilbo staje 1,30 m przed drzwiami. Ponowne wejście wymaga odejścia i powrotu.

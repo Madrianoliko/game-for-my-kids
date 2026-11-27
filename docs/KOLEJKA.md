@@ -128,7 +128,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Liczenie dotykiem (zasada 14):** wspólny mechanizm podświetlenia i cyfry nad przedmiotem. Puste boksy w stajni na czerwono, boksy z kucykami po powrocie na zielono, smoczątka w gnieździe z numerkiem. Wprowadź go we wszystkich istniejących zagadkach z liczeniem dotykiem.
 - Testy: wyjście z obory nie wraca od razu do środka, przedmiot po podniesieniu jest w pasku i znika ze sceny, cyfry pojawiają się po kolei.
 
-### [ ] U02 — Uwagi z testu: początek rozdziału 1 (uwagi 1, 3, 4, 5)
+### [x] U02 — Uwagi z testu: początek rozdziału 1 (uwagi 1, 3, 4, 5) (2026-11-27)
 - **Wstęp:** przed chatką krótka scenka filmowa: kamera przelatuje nad doliną (most, młyn, wioska) i zatrzymuje się przy chatce Bilba. Narrator (2–3 krótkie zdania): kim jest Bilbo (mały hobbit z Doliny), że lubi przygody i liczenie, i że dziś ktoś puka do drzwi. Przy kolejnych przejściach można ją pominąć dużym przyciskiem ze strzałką.
 - **Bóbr:** usuń pytanie z kciukiem w górę/w dół i ścieżkę odmowy. Bóbr mówi: „Proszę, Bilbo, pomóż mi! Woda zniszczyła most. Weź narzędzia i chodź za mną.” Dalej pakowanie jak dotąd. Starsze zapisy z krokiem odmowy mają się wczytać normalnie.
 - **Pakowanie:** rozłóż przedmioty w chatce tak, żeby żaden nie zasłaniał innego z perspektywy kamery (minimalny odstęp, sprawdzony testem pozycji).
