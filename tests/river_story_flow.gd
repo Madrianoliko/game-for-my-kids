@@ -398,7 +398,13 @@ func run() -> void:
 	for stage in ["recipe","eggs","milk"]:
 		if not check(story.id()==stage,"Missing kitchen "+stage): return
 		if not await riverbank(): return
-	if not check(story.id()=="homecoming","No reunion"): return
+	if not check(story.id()=="homecoming" and not story.visitor.visible,"Tygrysek czeka za drzwiami"): return
+	while story.part==0: await physics_frame
+	if not check(story.part==2 and story.visitor.visible,"Wejście Tygryska do ciemnej chatki"): return
+	while story.part==2: await physics_frame
+	if not check(story.voice=="route_birthday_surprise","Niespodzianka przed świeczkami"): return
+	while story.part!=5: await physics_frame
+	if not check(story.voice=="route_homecoming","Sto lat po zapaleniu świeczek"): return
 	await click(story.options.get_child(0))
 	while story.id()=="homecoming": await physics_frame
 	if not check(story.id()=="stable" and story.chapters==1,"Ukończenie rozdziału 1"): return
@@ -422,14 +428,17 @@ func run() -> void:
 	# Zapis stajni sprzed dodania jabłek zawierał część 3 i pustą kieszeń.
 	await reopen()
 	if not check(story.id()=="stable" and story.part==3 and not "Jabłko" in story.items,"Stary zapis stajni"): return
-	await click(story.options.get_child(0))
+	await tap_action(story.hand)
+	if not check(story.part==3 and story.items.count("Jabłko")==0,"Koszyk poza zasięgiem"): return
+	await move_to(story.stable.global_position+story.PROVISIONS)
+	await tap_action(story.hand)
 	if not check(story.items.count("Jabłko")==story.travel_apples,"Prowiant od Toba"): return
 	await click(story.options.get_child(0))
 	await reopen()
 	if not check(story.id()=="night_bridge" and game.stick.visible,"Wznowienie na moście"): return
 	await walk()
 	if not check(story.id()=="chief_sad","Spotkanie za mostem"): return
-	while story.part==0: await physics_frame
+	while story.part!=1: await physics_frame
 	for total in range(1,story.travel_apples+1):
 		while story.options.get_child(0).disabled: await physics_frame
 		await click(story.options.get_child(0))
@@ -441,12 +450,19 @@ func run() -> void:
 	await create_timer(1).timeout
 	if not check(story.hint_lit==1 and story.pickups[0].material_override.emission_enabled and not story.pickups[1].material_override.emission_enabled,"Jabłka zapalają się po kolei"): return
 	await click(numeric_button(story.options,story.travel_apples,true))
+	var basket_total:int=story.travel_apples+story.chief_stock
+	await reopen()
+	if not check(story.part==4 and story.pickups.size()==basket_total,"Drugie pytanie i pełny kosz po wznowieniu"): return
+	for apple in story.pickups:
+		await tap_model(apple)
+		if not check(apple.has_node("CountBadge"),"Można dotknąć każdego jabłka"): return
+	await click(numeric_button(story.options,basket_total,true))
 	var old_chief:=ConfigFile.new()
 	old_chief.load(story.FILE)
 	old_chief.erase_section_key("story","fork_path")
 	old_chief.save(story.FILE)
 	await reopen()
-	if not check(story.fork_path=="" and story.part==3 and story.voice.begins_with("route_sad_thanks"),"Wskazówka herszta po wznowieniu"): return
+	if not check(story.fork_path=="" and story.part==3 and story.voice=="route_sad_reward","Wskazówka herszta po wznowieniu"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="fork" and game.stick.visible,"Rozwidlenie po spotkaniu"): return
 	var fork_save:=ConfigFile.new()
