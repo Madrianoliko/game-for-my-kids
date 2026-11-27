@@ -33,7 +33,7 @@ func check_flow() -> void:
 	game=current_scene
 	if not require(game.atlas.visible and not game.atlas.resume.visible and not game.atlas.chapter_two.visible,"Menu bez zapisu"): return
 	await click(game.atlas.play)
-	await click(game.bystra.options.get_child(0))
+	while game.bystra.id()!="pack": await physics_frame
 	await click(game.pause_button)
 	var menu=game.ui.get_node("PauseMenu")
 	var volume:Button=menu.find_child("Głośnik",true,false)
@@ -53,6 +53,17 @@ func check_flow() -> void:
 	if not require(game.bystra.active and game.bystra.id()=="pack","Wznów przygodę Bilba"): return
 	var legacy:=ConfigFile.new()
 	legacy.set_value("story","version",3)
+	legacy.set_value("story","route","door")
+	legacy.set_value("story","declined",true)
+	legacy.save(game.bystra.FILE)
+	await click(game.pause_button)
+	await click(game.ui.get_node("PauseMenu").find_child("Menu",true,false))
+	await click(game.atlas.resume)
+	if not require(game.bystra.id()=="pack" and game.bystra.items.is_empty(),"Wznowienie po dawnej odmowie"): return
+	game.bystra.begin(false)
+	if not require(game.bystra.id()=="valley_intro" and game.bystra.options.get_child_count()==2,"Strzałka przy powtórce"): return
+	await click(game.bystra.options.get_child(0))
+	if not require(game.bystra.id()=="door","Pominięcie przelotu"): return
 	legacy.set_value("story","route","mill")
 	legacy.set_value("story","part",2)
 	legacy.set_value("story","items",PackedStringArray(game.bystra.Data.GEAR))

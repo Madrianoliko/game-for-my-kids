@@ -232,13 +232,18 @@ func run() -> void:
 	var rolled:Dictionary=story.numbers.duplicate()
 	await reopen()
 	if not check(story.numbers==rolled,"Zapis zachowuje wylosowane liczby"): return
-	await click(story.options.get_child(1))
-	await move_to(story.origin+Vector3(-2.1,0,1.3))
-	await move_to(story.origin+Vector3(-2.1,0,-1.8))
-	await move_to(story.visitor.global_position)
-	await tap_action(story.hand)
-	if not check(story.dock.visible and story.id()=="door","Talk again after declining"): return
-	await click(story.options.get_child(0))
+	if not check(story.id()=="valley_intro" and story.square.visible and story.options.get_child_count()==1,"Pierwszy przelot nad doliną"): return
+	var first_view:Vector3=game.camera.position
+	await create_timer(2).timeout
+	if not check(first_view.distance_to(game.camera.position)>1,"Ruch kamery we wstępie"): return
+	while story.id()=="valley_intro": await physics_frame
+	if not check(story.id()=="door" and story.voice=="route_door" and story.options.get_child_count()==1,"Prośba bobra bez wyboru odpowiedzi"): return
+	while story.id()=="door": await physics_frame
+	for i in story.pickups.size():
+		var at:Vector2=game.camera.unproject_position(story.pickups[i].global_position)
+		for j in i:
+			var other:Vector2=game.camera.unproject_position(story.pickups[j].global_position)
+			if not check(at.distance_to(other)>=game.ui.size.y*.12,"Odstęp narzędzi na ekranie"): return
 	await tap_action(story.hand)
 	if not check(story.id()=="pack" and story.items.is_empty(),"Empty bag left cottage"): return
 	for i in [5,0,1,2,3,4,6]:
@@ -259,7 +264,9 @@ func run() -> void:
 	await move_to(story.origin+Vector3(2.6,0,-1.8))
 	await move_to(story.visitor.global_position)
 	await tap_action(story.hand)
-	if not check(story.id()=="range","Cannot exit packed"): return
+	if not check(story.id()=="kids_arrive" and story.voice=="route_kids_arrive","Narrator zapowiada dzieci"): return
+	while story.id()=="kids_arrive": await physics_frame
+	if not check(story.id()=="range" and story.voice=="route_range","Dzieci proszą o pokaz łuku"): return
 	if not await shoot_pair(): return
 	if not check(story.id()=="dummy","Bow tutorial"): return
 	for i in 2:
