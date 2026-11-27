@@ -1,3 +1,13 @@
+## 2026-11-27 — Z10. Szeptek i liczenie kropli
+
+Po ukończeniu lotu Iskierki kryształ w menu otwiera rozdział 4. Działa także po wczytaniu wcześniejszego zapisu. Szeptek zabiera Bilbowi latarkę i zaprasza do zagadek.
+Nowe kroki ROUTE to `whisper_cave`, `crystal_hall` i `drip_tunnel`. W sali są trzy wejścia. Dwa pozostałe tunele czekają za głazami na Z11.
+Dziecko słucha najpierw trzech, potem pięciu kapnięć w przyciemnionej jaskini. Odstęp wynosi 1,38 s, błysk trwa 1 s. Głośnik powtarza całą serię.
+Po dwóch pomyłkach kryształy pozostają jasne i można policzyć je dotykiem. Za każdą serię zapala się jeden duży kryształ. Oba zostają przy wejściu także po wznowieniu.
+Dodano osiem polskich nagrań Zosi i dźwięk kropli. Brak brakujących nagrań i otwartych pytań. W uwagach z gry nie było nowych wpisów.
+Pakiet iPhone ma 11 219 612 bajtów. Wszystkie trzy testy na pakiecie przeszły przy 60 kl./s, w tym powtórka serii, pomoc, nagrody i powrót do menu.
+Przy wyjściu z testów obozu i doliny Godot zgłosił pozostające obiekty. Odsłuch przez głośnik iPhone’a czeka na próbę z dzieckiem.
+
 ## 2026-11-26 — Z09. Urodziny kreta i powrót Iskierki do mamy
 
 Kroki ROUTE: `mole_candles`, `dragon_nest`, `dragon_flight`. Starszy zakończony zapis w ciepłej jaskini wznawia się u kreta.

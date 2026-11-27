@@ -94,7 +94,7 @@ Plan: rozdział 3, zagadki 4 i 5, nagroda.
 - Mama smoczyca: „Mam pięcioro dzieci, a w gnieździe są cztery. Kogo brakuje?”. Po odpowiedzi mama obejmuje Iskierkę skrzydłem.
 - Nagroda: lot na plecach mamy smoczycy nad doliną (prosta animacja kamery nad mapą z młynem, mostem i kamiennymi trollami). Mama: „Wracajcie przez jaskinie, tam jest krócej. Tylko uważajcie na Szeptka…”. Koniec rozdziału 3.
 
-### [ ] Z10 — Rozdział 4, część 1: Szeptek i liczenie dźwięków
+### [x] Z10 — Rozdział 4, część 1: Szeptek i liczenie dźwięków (2026-11-27)
 Plan: rozdział 4. Przycisk w menu (obrazek kryształu) po ukończeniu rozdziału 3.
 - Jaskinia z kryształami, Szeptek zabiera latarkę: „Ciii… Kto tu chodzi z latarką? Teraz to moja latarka! Hi, hi.”.
 - Nowa mechanika: liczenie dźwięków. Ekran ciemnieje, słychać kapnięcia, a przy każdym na sekundę zapala się kryształ. Dziecko odpowiada przyciskami z kropkami. Po dwóch pomyłkach kryształy zostają zapalone.
