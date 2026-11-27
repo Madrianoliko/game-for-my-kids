@@ -655,6 +655,11 @@
     "tekst": "Pięć! Wioska rozświetlona. Przy zielonej chatce macha do nas Wiewiórka."
   },
   {
+    "plik": "audio/story/route_milk_packed.mp3",
+    "postać": "narrator",
+    "tekst": "Mleko jest w plecaku. Wyjdź na plac."
+  },
+  {
     "plik": "audio/story/route_mill.mp3",
     "postać": "narrator",
     "tekst": "W młynie pająki zasłoniły worki. Wyjmij łuk i strzel do dwóch pająków!"

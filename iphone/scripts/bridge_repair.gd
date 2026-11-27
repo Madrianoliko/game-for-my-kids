@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+const Count := preload("res://scripts/touch_count.gd")
+
 signal wrong
 signal ordered
 signal counted_slot
@@ -165,7 +167,8 @@ func draw_bridge() -> void:
 		else:
 			river.draw_rect(rect,Color.GOLDENROD if i>=on_hand and i<on_hand+highlighted else Color("#245866c0"))
 			river.draw_rect(rect,Color("#cce6d9"),false,3)
-			if step==Step.COUNT and counted.has(i):
+			if step in [Step.COUNT,Step.CHOOSE] and counted.has(i):
+				river.draw_rect(rect,Color(Count.EMPTY,.48))
 				var number := str(counted.find(i)+1)
 				river.draw_string(ThemeDB.fallback_font,Vector2(rect.position.x,rect.get_center().y+13),number,HORIZONTAL_ALIGNMENT_CENTER,rect.size.x,38,Color("#ffe79a"))
 

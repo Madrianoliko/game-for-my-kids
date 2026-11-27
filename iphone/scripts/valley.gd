@@ -373,28 +373,41 @@ func pause_game() -> void:
 	stick.reset()
 	stick.hide()
 	pause_button.hide()
-	# Keep the current puzzle and its random answer choices underneath the pause layer.
-	var menu := AcceptDialog.new()
-	menu.title="Przerwa w wyprawie"
-	menu.dialog_text="Bilbo poczeka tutaj."
-	menu.ok_button_text="Graj dalej"
-	menu.add_button("Mapa",true,"map")
-	menu.add_button("Wyjdź",true,"exit")
+	var menu:=ColorRect.new()
+	menu.name="PauseMenu"
+	menu.color=Color("#101928dc")
 	ui.add_child(menu)
-	var resume := func():
+	menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var center:=CenterContainer.new()
+	menu.add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var row:=HBoxContainer.new()
+	row.add_theme_constant_override("separation",18)
+	center.add_child(row)
+	var resume:=func():
+		menu.hide()
 		menu.queue_free()
 		paused=false
 		if bystra.active and bystra.busy: bystra.anim.play()
 		stick.visible=state==State.WALK
 		if bystra.active: bystra.show_controls()
 		pause_button.show()
-	menu.confirmed.connect(resume)
-	menu.canceled.connect(resume)
-	menu.custom_action.connect(func(id):
-		menu.queue_free()
-		if id == "exit": exit_game()
-		else: home())
-	menu.popup_centered()
+	for key in ["Wznów","Głośnik","Menu","Wyjście"]:
+		var b:=Button.new()
+		b.name=key
+		row.add_child(b)
+		var icons:=preload("res://scripts/river_icons.gd")
+		icons.apply(b,key)
+		b.custom_minimum_size=Vector2(116,104)
+		match key:
+			"Wznów": b.pressed.connect(resume)
+			"Głośnik":
+				b.icon=icons.picture("Głośnik" if sound else "Cisza")
+				b.pressed.connect(func():
+					toggle_sound()
+					b.icon=icons.picture("Głośnik" if sound else "Cisza"))
+			"Menu": b.pressed.connect(func(): menu.queue_free(); home())
+			"Wyjście": b.pressed.connect(exit_game)
 
 func _notification(what:int) -> void:
 	if what==NOTIFICATION_APPLICATION_FOCUS_OUT and is_node_ready(): pause_game()

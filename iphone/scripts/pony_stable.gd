@@ -1,5 +1,7 @@
 extends Node3D
 
+const Count := preload("res://scripts/touch_count.gd")
+
 signal counted(index:int)
 const PLACE := Vector3(14,0,-1.2)
 var empty_mask := (1<<1) | (1<<2) | (1<<4)
@@ -44,16 +46,17 @@ func setup(game) -> void:
 		host.orb(smoke,Vector3(i*.13,i*.46,0),.25+i*.065,Color.SLATE_GRAY)
 	set_pens(false,0,false)
 
-func set_pens(all_home:bool,mask:int,interactive:bool) -> void:
+func set_pens(all_home:bool,mask:int,interactive:bool,sequence:Array=[]) -> void:
 	smoke.visible=not all_home and interactive
 	for i in 5:
 		horses[i].visible=all_home or not (empty_mask & (1<<i))
 		var b:=targets[i]
 		b.visible=interactive and (all_home or not horses[i].visible)
 		b.disabled=bool(mask & (1<<i))
-		b.text="✓" if b.disabled else ""
-		b.add_theme_font_size_override("font_size",30)
-		b.add_theme_color_override("font_disabled_color",Color.GREEN_YELLOW)
+		var order:=sequence.find(i)
+		if interactive and order>=0:
+			Count.mark(floors[i],order+1,not all_home,1.65)
+		else: Count.clear(floors[i])
 		if b.visible:
 			var center:=global_position+Vector3((i-2)*WIDTH,.4,.34)
 			var tl:Vector2=host.camera.unproject_position(center+Vector3(-.72,.8,-.6))
@@ -74,4 +77,4 @@ func highlight_empty(total:int) -> void:
 		if empty_mask & (1<<i):
 			index+=1
 			floors[i].material_override.emission_enabled=index<=total
-			floors[i].material_override.emission=Color.GOLD
+			floors[i].material_override.emission=Count.EMPTY

@@ -46,7 +46,6 @@ static func interior(story,kind:String) -> void:
 	for x in range(-5,6):
 		host.box(room,Vector3(x,.006,0),Vector3(.025,.012,8),WOOD.darkened(.1))
 	if kind=="mill":
-		for x in [-3.45,-2.73]: story.actor("flour",Vector3(x,.02,-1.26),.82)
 		story.actor("wheel",Vector3(-2.2,.2,-2.32),1.26)
 		for point in TARGETS:
 			host.box(room,Vector3(point.x,(point.y+2.9)*.5,point.z),Vector3(.035,2.9-point.y,.035),Color.IVORY)

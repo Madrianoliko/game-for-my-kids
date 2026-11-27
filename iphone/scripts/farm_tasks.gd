@@ -1,5 +1,7 @@
 extends Node3D
 
+const Count := preload("res://scripts/touch_count.gd")
+
 const WOOD := Color("#996a44")
 const HAY := Color("#ecd168")
 const BAG := Vector3(2.6,.45,.25)
@@ -53,17 +55,30 @@ func setup(owner_bank) -> void:
 		for side in [-1,1]:
 			bank.rock(self,UDDER+Vector3(.22*side,-.24,.12),.12,Color("#e9ac9d"),Vector3(.78,1.9,.8))
 		var bucket:=Vector3(.55,.15,1.45)
-		var tin:=CylinderMesh.new()
-		tin.top_radius=.65
-		tin.bottom_radius=.48
-		tin.height=.53
-		host.mesh(self,tin,bucket,Color("#648795"))
-		bank.torus(bucket+Vector3.UP*.27,.63,Color("#bac9c6"))
-		bank.rock(self,bucket+Vector3.UP*.268,.59,Color("#344952"),Vector3(1,.035,1))
-		bucket_fill=bank.rock(self,bucket+Vector3.UP*(.29+.04*bank.marks),.55,Color.FLORAL_WHITE,Vector3(1,.12,1))
-		bucket_fill.visible=bank.marks>0
+		var pail:=milk_bucket(bucket,bank.marks)
+		bucket_fill=pail.get_node("Milk")
 		stream=host.box(self,UDDER+Vector3(0,-.38,.47),Vector3(.068,.78,.075),Color.FLORAL_WHITE)
 		stream.hide()
+
+func milk_bucket(at:Vector3,amount:int) -> Node3D:
+	var pail:=Node3D.new()
+	add_child(pail)
+	pail.position=at
+	var tin:=CylinderMesh.new()
+	tin.top_radius=.65
+	tin.bottom_radius=.48
+	tin.height=.53
+	host.mesh(pail,tin,Vector3.ZERO,Color("#648795"))
+	var rim:=TorusMesh.new()
+	rim.inner_radius=.59
+	rim.outer_radius=.66
+	host.mesh(pail,rim,Vector3.UP*.27,Color("#bac9c6"))
+	host.orb(pail,Vector3.UP*.268,.59,Color("#344952")).scale.y=.035
+	var milk=host.orb(pail,Vector3.UP*(.29+.04*amount),.55,Color.FLORAL_WHITE)
+	milk.name="Milk"
+	milk.scale.y=.12
+	milk.visible=amount>0
+	return pail
 
 func nail_at(i:int) -> Vector3:
 	return Vector3(-3.95+.81*(i%5),.29,-.60+1.26*floori(i/5.0))
@@ -140,6 +155,7 @@ func release(at:Vector2) -> void:
 			var total:=0
 			for nail in 10:
 				if bank.marks & (1<<nail): total+=1
+			Count.mark(nails[i].get_child(0),total,false,.30)
 			bank.sound.emit("count_%d"%total if total<=4 else "story/nail_"+str(total))
 			if total==8: bank.next_part()
 		"hay":

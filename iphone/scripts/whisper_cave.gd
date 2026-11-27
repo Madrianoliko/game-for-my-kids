@@ -1,5 +1,7 @@
 extends Node3D
 
+const Count := preload("res://scripts/touch_count.gd")
+
 const FLASH_TIME := 1.0
 const DROP_INTERVAL := 1.38
 const COUNTS := [3,5]
@@ -154,7 +156,9 @@ func listen() -> void:
 	next_drop=game.narrator.stream.get_length()+.22 if game.sound else .45
 	listening=true
 	story.curtain.color.a=.38
-	for gem in flashes: glow(gem,false)
+	for gem in flashes:
+		Count.clear(gem)
+		glow(gem,false)
 	for button in answers: button.disabled=true
 
 func _process(dt:float) -> void:
@@ -208,5 +212,6 @@ func _input(event:InputEvent) -> void:
 				var total:=0
 				for j in flashes.size():
 					if counted & (1<<j): total+=1
+				Count.mark(flashes[i],total)
 				story.effect("count_%d"%total)
 				break

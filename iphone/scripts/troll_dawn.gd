@@ -1,5 +1,7 @@
 extends Node3D
 
+const Count := preload("res://scripts/touch_count.gd")
+
 enum Beat { CAUGHT, DISHES, BET, ACCEPT, ROCKS, ARGUE_ROCKS, SKEWER, SAUSAGES, ARGUE_FOOD, CONES, ARGUE_CONES, SUN, STONE, END }
 var answers := {Beat.ROCKS:4, Beat.SAUSAGES:3, Beat.CONES:6}
 const CLIPS := ["caught","dishes","bet","accept","rocks","argue_rocks","skewer","sausages","argue_food","cones","argue_cones","sun","stone","end"]
@@ -147,7 +149,7 @@ func _input(event:InputEvent) -> void:
 			nearest=i
 	if nearest>=0 and nearest not in counted:
 		counted.append(nearest)
-		highlight(nearest)
+		Count.mark(objects[nearest],counted.size())
 		count_voice(counted.size())
 		get_viewport().set_input_as_handled()
 

@@ -248,8 +248,7 @@ func _input(event:InputEvent) -> void:
 		if nearest>=0 and not (counted & (1<<nearest)):
 			counted|=1<<nearest
 			clicks+=1
-			targets[nearest].material_override.emission=Color.GOLD
-			targets[nearest].material_override.emission_enabled=true
+			Count.mark(targets[nearest],clicks,false,.38)
 			story.effect("count_%d"%clicks)
 	elif finger==event.index and held>=0:
 		if event is InputEventScreenDrag:

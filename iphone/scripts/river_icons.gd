@@ -1,6 +1,16 @@
 extends RefCounted
 
 const MARKS := {
+	"Menu": '<path fill="#ffdf92" d="m2 18 18-15 18 15-4 4-3-2v16H9V20l-3 2z"/><path fill="#454954" d="M17 25h7v11h-7z"/>',
+	"Wyjście": '<path fill="none" stroke="#ffb99b" stroke-width="4" d="M19 5H6v30h13"/><path fill="#ffb99b" d="M14 16h12V8l12 12-12 12v-8H14Z"/>',
+	"Wznów": '<path fill="#92ef98" d="M9 4v32l25-16Z"/>',
+	"Cisza": '<path fill="#ffdfa3" d="M2 15h8L21 6v28l-11-9H2Z"/><path stroke="#fc947c" stroke-width="4" d="m26 14 11 12m0-12L26 26"/>',
+	"Latarka": '<path fill="#fbd662" d="m4 29 15-15 7 7-15 15zM17 10l5-6 13 13-6 5z"/>',
+	"Sznurek": '<g fill="none" stroke="#e5b367" stroke-width="4"><ellipse cx="20" cy="16" rx="13" ry="9"/><ellipse cx="20" cy="16" rx="6" ry="4"/><path d="M32 16q6 16-18 20"/></g>',
+	"Młotek": '<path fill="#bd8d59" d="m7 32 16-22 5 4-16 23z"/><path fill="#b6c5ce" d="M13 8l6-5 16 10-5 9z"/>',
+	"Gwoździe": '<g stroke="#d7dfdf" stroke-width="3"><path d="m8 5 11 3m-5-1-6 25m14-19 12 3m-6-1-5 22"/></g>',
+	"Mapa Dymiącej Góry": '<path fill="#e4cc90" d="m3 8 11-4 11 4 12-5v29l-12 5-11-4-11 5z"/><path stroke="#a24c44" stroke-width="3" d="m21 15 8 9m0-9-8 9"/>',
+
 	"Most": '<path d="M3 29q17-21 34 0M3 34V16m34 18V16M5 18q15-10 30 0M12 16v6m8-9v6m8-4v7" fill="none" stroke="#c18a48" stroke-width="4"/>',
 	"Kryształ": '<path fill="#a080e6" stroke="#eddbff" stroke-width="2" d="m20 2 13 11-4 16-9 9L8 27 6 12Z"/><path fill="#76d5ed" d="m20 4 5 11-5 20-6-21Z"/>',
 	"Iskierka": '<path fill="#ef9756" stroke="#783c35" d="M5 29q0-12 10-15L12 3l10 9 7-7 1 10q8 1 8 10l-6 6-10-1-8 7Z"/><circle cx="26" cy="18" r="3" fill="#332138"/><circle cx="34" cy="24" r="1.6"/>',

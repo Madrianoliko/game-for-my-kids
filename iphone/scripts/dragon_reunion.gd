@@ -1,5 +1,7 @@
 extends "res://scripts/iskierka.gd"
 
+const Count := preload("res://scripts/touch_count.gd")
+
 const Dragon := preload("res://scripts/iskierka.gd")
 const FLIGHT_TIME := 9.0
 const SNEEZE_INTERVAL := .55
@@ -104,9 +106,10 @@ func prompt_phase() -> void:
 			story.say("mole_intro" if mole else "nest_ask")
 			story.button("Dalej",story.go_to.bind(story.id(),1))
 		1:
-			highlight_mask(story.marks)
+			restore_numbers(story.marks)
 			story.say("mole_count" if mole else "nest_count")
 		2:
+			restore_numbers((1<<tokens.size())-1)
 			story.say("mole_ask" if mole else "nest_ask")
 			var choices:=[4,5,6] if mole else [1,2,3]
 			choices.shuffle()
@@ -128,13 +131,17 @@ func _input(event:InputEvent) -> void:
 			radius=d
 	if best<0 or story.marks & (1<<best): return
 	story.marks|=1<<best
-	highlight_mask(story.marks)
+	restore_numbers(story.marks)
 	var count:=0
 	for i in tokens.size():
 		if story.marks & (1<<i): count+=1
 	story.effect("count_%d"%count)
 	if count==tokens.size(): story.go_to(story.id(),2)
 	else: story.checkpoint()
+
+func restore_numbers(mask:int) -> void:
+	var order:Array=story.touch_order(mask,tokens.size())
+	for i in order: Count.mark(tokens[i],order.find(i)+1,false,.65)
 
 func highlight_mask(mask:int) -> void:
 	for i in tokens.size():

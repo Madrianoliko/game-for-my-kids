@@ -80,14 +80,19 @@ var fingers:Dictionary={}
 var declined:=false
 var traveling:=false
 const GUARD_CUES := ["guard","guard_side","guard_sword"]
-var ingredient_list := HBoxContainer.new()
+var ingredient_list := VBoxContainer.new()
+var bag:=GridContainer.new()
+var food_models:Array[Node3D]=[]
+var blocked_door:=""
+var apple_order:Array[int]=[]
+const Count := preload("res://scripts/touch_count.gd")
 var ingredient_ticks := {}
 var voice:=""
 var origin:=Vector3.ZERO
 
 func id() -> String: return Data.ROUTE[index]
 
-func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and "Mleko" in items) or (id()=="door" and declined)
+func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and (part==2 or "Mleko" in items)) or (id()=="door" and declined)
 
 func setup(game) -> void:
 	host=game
@@ -178,19 +183,23 @@ func setup(game) -> void:
 	outside.tooltip_text="Wyjdź na plac"
 	outside.custom_minimum_size=Vector2(76,72)
 	outside.pressed.connect(leave_room)
+	host.ui.add_child(bag)
+	bag.columns=2
+	bag.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	host.ui.add_child(ingredient_list)
 	ingredient_list.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	for food in Square.FOOD.values():
 		var icon:=TextureRect.new()
 		icon.texture=Icons.picture(food)
-		icon.custom_minimum_size=Vector2(62,62)
+		icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		icon.custom_minimum_size=Vector2(45,45)
 		icon.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		ingredient_list.add_child(icon)
 		var tick:=TextureRect.new()
 		tick.texture=Icons.picture("Zebrane")
 		tick.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-		tick.position=Vector2(33,32)
-		tick.size=Vector2(30,30)
+		tick.position=Vector2(22,20)
+		tick.size=Vector2(23,23)
 		tick.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		icon.add_child(tick)
 		ingredient_ticks[food]=tick
@@ -250,13 +259,14 @@ func checkpoint(ended:=false) -> void:
 	cfg.set_value("story","chapters_completed",chapters)
 	cfg.set_value("story","ended",ended)
 	cfg.set_value("story","stone_hill",stone_hill.visible)
-	for key in ["part","marks","items","declined","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
+	for key in ["blocked_door","part","marks","items","declined","traveling","village_pos","room_saves","fork_path"]: cfg.set_value("story",key,get(key))
 	if cfg.save(FILE+".tmp")==OK:
 		saved=DirAccess.rename_absolute(ProjectSettings.globalize_path(FILE+".tmp"),ProjectSettings.globalize_path(FILE))==OK and not ended
 
 func read_save() -> bool:
 	var cfg:=ConfigFile.new()
 	if cfg.load(FILE)!=OK: return false
+	blocked_door=cfg.get_value("story","blocked_door","")
 	numbers=cfg.get_value("story","numbers",{})
 	chapters=int(cfg.get_value("story","chapters_completed",0))
 	stone_hill.visible=bool(cfg.get_value("story","stone_hill",chapters>=2 or cfg.get_value("story","route","")=="stable_home"))
@@ -313,6 +323,7 @@ func begin(resume:bool, start_step:="door") -> void:
 	if resume:
 		if not read_save(): return
 	else:
+		blocked_door=""
 		numbers=Data.draw_numbers()
 		index=Data.ROUTE.find(start_step)
 		part=0
@@ -352,7 +363,7 @@ func stop() -> void:
 	fingers.clear()
 	host.camera.attributes=null
 	bank.leave()
-	for node in [ingredient_list,square,outside,scene,props,field,dock,actions,replay,held_shield,equipped_bow,arc]: node.hide()
+	for node in [bag,ingredient_list,square,outside,scene,props,field,dock,actions,replay,held_shield,equipped_bow,arc]: node.hide()
 	host.cottage.sword.hide()
 	host.cottage.sword.position=Vector3(.45,.92,.16)
 	host.cottage.sword.rotation=Vector3.ZERO
@@ -387,6 +398,32 @@ func show_controls() -> void:
 	sword.disabled="Miecz" not in items
 	shield.disabled="Tarcza" not in items
 
+func refresh_bag() -> void:
+	var top:Vector2=host.hud.position+Vector2(0,host.hud.size.y+6)
+	bag.position=top
+	for child in bag.get_children():
+		bag.remove_child(child)
+		child.queue_free()
+	var shown:Array=[]
+	ingredient_list.visible=id() in ["invitation","village","mill","coop","dairy","delivery"] and not (id()=="delivery" and part==1)
+	for item in items:
+		if item in Square.FOOD.values() or item in shown: continue
+		shown.append(item)
+		var key:String="Machnij mieczem" if item=="Miecz" else item
+		if not Icons.MARKS.has(key): continue
+		var icon:=TextureRect.new()
+		icon.texture=Icons.picture(key)
+		icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		icon.custom_minimum_size=Vector2(34,34)
+		icon.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		bag.add_child(icon)
+	bag.visible=bag.get_child_count()>0
+	ingredient_list.position=top+Vector2(76 if bag.visible else 0,0)
+	for food in ingredient_ticks:
+		var collected:bool=food in items
+		ingredient_ticks[food].visible=collected
+		ingredient_ticks[food].get_parent().modulate=Color.WHITE if collected else Color(.52,.52,.52,.8)
+
 func render() -> void:
 	clear_hint()
 	host.camera.environment=null
@@ -395,10 +432,9 @@ func render() -> void:
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
 	reward.hide()
-	ingredient_list.visible=id() in ["invitation","village","mill","coop","dairy","delivery"] and not (id()=="delivery" and part==1)
-	ingredient_list.position=host.hud.position+Vector2(0,host.hud.size.y+6)
-	for food in ingredient_ticks:
-		ingredient_ticks[food].visible=food in items
+	refresh_bag()
+	food_models.clear()
+	apple_order.clear()
 	bank.leave()
 	square.hide()
 	outside.hide()
@@ -589,7 +625,7 @@ func render() -> void:
 					spider.visible=i>=part
 					actors.append(spider)
 				if "Mąka" not in items:
-					for i in 3: actor("flour",Vector3(.35+i*.64,0,-.85),.57)
+					for i in 3: food_models.append(actor("flour",Vector3(.35+i*.64,0,-.85),.57))
 				for i in 2:
 					if actors[i].tool: actors[i].tool.hide()
 				if "Mąka" in items: farm_exit_prompt()
@@ -600,11 +636,14 @@ func render() -> void:
 				foe.position=Vector3(1.25,0,-.35)
 				foe.rotation.y=-.35
 				foe.visible=part==0
-				for x in ([] if "Jajka" in items else [.54,1.24]): host.orb(scene,Vector3(x,.30,-.66),.24,Color.IVORY).scale.y=1.23
+				for x in ([] if "Jajka" in items else [.54,1.24]):
+					var egg=host.orb(scene,Vector3(x,.30,-.66),.24,Color.IVORY)
+					egg.scale.y=1.23
+					food_models.append(egg)
 				if "Jajka" in items: farm_exit_prompt()
 				else: say("take_eggs" if part==1 else "coop")
 		"dairy":
-			if "Mleko" in items:
+			if part==2 or "Mleko" in items:
 				dock.hide()
 				Village.interior(self,"dairy")
 				var stall:=bank.Farm.new()
@@ -612,8 +651,10 @@ func render() -> void:
 				stall.bank=bank
 				stall.host=host
 				for x in [-2.15,1.48]: stall.cow(Vector3(x,0,-1.47),.84)
-				actor("milk",Vector3(.7,0,-.7))
-				farm_exit_prompt()
+				if "Mleko" in items: farm_exit_prompt()
+				else:
+					food_models.append(stall.milk_bucket(Vector3(.7,.27,-.7),3))
+					say("leave_dairy")
 			else: start_bank()
 		"chief":
 			actor("chief",Vector3(0,0,-1))
@@ -897,7 +938,10 @@ func _unhandled_input(event:InputEvent) -> void:
 	for i in pickups.size():
 		var pos:Vector2=host.camera.unproject_position(pickups[i].global_position)
 		if pos.distance_to(event.position)<maxf(18,host.camera.unproject_position(pickups[i].global_position+Vector3.RIGHT*.28).distance_to(pos)):
-			if host.sound: host.play_clip(host.narrator,"count_%d"%(i+1))
+			if not apple_order.has(i): apple_order.append(i)
+			var n:=apple_order.find(i)+1
+			Count.mark(pickups[i],n)
+			if host.sound: host.play_clip(host.narrator,"count_%d"%n)
 			get_viewport().set_input_as_handled()
 			return
 
@@ -912,7 +956,7 @@ func render_stable() -> void:
 	host.hud.text="Stajnia Toba"
 	stable.empty_mask=22 if pony_count()==3 else 18
 	var counting:=part==0 if home else part==1
-	stable.set_pens(home,marks,counting)
+	stable.set_pens(home,marks,counting,touch_order(marks,5))
 	if home:
 		var pestka=actor("beaver",stable.position+stable.horses[2].position+Vector3(0,1.0,-.08),.46)
 		pestka.rotation.y=.18
@@ -945,16 +989,23 @@ func render_stable() -> void:
 		say("stable_go")
 	transition_time=(host.narrator.stream.get_length() if host.sound and host.narrator.stream else 2.0)+.4
 
+func touch_order(mask:int,size:int) -> Array:
+	var key:="touch_"+id()
+	var sequence:=Count.order(numbers.get(key,[]),mask,size)
+	numbers[key]=sequence
+	return sequence
+
 func count_pen(i:int) -> void:
 	if host.paused or not active or marks & (1<<i): return
 	var home:=id()=="stable_home"
 	if not ((home and part==0) or (id()=="stable" and part==1 and (stable.empty_mask & (1<<i)) != 0)): return
 	marks|=1<<i
+	var sequence:=touch_order(marks,5)
 	checkpoint()
 	var total:=0
 	for bit in 5:
 		if marks & (1<<bit): total+=1
-	stable.set_pens(home,marks,true)
+	stable.set_pens(home,marks,true,sequence)
 	if host.sound: host.play_clip(host.narrator,"count_%d"%total)
 	if marks==(stable.FULL_MASK if home else stable.empty_mask):
 		age=0
@@ -1012,7 +1063,7 @@ func interact() -> void:
 	if traveling or bank.visible or field.visible: return
 	if id()=="village":
 		var door:=square.near_door(village_pos)
-		if door=="": return
+		if door=="" or door==blocked_door: return
 		var progress:Vector2i=room_saves.get(door,Vector2i.ZERO)
 		go_to(door,progress.x,progress.y)
 		return
@@ -1030,12 +1081,15 @@ func interact() -> void:
 	if Square.FOOD.has(id()) and Square.FOOD[id()] in items:
 		if host.leo.position.distance_to(origin+Vector3(0,0,2.13))<1.32: leave_room()
 		return
-	if id() in ["mill","coop"]:
-		if ((id()=="mill" and part==2) or (id()=="coop" and part==1)) and host.leo.position.distance_to(origin+Vector3(.9,0,-.75))<1.65:
-			items.append("Mąka" if id()=="mill" else "Jajka")
+	if Square.FOOD.has(id()):
+		var ready:=part==1 if id()=="coop" else part==2
+		if ready and host.leo.position.distance_to(origin+Vector3(.9,0,-.75))<1.65:
+			items.append(Square.FOOD[id()])
+			for model in food_models: model.hide()
+			refresh_bag()
+			farm_exit_prompt()
 			effect("chime")
 			checkpoint()
-			render()
 		return
 	if id()!="pack": return
 	var nearest:=-1
@@ -1061,6 +1115,7 @@ func interact() -> void:
 	anim.tween_property(object,"global_position",host.leo.position+Vector3.UP,.28)
 	anim.tween_callback(func():
 		object.hide()
+		refresh_bag()
 		busy=false
 		show_controls()
 		host.hud.text="Plecak   %d / 7"%items.size()
@@ -1250,7 +1305,8 @@ func bank_done() -> void:
 		render()
 	else:
 		if id()=="dairy":
-			items.append("Mleko")
+			part=2
+			marks=0
 			checkpoint()
 			render()
 		else: advance()
@@ -1289,7 +1345,8 @@ func leave_room() -> void:
 	var room:=id()
 	if not Square.DOORS.has(room): return
 	room_saves[room]=Vector2i(part,marks)
-	village_pos=Square.DOORS[room]+Vector3.BACK*.82
+	blocked_door=room
+	village_pos=Square.DOORS[room]+Vector3.BACK*1.30
 	go_to("village")
 
 func ingredients_ready() -> bool:
@@ -1299,6 +1356,8 @@ func ingredients_ready() -> bool:
 
 func village_hint() -> void:
 	var door:=square.near_door(village_pos)
+	if blocked_door!="" and door!=blocked_door: blocked_door=""
+	if door==blocked_door: door=""
 	host.hud.text=Square.NAMES.get(door,"Wioska Tygryska")
 	hand.modulate=Color("#ffe3a4") if door!="" else Color.WHITE
 
@@ -1312,4 +1371,4 @@ func farm_exit_prompt() -> void:
 	var mat=host.box(scene,Vector3(0,.045,2.13),Vector3(1.65,.08,.76),Color("#ccac74"))
 	for side in [-1,1]:
 		host.box(mat,Vector3(side*.18,.05,.03),Vector3(.12,.05,.42),Color.IVORY).rotation.y=-side*.63
-	say("leave_"+id())
+	say("milk_packed" if id()=="dairy" else "leave_"+id())

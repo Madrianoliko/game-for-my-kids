@@ -123,6 +123,7 @@ const WORDS := {
 	"thanks":"Trzy woreczki mąki, dwa jajka i mleko! Dziękuję! Teraz upieczemy tort dla Tygryska.",
 	"leave_mill":"Mąka spakowana! Wróć na plac przez drzwi.",
 	"leave_coop":"Jajka są w koszyku! Wyjdź na plac.",
+	"milk_packed":"Mleko jest w plecaku. Wyjdź na plac.",
 	"leave_dairy":"Wiaderko pełne! Zabierz mleko i wyjdź na plac.",
 	"have_mill":"Mąka jest już w twoim plecaku.",
 	"have_coop":"Jajka są już w twoim plecaku.",
