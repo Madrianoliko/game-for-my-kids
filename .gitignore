@@ -6,3 +6,11 @@ xcode/build/
 
 # Metadane Findera w dowolnym katalogu
 .DS_Store
+
+# Prywatna konfiguracja narzędzi głosowych
+.env
+.env.*
+*.local.env
+voice/manifest.lock
+tools/__pycache__/
+openai_api_key.txt
