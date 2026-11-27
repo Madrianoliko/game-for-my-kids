@@ -438,7 +438,7 @@ func render() -> void:
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
-	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","whisper_cave","crystal_hall","drip_tunnel"]: origin=Vector3(400,0,90)
+	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]: origin=Vector3(400,0,90)
 	if id()=="troll_cave": origin=Vector3(324,0,100)
 	if id()=="chief_happy": origin=host.point(-7)
 	if id()=="troll_dawn": origin=Vector3(310,0,100)
@@ -673,8 +673,8 @@ func render() -> void:
 			return_trip=ReturnTrip.new()
 			scene.add_child(return_trip)
 			return_trip.setup(self)
-		"whisper_cave","crystal_hall","drip_tunnel":
-			whisper=preload("res://scripts/whisper_cave.gd").new()
+		"whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit":
+			whisper=preload("res://scripts/whisper_finale.gd").new()
 			scene.add_child(whisper)
 			whisper.setup(self)
 		"mole_candles","dragon_nest","dragon_flight":

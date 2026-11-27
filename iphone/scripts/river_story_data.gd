@@ -1,6 +1,6 @@
 extends RefCounted
 
-const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel"]
+const ROUTE := ["door","pack","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-2.8,0,-1.7),Vector3(-1.4,0,-1.8),Vector3(1.15,0,-1.4),Vector3(2.95,0,-.65),Vector3(2.7,0,.6),Vector3(-2.7,0,1.4),Vector3(1.35,0,1.8)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
@@ -57,6 +57,22 @@ const WORDS := {
 	"dawn_argue_cones_alt":"Cztery! A ty jedną policzyłeś dwa razy!",
 	"whisper_steal":"Ciii… Kto tu chodzi z latarką? Teraz to moja latarka! Hi, hi.",
 	"whisper_game":"Oddam, jeśli wygrasz w zagadki.",
+	"cave_choose":"Wybierz tunel, który jeszcze nie świeci.",
+	"cave_color":"Który kolor pasuje? Wstaw kryształ w puste miejsce.",
+	"cave_size":"Duży, mały, mały… Który kryształ pasuje na końcu?",
+	"cave_pattern_hint":"Popatrz na jasny kryształ. Taki sam pasuje do drzwi.",
+	"cave_pattern_retry":"Drzwi się zatrzymały. Spróbuj innego kryształu.",
+	"pattern_open":"Kryształ pasuje! Drzwi się otwierają!",
+	"cave_fish":"W jeziorku pływa sześć rybek. Patrz, co zrobi Szeptek!",
+	"cave_fish_ask":"Dwie odpłynęły. Ile rybek zostało?",
+	"cave_palms":"Na jednej ręce mam trzy palce. Ile mam na obu rękach?",
+	"cave_boots":"Ile nóg ma Bilbo?",
+	"cave_hooves":"Ile nóg ma kucyk Toba?",
+	"cave_together":"Ile nóg mają razem Bilbo i kucyk?",
+	"cave_count":"Dotknij przedmiotów, żeby je policzyć.",
+	"cave_lit":"Kolejny kryształ świeci!",
+	"cave_final":"Wygrałeś… Masz latarkę. Ale wróć kiedyś!",
+	"cave_last":"Wszystkie tunele świecą! Teraz moja zagadka.",
 	"whisper_enter":"Dotknij tunelu, w którym kapie woda.",
 	"whisper_drops":"Słuchaj… Ile kropli spadło?",
 	"whisper_again":"Posłuchaj kropli jeszcze raz.",
