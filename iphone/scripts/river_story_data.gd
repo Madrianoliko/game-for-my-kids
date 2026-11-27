@@ -5,6 +5,17 @@ const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"
 const POSITIONS := [Vector3(-3.15,0,-2.05),Vector3(-1.35,0,-2.05),Vector3(.95,0,-1.8),Vector3(3,0,-.55),Vector3(2.6,0,2),Vector3(-2.9,0,1.65),Vector3(0,0,2.05)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
 const WORDS := {
+	"sad_given_6":"Dałeś mi sześć. Ile teraz mam w koszu?",
+	"sad_given_5":"Dałeś mi pięć. Ile teraz mam w koszu?",
+	"sad_given_4":"Dałeś mi cztery. Ile teraz mam w koszu?",
+	"sad_given_3":"Dałeś mi trzy. Ile teraz mam w koszu?",
+	"sad_stock_3":"Zostały mi trzy jabłka!",
+	"sad_stock_2":"Zostały mi dwa jabłka!",
+	"sad_stock_1":"Zostało mi jedno jabłko!",
+	"sad_reward":"Dziękuję! Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!",
+	"sad_total_retry":"Dotknij każdego jabłka w koszu.",
+	"birthday_surprise":"Niespodzianka!",
+	"birthday_dark":"Ciii… Wiewiórka gasi światło. Tygrysek już idzie!",
 	"evening":"Wieczorem, po przyjęciu…",
 	"stable":"Bilbo! Miałem pięć kucyków. Dwa są tutaj. Ile zniknęło?",
 	"empty_pens":"Dotknij każdego pustego boksu.",
@@ -15,11 +26,11 @@ const WORDS := {
 	"fork_walk":"Idź ścieżką w stronę krzaków.",
 	"fork_hint":"Przejdź obok Chrapka po zewnętrznej stronie jasnego koła.",
 	"night_bridge":"Twoje deski trzymają się świetnie, Bilbo! Uważaj w lesie!",
-	"sad_loss":"Ty znowu? Trolle zabrały mi wszystkie jabłka!",
+	"sad_loss":"Ty znowu? Trolle zabrały mi prawie wszystkie jabłka!",
 	"sad_next":"Podaj mi kolejne jabłko.",
-	"sad_give":"Mam pusty kosz. Dasz mi jabłka? Ile ich masz?",
+	"sad_give":"Podaj mi jabłko z plecaka.",
 	"sad_question":"Ile mi dałeś?",
-	"sad_retry":"Spójrz do kosza. Ile tu jest jabłek?",
+	"sad_retry":"Policz jabłka, które mi dałeś.",
 	"sad_hint":"Policz ze mną. Jedno, dwa, trzy. Ile mi dałeś?",
 	"sad_thanks":"Trzy! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!",
 	"dawn_caught":"Złapałem włamywacza!",
@@ -163,6 +174,6 @@ static func number_choices(answer:int) -> Array[int]:
 
 # Wartości domyślne odtwarzają układ z zapisów sprzed losowania.
 static func draw_numbers() -> Dictionary:
-	return {"chief":randi_range(3,4),"apples":randi_range(3,4),"lamps":randi_range(4,6),"boards":randi_range(3,4),
+	return {"chief":randi_range(3,4),"apples":randi_range(3,6),"chief_stock":randi_range(1,3),"lamps":randi_range(4,6),"boards":randi_range(3,4),
 		"camp":[5,6,7,7].pick_random(),"rocks":2*randi_range(2,3),
 		"sausages":randi_range(3,4),"cones":2*randi_range(2,3)}

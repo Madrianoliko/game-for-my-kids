@@ -32,6 +32,9 @@ func pony_count() -> int:
 
 var travel_apples:int:
 	get: return numbers.get("apples",3)
+var chief_stock:int:
+	get: return numbers.get("chief_stock",1)
+const PROVISIONS := Vector3(2.7,0,2.2)
 var waving_paw:Node3D
 var chapters:=0
 var reward:=Label.new()
@@ -92,7 +95,7 @@ var origin:=Vector3.ZERO
 
 func id() -> String: return Data.ROUTE[index]
 
-func roaming() -> bool: return (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and (part==2 or "Mleko" in items))
+func roaming() -> bool: return (id()=="stable" and part==3) or (id() in ["pack","mill","coop","village","delivery"] and not bank.visible and not field.visible) or id() in ["dummy","guard"] or (id()=="dairy" and (part==2 or "Mleko" in items))
 
 func setup(game) -> void:
 	host=game
@@ -101,7 +104,7 @@ func setup(game) -> void:
 	square.add_child(stable)
 	stable.setup(game)
 	stable.add_child(stone_hill)
-	stone_hill.position=Vector3(5.5,.80,-2.8)
+	stone_hill.position=stable.HILL+Vector3.UP*2.4
 	var stone:=StandardMaterial3D.new()
 	stone.albedo_color=Color("#9ca7b0")
 	for i in 3:
@@ -244,7 +247,7 @@ func prompt(clip:String,words:String) -> void:
 	voice=clip
 	caption.text=words
 	if host.sound: host.play_clip(host.narrator,"story/"+clip)
-	if active and id() in ["valley_intro","door","kids_arrive"]:
+	if active and id() in ["valley_intro","door","kids_arrive","homecoming"]:
 		var stream:AudioStream=host.narrator.stream if host.sound else AudioStreamMP3.load_from_file("res://audio/story/"+clip+".mp3")
 		speech_end=age+stream.get_length()+.35
 
@@ -771,14 +774,25 @@ func render() -> void:
 		"homecoming":
 			actor("squirrel",Vector3(1.55,0,-.7))
 			host.hud.text="Urodziny Tygryska"
-			actor("tiger",Vector3(-1.12,.22,-.64),1.10)
-			actor("birthday_cake",Vector3(.35,.92,0))
-			if part==0:
+			visitor=actor("tiger",Vector3(-1.12,0,-.64),1.10)
+			var cake:=actor("birthday_cake",Vector3(.35,.92,0))
+			cake.prop.get_node("Flames").visible=part in [1,4,5]
+			visitor.visible=part!=0
+			if part in [0,2,3,4]:
+				host.camera.attributes=light_filter
+				light_filter.exposure_multiplier=1.0 if part==0 else (.85 if part==4 else .23)
+				if part==0: say("birthday_dark")
+				if part==2: visitor.position=Vector3(0,0,-2.7)
+				if part==3: say("birthday_surprise")
+				if part==4: effect("chime")
+				transition_time={0:3.5,2:1.8,3:1.4,4:.7}[part]
+				if part in [2,4]: dock.hide()
+			elif part==5:
+				say("homecoming")
 				button("Dalej",func():
 					chapters=maxi(chapters,1)
 					go_to("homecoming",1))
 			else: dock.hide()
-			if part==0: say("homecoming")
 	if Square.FOOD.has(id()) or id()=="delivery":
 		outside.show()
 		outside.position=host.pause_button.position+Vector2(0,host.pause_button.size.y+8)
@@ -859,6 +873,14 @@ func make_apple(at:Vector3) -> Node3D:
 	host.orb(apple,Vector3(.08,.28,0),.09,Color("#76ab49")).scale=Vector3(1.3,.36,.7)
 	return apple
 
+func build_basket(at:Vector3,width:float,depth:float) -> void:
+	for row in 4:
+		var rim:=TorusMesh.new()
+		rim.inner_radius=.49+row*.055
+		rim.outer_radius=rim.inner_radius+.1
+		var hoop=host.mesh(scene,rim,at+Vector3.UP*(.1+row*.09),Props.WOOD)
+		hoop.scale=Vector3(width,1,depth)
+
 func render_apple_chief() -> void:
 	host.hud.text="Kosz herszta"
 	light_filter.exposure_multiplier=.66
@@ -870,33 +892,33 @@ func render_apple_chief() -> void:
 		for x in [-.29,.29]:
 			host.orb(chief,Vector3(x,.22,.43),.24,Props.GREEN)
 	var basket:=Vector3(.85,0,.56)
-	for row in 4:
-		var rim:=TorusMesh.new()
-		rim.inner_radius=.49+row*.055
-		rim.outer_radius=rim.inner_radius+.1
-		var hoop=host.mesh(scene,rim,basket+Vector3.UP*(.12+row*.11),Props.WOOD)
-		hoop.scale.x=1.45
+	build_basket(basket,2.45,1.4)
 	var given:=travel_apples-items.count("Jabłko")
 	for i in travel_apples:
-		var at:=basket+Vector3((i-(travel_apples-1)*.5)*.51,.55,.02)
-		if i>=given: at=Vector3(-2.2+(i-given)*.55,.45,.34)
+		var at:=basket+Vector3(-1.22+(i%3)*.57,.60,-.56+floori(i/3.0)*.74)
+		if i>=given: at=Vector3(-3+(i-given)%3*.52,.45,.55+floori((i-given)/3.0)*.6)
 		pickups.append(make_apple(at))
+	for i in chief_stock:
+		var own:=make_apple(basket+Vector3(.65+(i%2)*.54,.60,-.56+floori(i/2.0)*.74))
+		own.material_override.albedo_color=Color("#d6bf53")
+		pickups.append(own)
 	match part:
 		0: say("sad_loss")
+		5: say("sad_stock_%d"%chief_stock)
 		1:
 			if given<travel_apples: button("Ręka",give_apple)
 			if given==0: say("sad_give")
 			elif given<travel_apples: say("sad_next")
 			else: say("sad_question")
-		2:
-			for n in Data.number_choices(travel_apples): button(str(n),apple_answer.bind(n))
-			say("sad_question")
+		2,4:
+			for n in Data.number_choices(apple_target()): button(str(n),apple_answer.bind(n))
+			say("sad_question" if part==2 else "sad_given_%d"%travel_apples)
 			if marks>0:
 				hint_errors=1
-				if marks>=2: hint_miss(travel_apples,glow_pickups)
+				if marks>=2: hint_miss(apple_target(),glow_pickups)
 		3:
 			button("Dalej",advance)
-			say("sad_thanks" if travel_apples==3 else "sad_thanks_alt")
+			say("sad_reward")
 	transition_time=(host.narrator.stream.get_length() if host.sound and host.narrator.stream else 2.0)+.25
 
 func give_apple() -> void:
@@ -916,16 +938,19 @@ func give_apple() -> void:
 	for b in options.get_children():
 		if b.accessibility_name=="Ręka": b.disabled=true
 
+func apple_target() -> int:
+	return travel_apples+chief_stock if part==4 else travel_apples
+
 func apple_answer(n:int) -> void:
-	if n==travel_apples:
-		go_to("chief_sad",3)
+	if n==apple_target():
+		go_to("chief_sad",4 if part==2 else 3)
 		return
 	marks+=1
 	checkpoint()
-	hint_miss(travel_apples,glow_pickups)
+	hint_miss(apple_target(),glow_pickups)
 	if marks>=2: return
-	say("sad_retry")
-	for i in pickups.size():
+	say("sad_retry" if part==2 else "sad_total_retry")
+	for i in apple_target():
 		var apple:=pickups[i]
 		var pulse:=apple.create_tween()
 		pulse.tween_interval(.08)
@@ -935,8 +960,8 @@ func apple_answer(n:int) -> void:
 		pulse.tween_property(apple,"scale",Vector3.ONE*1.45,.2)
 		pulse.tween_property(apple,"scale",Vector3.ONE,.25)
 
-	if n>travel_apples:
-		for i in range(travel_apples,n):
+	if n>apple_target():
+		for i in range(apple_target(),n):
 			var ring:=TorusMesh.new()
 			ring.inner_radius=.19
 			ring.outer_radius=.24
@@ -946,10 +971,11 @@ func apple_answer(n:int) -> void:
 			fade.tween_property(empty,"scale",Vector3.ZERO,.3)
 			fade.tween_callback(empty.queue_free)
 
-func _unhandled_input(event:InputEvent) -> void:
-	if not active or host.paused or id()!="chief_sad" or part!=2: return
+func touch_chief_apple(event:InputEvent) -> void:
+	if not active or host.paused or id()!="chief_sad" or part not in [2,4]: return
 	if not ((event is InputEventScreenTouch or (event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT)) and event.pressed): return
-	for i in pickups.size():
+	if dock.get_global_rect().has_point(event.position) or host.pause_button.get_global_rect().has_point(event.position): return
+	for i in apple_target():
 		var pos:Vector2=host.camera.unproject_position(pickups[i].global_position)
 		if pos.distance_to(event.position)<maxf(18,host.camera.unproject_position(pickups[i].global_position+Vector3.RIGHT*.28).distance_to(pos)):
 			if not apple_order.has(i): apple_order.append(i)
@@ -988,15 +1014,15 @@ func render_stable() -> void:
 	elif part==2:
 		stable.smoke.show()
 		visitor.look_at(stable.smoke.global_position,Vector3.UP,true)
-		var smoke_focus:=focus.lerp(stable.smoke.global_position,.62)
+		var smoke_focus:=stable.smoke.global_position+Vector3(0,-1,3.5)
 		host.camera.look_at_from_position(smoke_focus+Vector3(0,5.5,9),smoke_focus,Vector3.UP)
 		say("stable_ok" if pony_count()==3 else "stable_ok_alt")
 	elif part==3:
+		dock.hide()
+		host.leo.global_position=focus+Vector3(-2.8,0,2.5)
+		build_basket(stable.position+PROVISIONS,1.4,1)
 		for i in travel_apples:
-			make_apple(stable.position+Vector3(2.5+i*.48,.36,1.25))
-		button("Ręka",func():
-			for i in travel_apples: items.append("Jabłko")
-			go_to("stable",4,marks))
+			make_apple(stable.position+PROVISIONS+Vector3((i%3-1)*.49,.52,(floori(i/3.0)-.5)*.45))
 		say("travel_apples")
 	else:
 		button("Dalej",advance)
@@ -1068,6 +1094,11 @@ func arrived() -> void:
 
 func interact() -> void:
 	if not active or busy or host.paused: return
+	if id()=="stable" and part==3:
+		if host.leo.global_position.distance_to(stable.global_position+PROVISIONS)<=1.25:
+			for i in travel_apples: items.append("Jabłko")
+			go_to("stable",4,marks)
+		return
 	if id()=="pack" and items.size()==7 and host.leo.position.distance_to(visitor.global_position)<1.45:
 		advance()
 		return
@@ -1206,17 +1237,30 @@ func _physics_process(dt:float) -> void:
 		return
 	if id()=="chief_sad":
 		if age>=transition_time:
-			if part==0: go_to("chief_sad",1)
+			if part==0: go_to("chief_sad",5)
+			elif part==5: go_to("chief_sad",1)
 			elif part==1 and marks==travel_apples: go_to("chief_sad",2)
 			elif part==1 and marks>0:
 				options.get_child(0).disabled=false
+		return
+	if id()=="homecoming" and part in [0,2,3,4]:
+		if part==0: light_filter.exposure_multiplier=lerpf(1,.23,smoothstep(.35,1.2,age))
+		if part==2: visitor.position=Vector3(0,0,-2.7).lerp(Vector3(-1.12,0,-.64),smoothstep(0,1.6,age))
+		if age>=transition_time and (part in [2,4] or age>=speech_end): go_to("homecoming",2 if part==0 else part+1)
 		return
 	if id()=="homecoming" and part==1:
 		curtain.color.a=clampf(age/.65,0,1)
 		if age>=.65: advance()
 		return
 	if id() in ["stable","stable_home"]:
-		stable_tick()
+		if id()=="stable" and part==3:
+			var direction:Vector2=host.stick.vector
+			if direction.is_zero_approx(): direction=Input.get_vector("ui_left","ui_right","ui_up","ui_down")
+			var at:Vector3=host.leo.global_position-stable.global_position+Vector3(direction.x,0,direction.y)*dt*4.2
+			host.leo.global_position=stable.global_position+Vector3(clampf(at.x,-4,4),0,clampf(at.z,1.65,3.4))
+			if direction.length()>.05: host.leo.rotation.y=atan2(-direction.x,-direction.y)
+			hand.modulate=Color.GOLD if at.distance_to(PROVISIONS)<=1.25 else Color.WHITE
+		else: stable_tick()
 		return
 	if cooldown>0:
 		cooldown-=dt
@@ -1291,6 +1335,9 @@ func _physics_process(dt:float) -> void:
 			say("guard_sword")
 
 func _input(event:InputEvent) -> void:
+	if active and id()=="chief_sad":
+		touch_chief_apple(event)
+		return
 	if not active or host.paused or not actions.visible or not event is InputEventScreenTouch: return
 	if event.pressed and not event.canceled:
 		for b in [hand,sword,bow,shield]:

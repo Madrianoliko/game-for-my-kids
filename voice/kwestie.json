@@ -65,6 +65,21 @@
     "tekst": "Sześć"
   },
   {
+    "plik": "audio/count_7.mp3",
+    "postać": "narrator",
+    "tekst": "Siedem"
+  },
+  {
+    "plik": "audio/count_8.mp3",
+    "postać": "narrator",
+    "tekst": "Osiem"
+  },
+  {
+    "plik": "audio/count_9.mp3",
+    "postać": "narrator",
+    "tekst": "Dziewięć"
+  },
+  {
     "plik": "audio/crossing.mp3",
     "postać": "narrator",
     "tekst": "Przejdź przez most"
@@ -273,6 +288,16 @@
     "plik": "audio/story/nail_8.mp3",
     "postać": "narrator",
     "tekst": "Osiem"
+  },
+  {
+    "plik": "audio/story/route_birthday_dark.mp3",
+    "postać": "narrator",
+    "tekst": "Ciii… Wiewiórka gasi światło. Tygrysek już idzie!"
+  },
+  {
+    "plik": "audio/story/route_birthday_surprise.mp3",
+    "postać": "narrator",
+    "tekst": "Niespodzianka!"
   },
   {
     "plik": "audio/story/route_cave_boots.mp3",
@@ -827,7 +852,27 @@
   {
     "plik": "audio/story/route_sad_give.mp3",
     "postać": "herszt",
-    "tekst": "Mam pusty kosz. Dasz mi jabłka? Ile ich masz?"
+    "tekst": "Podaj mi jabłko z plecaka."
+  },
+  {
+    "plik": "audio/story/route_sad_given_3.mp3",
+    "postać": "herszt",
+    "tekst": "Dałeś mi trzy. Ile teraz mam w koszu?"
+  },
+  {
+    "plik": "audio/story/route_sad_given_4.mp3",
+    "postać": "herszt",
+    "tekst": "Dałeś mi cztery. Ile teraz mam w koszu?"
+  },
+  {
+    "plik": "audio/story/route_sad_given_5.mp3",
+    "postać": "herszt",
+    "tekst": "Dałeś mi pięć. Ile teraz mam w koszu?"
+  },
+  {
+    "plik": "audio/story/route_sad_given_6.mp3",
+    "postać": "herszt",
+    "tekst": "Dałeś mi sześć. Ile teraz mam w koszu?"
   },
   {
     "plik": "audio/story/route_sad_hint.mp3",
@@ -837,7 +882,7 @@
   {
     "plik": "audio/story/route_sad_loss.mp3",
     "postać": "herszt",
-    "tekst": "Ty znowu? Trolle zabrały mi wszystkie jabłka!"
+    "tekst": "Ty znowu? Trolle zabrały mi prawie wszystkie jabłka!"
   },
   {
     "plik": "audio/story/route_sad_next.mp3",
@@ -852,7 +897,27 @@
   {
     "plik": "audio/story/route_sad_retry.mp3",
     "postać": "herszt",
-    "tekst": "Spójrz do kosza. Ile tu jest jabłek?"
+    "tekst": "Policz jabłka, które mi dałeś."
+  },
+  {
+    "plik": "audio/story/route_sad_reward.mp3",
+    "postać": "herszt",
+    "tekst": "Dziękuję! Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!"
+  },
+  {
+    "plik": "audio/story/route_sad_stock_1.mp3",
+    "postać": "herszt",
+    "tekst": "Zostało mi jedno jabłko!"
+  },
+  {
+    "plik": "audio/story/route_sad_stock_2.mp3",
+    "postać": "herszt",
+    "tekst": "Zostały mi dwa jabłka!"
+  },
+  {
+    "plik": "audio/story/route_sad_stock_3.mp3",
+    "postać": "herszt",
+    "tekst": "Zostały mi trzy jabłka!"
   },
   {
     "plik": "audio/story/route_sad_thanks.mp3",
@@ -863,6 +928,11 @@
     "plik": "audio/story/route_sad_thanks_alt.mp3",
     "postać": "herszt",
     "tekst": "Cztery! Dziękuję. Trolle siedzą przy ognisku, za lasem. Uważaj na Gapę!"
+  },
+  {
+    "plik": "audio/story/route_sad_total_retry.mp3",
+    "postać": "herszt",
+    "tekst": "Dotknij każdego jabłka w koszu."
   },
   {
     "plik": "audio/story/route_stable.mp3",

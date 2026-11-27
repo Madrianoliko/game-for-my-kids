@@ -4,6 +4,7 @@ const Count := preload("res://scripts/touch_count.gd")
 
 signal counted(index:int)
 const PLACE := Vector3(14,0,-1.2)
+const HILL := Vector3(3,0,-24)
 var empty_mask := (1<<1) | (1<<2) | (1<<4)
 const FULL_MASK := (1<<5)-1
 const WIDTH := 1.55
@@ -40,8 +41,12 @@ func setup(game) -> void:
 		target.pressed.connect(func(): counted.emit(i))
 		targets.append(target)
 	add_child(smoke)
-	host.orb(self,Vector3(5.5,-.9,-2.8),2.4,Color.DARK_OLIVE_GREEN).scale=Vector3(1.6,.75,1.1)
-	smoke.position=Vector3(5.5,1.05,-2.8)
+	host.box(self,HILL+Vector3(0,-.32,6),Vector3(25,.52,24),Color("#859963"))
+	host.orb(self,HILL-Vector3.UP,4.8,Color.DARK_OLIVE_GREEN).scale=Vector3(1.6,.75,1.1)
+	smoke.position=HILL+Vector3.UP*2.4
+	host.box(self,HILL+Vector3(0,-.08,8),Vector3(14,.18,2.7),Color("#709bac"))
+	for i in 8:
+		host.box(self,HILL+Vector3(0,.12,6.4+i*.46),Vector3(1.9,.22,.42),wood)
 	for i in 5:
 		host.orb(smoke,Vector3(i*.13,i*.46,0),.25+i*.065,Color.SLATE_GRAY)
 	set_pens(false,0,false)

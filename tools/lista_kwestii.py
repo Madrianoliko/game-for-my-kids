@@ -42,6 +42,7 @@ def route_speaker(key):
     for role, names in CAST.items():
         if key in names.split():
             return role
+    if key.startswith("sad_"): return "herszt"
     if key.startswith("mole_"):
         return "kret"
     if key.startswith("whisper_") or key in {
@@ -74,11 +75,10 @@ def catalog():
             record("story/" + key, "narrator", words)
     for words, key in re.findall(r'prompt\("([^"]+)","(beaver_[^"]+)"\)', source("bridge_repair")):
         record(key, "bóbr", words)
-    words = ["Jeden", "Dwa", "Trzy", "Cztery", "Pięć", "Sześć", "Siedem", "Osiem"]
+    words = ["Jeden", "Dwa", "Trzy", "Cztery", "Pięć", "Sześć", "Siedem", "Osiem", "Dziewięć"]
     for i, word in enumerate(words, start=1):
-        if i <= 6:
-            record(f"count_{i}", "narrator", word)
-        if i >= 5:
+        record(f"count_{i}", "narrator", word)
+        if 5 <= i <= 8:
             record(f"story/nail_{i}", "narrator", word)
     for words, key in re.findall(r'objective=="([^"]+)": play_clip\(narrator,"([^"]+)"\)', source("valley")):
         record(key, "narrator", words)

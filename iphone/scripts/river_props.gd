@@ -187,8 +187,12 @@ func build(kind:String) -> void:
 				layer.height=.16
 				host.mesh(prop,layer,Vector3(0,.12+i*.16,0),WHITE if i==1 else Color("#e7af77"))
 			for i in 7: ball(Vector3(cos(i*TAU/7)*.44,.56,sin(i*TAU/7)*.44),.095,Color("#c85855"))
-			block(Vector3(0,.69,0),Vector3(.075,.33,.075),Color("#73a9c3"))
-			ball(Vector3(0,.90,0),.085,GOLD,Vector3(.72,1.48,.72))
+			var flames:=Node3D.new()
+			flames.name="Flames"
+			prop.add_child(flames)
+			for x in [-.28,0,.28]:
+				block(Vector3(x,.69,0),Vector3(.075,.33,.075),Color("#73a9c3"))
+				host.orb(flames,Vector3(x,.90,0),.085,GOLD,true).scale=Vector3(.72,1.48,.72)
 		"cake":
 			for i in 4: ball(Vector3(0,.18+i*.12,0),.56,GOLD,Vector3(1,.19,1))
 
