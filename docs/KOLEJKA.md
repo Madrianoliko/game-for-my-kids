@@ -120,7 +120,7 @@ Cel: zastąpić systemowy głos Zosi naturalnymi głosami postaci z OpenAI. Gra 
 - Jeśli brakuje `OPENAI_API_KEY`, przygotuj listę, postacie i skrypt, zapisz PYTANIE z prośbą o klucz i zakończ.
 - Uwaga: modele `/v1/audio/speech` mają zostać wyłączone 6 stycznia 2027. Skrypt ma pozwalać łatwo zmienić model albo dostawcę w jednym miejscu.
 
-### [ ] U01 — Uwagi z testu: wspólne mechanizmy (uwagi 2, 6, 7, 8, 11, 22, 31)
+### [x] U01 — Uwagi z testu: wspólne mechanizmy (uwagi 2, 6, 7, 8, 11, 22, 31) (2026-11-27)
 Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Pasek plecaka (zasada 15):** po lewej stronie ekranu pasek z obrazkami zebranych rzeczy. Wiaderko z mlekiem, worki mąki i jajka po podniesieniu dłonią znikają ze sceny i pojawiają się w pasku. Gracz sam wychodzi z budynku. Lista składników Wiewiórki może być częścią tego paska.
 - **Drzwi:** po wyjściu z budynku Bilbo staje kawałek przed drzwiami, a drzwi nie reagują na dłoń, dopóki Bilbo nie odejdzie od nich i nie podejdzie ponownie. Nie może się zdarzyć, że wychodzi i od razu wchodzi z powrotem.

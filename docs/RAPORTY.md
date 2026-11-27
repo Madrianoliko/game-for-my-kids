@@ -1,3 +1,11 @@
+## 2026-11-27 — U01. Plecak, drzwi, pauza i liczenie dotykiem
+
+Mąka, jajka i mleko znikają po podniesieniu dłonią i pojawiają się w pasku po lewej. Gracz sam wychodzi. Bilbo staje 1,30 m przed drzwiami. Ponowne wejście wymaga odejścia i powrotu.
+Pauza ma cztery obrazki 116 × 104. Dotykane obiekty w zagadkach dostają kolejne numery zgodnie z kolejnością wskazywania. Puste boksy są czerwone, zajęte po powrocie zielone. Smoczątka też mają numery.
+Brak nowych kroków ROUTE. Dodano polską kwestię po zabraniu mleka. Brak brakujących nagrań do U01.
+Pakiet iPhone ma 11 780 924 bajty. Na nim przeszły wszystkie trzy testy: river_story_flow, troll_camp_flow i valley_flow. Przy zamykaniu testów obozu i doliny Godot zgłosił pozostające obiekty.
+Do sprawdzenia na telefonie z dzieckiem: czy rozpoznaje ikony pauzy i sam potrafi zabrać wiaderko oraz wyjść z obory. Pozostałe uwagi z testu należą do U02–U06.
+
 ## 2026-11-27 — G01. Polskie próbki gotowe do odsłuchu
 
 W voice/probki/README.md są odsyłacze do 64 nagrań MP3. Dla każdej z 16 postaci przygotowano dwa warianty głosu na dwóch polskich kwestiach. Manifest pozwala wznowić generowanie bez ponownego zamawiania tych samych próbek.
