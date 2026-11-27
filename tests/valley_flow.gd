@@ -35,9 +35,18 @@ func check_flow() -> void:
 	await click(game.atlas.play)
 	await click(game.bystra.options.get_child(0))
 	await click(game.pause_button)
-	var menu:AcceptDialog=game.ui.get_child(-1)
-	if not require(menu.dialog_text=="Bilbo poczeka tutaj.","Pauza Bilba"): return
-	menu.custom_action.emit("map")
+	var menu=game.ui.get_node("PauseMenu")
+	var volume:Button=menu.find_child("Głośnik",true,false)
+	var before:bool=game.sound
+	if not require(volume.icon!=null and volume.text=="" and volume.size.y>=game.bystra.hand.size.y,"Duże obrazki w pauzie"): return
+	await click(volume)
+	if not require(game.sound!=before and game.paused,"Dźwięk w pauzie"): return
+	await click(volume)
+	await click(menu.find_child("Wznów",true,false))
+	if not require(not game.paused,"Wznowienie z ikony"): return
+	await click(game.pause_button)
+	menu=game.ui.get_node("PauseMenu")
+	await click(menu.find_child("Menu",true,false))
 	await process_frame
 	if not require(game.atlas.visible and game.atlas.resume.visible,"Menu z zapisem"): return
 	await click(game.atlas.resume)

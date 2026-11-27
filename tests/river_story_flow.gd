@@ -361,8 +361,15 @@ func run() -> void:
 				await move_to(story.foe.global_position)
 				await tap_action(story.sword)
 				await create_timer(.6).timeout
-			await move_to(story.origin+Vector3(.9,0,-.75))
-			await tap_action(story.hand)
+		var food:String=story.Square.FOOD[place]
+		if not check(food not in story.items and story.food_models.size()>0,"Składnik czeka na podniesienie"): return
+		if place=="dairy":
+			await reopen()
+			if not check(story.part==2 and food not in story.items,"Wiaderko czeka po wznowieniu"): return
+		await move_to(story.origin+Vector3(.9,0,-.75))
+		var pickup_position:Vector3=game.leo.position
+		await tap_action(story.hand)
+		if not check(story.food_models.all(func(model): return not model.visible) and game.leo.position.is_equal_approx(pickup_position),"Podniesiony składnik znika, Bilbo zostaje na miejscu"): return
 		if not check(story.ingredient_ticks[story.Square.FOOD[place]].visible,"Missing ingredient tick"): return
 		if not check(story.id()==place,"Unexpected teleport after collecting"): return
 		await move_to(story.origin+Vector3(0,0,2.13))
@@ -370,6 +377,8 @@ func run() -> void:
 		if not check(story.id()=="village" and story.square.near_door(story.village_pos)==place,"Wrong exit after "+place): return
 		await reopen()
 		if not check(story.id()=="village" and story.square.near_door(story.village_pos)==place,"Village position lost"): return
+		await tap_action(story.hand)
+		if not check(story.id()=="village","Ponowne naciśnięcie przy drzwiach po wznowieniu"): return
 	if not check(story.ingredients_ready(),"Missing ingredients"): return
 	await visit_door("delivery")
 	await move_to(story.origin+Vector3(1.95,0,1.26))
@@ -387,8 +396,13 @@ func run() -> void:
 	while story.id()=="homecoming": await physics_frame
 	if not check(story.id()=="stable" and story.chapters==1,"Ukończenie rozdziału 1"): return
 	while story.part==0: await physics_frame
+	var empty_count:=0
 	for i in [2,1,4]:
-		if story.stable.targets[i].visible: await click(story.stable.targets[i])
+		if story.stable.targets[i].visible:
+			await click(story.stable.targets[i])
+			empty_count+=1
+			var badge:=story.stable.floors[i].get_node_or_null("CountBadge") as Label3D
+			if not check(badge and badge.text==str(empty_count) and badge.modulate.r>badge.modulate.g,"Czerwony numer pustego boksu"): return
 	while story.options.get_child_count()<3: await physics_frame
 	await click(numeric_button(story.options,story.pony_count(),false))
 	if not check(story.hint_total==0,"Za wczesna pomoc"): return
@@ -525,7 +539,11 @@ func run() -> void:
 	legacy_stable.save(story.FILE)
 	await reopen()
 	if not check(story.id()=="stable_home" and story.part==0 and story.stone_hill.visible and story.ReturnTrip.MAP in story.items,"Istniejący zapis stajni za nowym krokiem"): return
-	for i in [3,1,4,0,2]: await click(story.stable.targets[i])
+	var pen_order:=[3,1,4,0,2]
+	for i in pen_order:
+		await click(story.stable.targets[i])
+		var badge=story.stable.floors[i].get_node("CountBadge")
+		if not check(badge.text==str(pen_order.find(i)+1) and badge.modulate==story.Count.PRESENT,"Kolejność zielonych numerków"): return
 	while not game.atlas.visible: await physics_frame
 	var cfg:=ConfigFile.new()
 	cfg.load(story.FILE)
@@ -619,7 +637,11 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	if not check(story.id()=="dragon_nest","Mama na szczycie"): return
 	await click(story.options.get_child(0))
-	for i in 4: await tap_model(story.iskierka.tokens[i])
+	for i in [2,0,3,1]:
+		await tap_model(story.iskierka.tokens[i])
+		if i==0:
+			await reopen()
+			if not check(story.iskierka.tokens[2].get_node("CountBadge").text=="1" and story.iskierka.tokens[0].get_node("CountBadge").text=="2","Kolejność smoczątek po wznowieniu"): return
 	for i in 2: await click(numeric_button(story.options,2,true))
 	if not check(story.part==2 and story.hint_total==1,"Mama pokazuje puste miejsce"): return
 	await click(numeric_button(story.options,1,true))
