@@ -646,8 +646,15 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	if not check("Latarka" not in story.items,"Szeptek zabiera latarkę"): return
 	await click(story.options.get_child(0))
-	await tap_model(story.whisper.entrances[1])
-	if not check(story.id()=="crystal_hall","Zamknięte przejście"): return
+	await tap_model(story.whisper.entrances[2])
+	if not check(story.id()=="fish_pool" and story.whisper.swimmers.size()==6,"Wybór rybek jako pierwszego tunelu"): return
+	await click(story.options.get_child(0))
+	await create_timer(1.6).timeout
+	if not check(story.part==2 and not story.whisper.swimmers[4].visible and story.whisper.targets.size()==4,"Dwie rybki odpłynęły"): return
+	await tap_model(story.whisper.targets[0])
+	if not check(story.whisper.counted==1,"Liczenie rybek palcem"): return
+	await click(numeric_button(story.options,4,true))
+	await click(story.options.get_child(0))
 	await tap_model(story.whisper.entrances[0])
 	if not check(story.id()=="drip_tunnel" and story.whisper.answers[0].disabled,"Najpierw słuchanie"): return
 	for attempt in 3:
@@ -665,9 +672,44 @@ func run() -> void:
 	await click(numeric_button(story.options,5,true))
 	await click(story.options.get_child(0))
 	await reopen()
-	if not check(story.id()=="crystal_hall" and story.marks==2 and story.whisper.wall_gems.all(func(g): return g.material_override.emission_enabled),"Obie nagrody zapisane przy wejściu"): return
+	if not check(story.whisper.reward_lit(4) and story.whisper.reward_lit(1),"Ryby i krople pamiętane niezależnie"): return
+	var hall_save:=ConfigFile.new()
+	hall_save.load(story.FILE)
+	var legacy:=ConfigFile.new()
+	legacy.load(story.FILE)
+	var previous:Dictionary=legacy.get_value("story","numbers")
+	previous.erase("drops_won")
+	previous.erase("cave_rewards")
+	legacy.set_value("story","numbers",previous)
+	legacy.save(story.FILE)
+	await reopen()
+	if not check(story.whisper.reward_lit(1) and not story.whisper.reward_lit(4),"Zapis Z10 zachowuje dwa kryształy"): return
+	hall_save.save(story.FILE)
+	await reopen()
+	await tap_model(story.whisper.entrances[1])
+	for pattern in 2:
+		if not check(story.id()=="pattern_door" and story.part==pattern,"Wzór drzwi"): return
+		for i in 2: await insert_gem(1-story.whisper.solution)
+		if not check(story.voice=="route_cave_pattern_hint","Podpowiedź do wzoru"): return
+		await insert_gem(story.whisper.solution)
+		if not check(story.part==pattern+2,"Drzwi przyjęły pasujący kryształ"): return
+		await click(story.options.get_child(0))
 	await click(story.options.get_child(0))
-	if not check(game.atlas.visible and game.atlas.resume.visible,"Powrót do menu ze ścieżką wznowienia"): return
+	if not check(story.id()=="whisper_hands" and not story.whisper.second_hand.visible,"Szeptek pokazuje jedną rękę"): return
+	await click(story.options.get_child(0))
+	for i in 2: await click(numeric_button(story.options,6,false))
+	if not check(story.whisper.second_hand.visible and story.hint_total==6,"Liczenie sześciu palców"): return
+	await click(numeric_button(story.options,6,true))
+	await click(story.options.get_child(0))
+	for total in [2,4,6]:
+		if not check(story.whisper.targets.size()==total,"Nogi widoczne do policzenia"): return
+		await click(numeric_button(story.options,total,true))
+	await reopen()
+	if not check(story.id()=="whisper_exit" and story.items.count("Latarka")==1 and story.whisper.wall_gems.all(func(g): return g.material_override.emission_enabled),"Latarka i siedem zapalonych kryształów po wznowieniu"): return
+	await click(story.options.get_child(0))
+	var finish_save:=ConfigFile.new()
+	finish_save.load(story.FILE)
+	if not check(game.atlas.visible and finish_save.get_value("story","chapters_completed")==4 and finish_save.get_value("story","ended"),"Koniec rozdziału 4"): return
 	cfg.save(story.FILE)
 	reload_current_scene()
 	await scene_changed
@@ -681,7 +723,7 @@ func run() -> void:
 	for i in 18:
 		OS.delay_msec(12)
 		await process_frame
-	print("PASS trzy rozdziały, ratunki i lot Iskierki. Wylosowane liczby ",rolled)
+	print("PASS cztery rozdziały, dowolny wybór tunelu i odzyskanie latarki. Wylosowane liczby ",rolled)
 	quit()
 
 func move_berry(i:int,side:int) -> void:
@@ -715,3 +757,11 @@ func verify_drops(total:int, persistent:bool) -> bool:
 			if not check(story.whisper.flashes[seen-1].material_override.emission_enabled,"Błysk przy każdym kapnięciu"): return false
 		if not story.whisper.listening: break
 	return check(seen==total and not story.whisper.answers[0].disabled and story.whisper.flashes.all(func(g): return g.material_override.emission_enabled==persistent),"Liczba kropli, pomoc i odblokowane odpowiedzi")
+
+func insert_gem(i:int) -> void:
+	var start:Vector2=story.whisper.screen_at(story.whisper.pieces[i])
+	var end:Vector2=story.whisper.screen_at(story.whisper.socket)
+	touch(game.ui,start,true)
+	drag(game.ui,end)
+	touch(game.ui,end,false)
+	await process_frame
