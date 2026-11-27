@@ -108,6 +108,23 @@ Plan: rozdział 4, zagadki 2–5.
 - Po trzech tunelach: palce Szeptka (3 + 3) i wielka zagadka o nogach Bilba i kucyka (2 + 4).
 - Finał: Szeptek oddaje latarkę: „Wygrałeś… Masz latarkę. Ale wróć kiedyś!”. Koniec rozdziału 4.
 
+### [ ] G01 — Głosy z OpenAI: lista kwestii i próbki do odsłuchu
+Cel: zastąpić systemowy głos Zosi naturalnymi głosami postaci z OpenAI. Gra dalej odtwarza gotowe pliki mp3 z pakietu i NIGDY nie łączy się z API w trakcie gry.
+- **Lista kwestii:** utwórz `voice/kwestie.csv` (albo `.json`) ze wszystkimi kwestiami w grze: plik mp3 (ścieżka jak dziś, np. `audio/story/route_door.mp3`), postać, tekst. Wygeneruj ją skryptem z kodu (słowniki WORDS, LINES, GUIDE itd.), żeby nic nie umknęło. Wypisz w raporcie kwestie, których nie dało się przypisać do postaci.
+- **Postacie i ich opis głosu** w `voice/postacie.json`: narrator, bóbr, Tobo, herszt, Wiewiórka, Tygrysek, mali hobbici, Gapa, Burczyk, Chrapek, Iskierka, mama smoczyca, kret, Szeptek, Pestka. Każda postać ma głos OpenAI i krótką instrukcję po polsku (np. Gapa: „niski, powolny, dobroduszny troll, trochę głupkowaty, nie straszny”; Iskierka: „mała, wesoła smoczyca, wysoki głos”; narrator: „ciepły głos opowiadacza bajek dla pięciolatka, wyraźnie i spokojnie”). Wszystkie mówią po polsku, wyraźnie i niezbyt szybko.
+- **Skrypt** `tools/generuj_glosy.py`: czyta listę i postacie, wysyła tekst do OpenAI Speech API (model w jednym ustawieniu na górze skryptu, dziś `gpt-4o-mini-tts`), zapisuje mp3 i pamięta skrót (hash) tekstu, głosu i instrukcji w `voice/manifest.json`. Przy ponownym uruchomieniu generuje tylko zmienione albo nowe kwestie. Opcje: `--probki` (tylko próbki), `--postac X`, `--wszystko`. Klucz bierze WYŁĄCZNIE ze zmiennej środowiskowej `OPENAI_API_KEY`. Klucza nigdy nie zapisuj w repozytorium ani w pakiecie gry. Dodaj do `.gitignore` pliki, w których mógłby się znaleźć.
+- **Próbki:** dla każdej postaci wygeneruj 2–3 warianty głosu (różne głosy OpenAI) na 2 jej typowych kwestiach do `voice/probki/<postać>_<głos>_N.mp3`, plus `voice/probki/README.md` z listą do odsłuchu. NIE podmieniaj jeszcze nagrań w grze.
+- Jeśli brakuje `OPENAI_API_KEY`, przygotuj listę, postacie i skrypt, zapisz PYTANIE z prośbą o klucz i zakończ.
+- Uwaga: modele `/v1/audio/speech` mają zostać wyłączone 6 stycznia 2027. Skrypt ma pozwalać łatwo zmienić model albo dostawcę w jednym miejscu.
+
+### [ ] G02 — Głosy z OpenAI: podmiana nagrań w grze
+Zaczynaj dopiero, gdy w `docs/UWAGI_Z_TESTOW.md` jest wybór głosów z próbek (np. „Gapa: onyx, Iskierka: shimmer…”). Jeśli wyboru jeszcze nie ma, pomiń to zadanie (zostaw je jako `[ ]`) i weź następne zadanie z kolejki. Wróć do G02, gdy wybór się pojawi.
+- Ustaw wybrane głosy w `voice/postacie.json` i wygeneruj wszystkie kwestie (`--wszystko`) pod tymi samymi nazwami plików, więc kod gry się nie zmienia.
+- Odsłuchaj automatycznie długość plików: żaden nie może być pusty ani wyraźnie dłuższy niż poprzednia wersja (np. ponad 2 razy). Odstępstwa wypisz w raporcie.
+- Stare nagrania Zosi zachowaj w gałęzi albo w `voice/zosia_backup/` poza pakietem gry, żeby dało się wrócić.
+- Do zasady 4 dopisz: nowe kwestie generuje się skryptem `tools/generuj_glosy.py` głosem przypisanej postaci.
+- Eksport, testy, raport z rozmiarem `.pck` i liczbą wygenerowanych kwestii.
+
 ### [ ] Z12 — Rozdział 5, część 1: śnieżyca i wóz z drewnem
 Plan: rozdział 5. Przycisk w menu (obrazek płatka śniegu) po ukończeniu rozdziału 4.
 - Dolina w śniegu (biała tekstura terenu, padające płatki). Bóbr: „Idzie śnieżyca! Domy nie mają drewna na zimę!”.
