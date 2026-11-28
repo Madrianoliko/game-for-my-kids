@@ -22,11 +22,11 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 16. Ścieżka między stogami jest niepotrzebna. — uwzględnione (2026-11-28, 6952550)
 17. Przy pierwszych stogach nie widać, gdzie patrzy troll, bo stoi za daleko z przodu. Niech nie mówi „Hmm” i „raz, dwa, trzy”, tylko chodzi po polu z widocznym, przezroczystym wzrokiem. — uwzględnione (2026-11-28, 6952550)
 18. Misja z trollami jest fajna, ale trzeba wydłużyć do 5 sekund albo zrobić pole w kwadrat, po którym troll chodzi między stogami. — uwzględnione (2026-11-28, 6952550)
-19. Złapanie włamywacza i liczenie kamyków: super! Nie rozumiem tylko „a ty mówiłeś, że 5?”. Że trolle się kłócą? Fajne, ale trzeba to podkreślić.
-20. Nie widać, że w jednej łapie są 3 szyszki. Reszta super.
-21. Mapa i jabłka w skrzyni są super, ale mapę można rozwinąć: otworzyć ją i pokazać „hmm, tam może być coś ciekawego”.
+19. Złapanie włamywacza i liczenie kamyków: super! Nie rozumiem tylko „a ty mówiłeś, że 5?”. Że trolle się kłócą? Fajne, ale trzeba to podkreślić. — uwzględnione (2026-11-28, 5c71af5)
+20. Nie widać, że w jednej łapie są 3 szyszki. Reszta super. — uwzględnione (2026-11-28, 5c71af5)
+21. Mapa i jabłka w skrzyni są super, ale mapę można rozwinąć: otworzyć ją i pokazać „hmm, tam może być coś ciekawego”. — uwzględnione (2026-11-28, 5c71af5)
 22. Liczenie kucyków po powrocie: kliknięty boks powinien się podświetlać na zielono, a nad nim pojawiać się cyferka. — uwzględnione (2026-11-27, d512739)
-23. Po policzeniu kucyków nie wychodź z gry. Zrób scenkę przejścia do rozdziału 3. Po wyjściu z gry gracz powinien móc zacząć od ostatniego momentu.
+23. Po policzeniu kucyków nie wychodź z gry. Zrób scenkę przejścia do rozdziału 3. Po wyjściu z gry gracz powinien móc zacząć od ostatniego momentu. — uwzględnione (2026-11-28, 5c71af5)
 24. Rozdział 3, „idź śladem małych łapek”: niech Bilbo idzie co najmniej 10 sekund, a nie tak blisko.
 25. „Podejdź ze mną do latarni”: wyświetlają się dwa ogniska i głośnik. Nie wiem, co to oznacza. Lepiej, żeby tego nie było, a Bilbo po prostu szedł za zwierzakiem.
 26. Więcej chodzenia między obiektami oddalonymi od siebie zamiast przeskakiwania między scenami. Nie rozumiałem na początku, że Iskierka kicha ogniem.

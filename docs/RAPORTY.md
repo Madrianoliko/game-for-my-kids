@@ -1,3 +1,12 @@
+## 2026-11-28 — U05. Sprzeczka trolli, mapa i przejścia między rozdziałami
+
+Po odpowiedzi Burczyk, Chrapek i Gapa odwracają się do rozmówców, gestykulują i mówią po kolei. Przy błędzie żartują z liczenia nosa i zachęcają do następnej próby. Na rozłożonych łapach Gapy leżą dwie grupy większych szyszek. Dotknięcie podświetla szyszkę i pokazuje jej numer.
+Po otwarciu skrzyni Bilbo ogląda pełnoekranową mapę doliny z mostem, dymiącą górą i znakiem X. Dotknięcie zwija ją do plecaka w 0,28 s.
+Dodano kroki ROUTE `map_sleep` (wieczór i poranek w chatce), `cave_descent` (zejście z latarką do jaskini) i `continued` (powrót Bilba i zapowiedź dalszej historii). Wybrano zapowiedź, ponieważ rozdział 5 czeka w kolejce. Stare zapisy końców rozdziałów prowadzą do nowych przejść.
+Przerwa między wypowiedziami trolli wynosi 0,25 s. Wszystkie nowe kwestie mają polskie nagrania Zosi.
+Pakiet iPhone ma 12 144 820 bajtów. Wszystkie trzy testy przeszły, w tym wznowienie w trakcie sprzeczki, na rozwiniętej mapie i na granicach rozdziałów. Sprawdzono również oba warianty szyszek w poziomym widoku 960 × 540.
+Przy zamykaniu testów obozu i doliny Godot zgłosił pozostające obiekty. Do sprawdzenia z dzieckiem na telefonie pozostaje czytelność gestów trolli i mapy.
+
 ## 2026-11-28 — U04. Patrol Gapy w obozie trolli
 
 Droga do obozu prowadzi po kamieniach przez strumień. Wczytanie dawnej drogi obok Chrapka przenosi Bilba nad strumień. Nazwy i kolejność kroków ROUTE pozostają zgodne ze starymi zapisami.

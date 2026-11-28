@@ -147,7 +147,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - Wprowadzenie Toba zmień na: „To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!”. Nauka w pierwszym stogu zostaje.
 - Testy: złapanie w stożku, bezpieczny bieg za plecami Gapy, stóg chroni w stożku, ratunek wszystkich kucyków przy patrolu.
 
-### [ ] U05 — Uwagi z testu: kłótnia trolli, szyszki, mapa i przejście do rozdziału 3 (uwagi 19, 20, 21, 23)
+### [x] U05 — Uwagi z testu: kłótnia trolli, szyszki, mapa i przejście do rozdziału 3 (uwagi 19, 20, 21, 23) (2026-11-28)
 - **Kłótnia:** po każdej odpowiedzi trolle wyraźnie się kłócą: stają naprzeciw siebie, machają łapami, mówią jeden po drugim (np. Burczyk: „Cztery!” — Chrapek: „Nieprawda, pięć!” — Gapa: „Cicho! Bilbo ma rację!”). Ma być jasne i śmieszne, że to sprzeczka.
 - **Szyszki:** Gapa trzyma szyszki na otwartych, wyciągniętych na boki łapach, szyszki są większe i wyraźnie rozdzielone. Po dotknięciu pojawia się cyfra (zasada 14).
 - **Mapa:** po wyjęciu ze skrzyni mapa rozwija się na cały ekran: dolina, most, dymiąca góra i znak X. Bilbo: „Hmm… Tam może być coś ciekawego.” Dotknięcie zwija mapę do paska plecaka.
