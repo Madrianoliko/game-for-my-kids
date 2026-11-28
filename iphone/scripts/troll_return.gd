@@ -42,7 +42,18 @@ func build_cave() -> void:
 	if story.part==0:
 		story.button("Ręka",open_chest)
 		story.say("cave_open")
-	else:
+	elif story.part==2:
+		lid.rotation.x=-1.85
+		story.dock.hide()
+		story.bag.hide()
+		story.map_sheet.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		story.map_sheet.show()
+		story.map_sheet.pivot_offset=story.map_sheet.size*.5
+		story.map_sheet.scale=Vector2(.06,1)
+		story.anim=story.map_sheet.create_tween()
+		story.anim.tween_property(story.map_sheet,"scale:x",1.0,.25)
+		story.say("map_wonder")
+	elif story.part==3:
 		lid.rotation.x=-1.85
 		for i in 3: story.make_apple(Vector3(-.68+i*.39,.95,.29))
 		var paper:=Color("#ffdea0")
@@ -58,14 +69,16 @@ func build_cave() -> void:
 		game.mesh(self,peak,Vector3(.96,1.14,0),Color("#815941"))
 		for i in 3:
 			game.orb(self,Vector3(.95+.07*i,1.37+.14*i,0),.085+.018*i,Color("#696370"))
-		story.button("Dalej",story.advance)
 		story.say("cave_find")
+	else:
+		lid.rotation.x=-1.85
+		story.button("Dalej",story.advance)
+		story.say("map_packed")
 
 func open_chest() -> void:
 	if story.id()!="troll_cave" or story.part!=0: return
 	story.items.append(APPLES)
-	story.items.append(MAP)
-	story.go_to("troll_cave",1)
+	story.go_to("troll_cave",3)
 
 func meet_chief() -> void:
 	game.hud.text="Jabłka herszta"

@@ -300,6 +300,11 @@
     "tekst": "Dotknij przedmiotów, żeby je policzyć."
   },
   {
+    "plik": "audio/story/route_cave_descent.mp3",
+    "postać": "narrator",
+    "tekst": "Mama smoczyca wylądowała przy jaskini. Bilbo oświetlił wejście latarką."
+  },
+  {
     "plik": "audio/story/route_cave_final.mp3",
     "postać": "Szeptek",
     "tekst": "Wygrałeś… Masz latarkę. Ale wróć kiedyś!"
@@ -383,6 +388,11 @@
     "plik": "audio/story/route_chief_happy.mp3",
     "postać": "herszt",
     "tekst": "Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!"
+  },
+  {
+    "plik": "audio/story/route_continued.mp3",
+    "postać": "narrator",
+    "tekst": "Bilbo wyszedł z jaskini z odzyskaną latarką. Ciąg dalszy nastąpi!"
   },
   {
     "plik": "audio/story/route_coop.mp3",
@@ -655,6 +665,26 @@
     "tekst": "Pięć! Wioska rozświetlona. Przy zielonej chatce macha do nas Wiewiórka."
   },
   {
+    "plik": "audio/story/route_map_morning.mp3",
+    "postać": "narrator",
+    "tekst": "Rano obudził go zapach jabłek z sadu. Czas na nową przygodę!"
+  },
+  {
+    "plik": "audio/story/route_map_packed.mp3",
+    "postać": "narrator",
+    "tekst": "Mapa i jabłka są w plecaku. Wracamy do herszta!"
+  },
+  {
+    "plik": "audio/story/route_map_sleep.mp3",
+    "postać": "narrator",
+    "tekst": "Wieczorem Bilbo zasnął w swojej chatce, tuląc mapę Dymiącej Góry."
+  },
+  {
+    "plik": "audio/story/route_map_wonder.mp3",
+    "postać": "Bilbo",
+    "tekst": "Hmm… Tam może być coś ciekawego."
+  },
+  {
     "plik": "audio/story/route_milk_packed.mp3",
     "postać": "narrator",
     "tekst": "Mleko jest w plecaku. Wyjdź na plac."
@@ -808,6 +838,56 @@
     "plik": "audio/story/route_ponies_bridge_alt.mp3",
     "postać": "narrator",
     "tekst": "Poprowadź oba kucyki przez most do złotego kręgu."
+  },
+  {
+    "plik": "audio/story/route_quarrel_doubt.mp3",
+    "postać": "Burczyk",
+    "tekst": "Chwileczkę! Mnie wyszło inaczej!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_four.mp3",
+    "postać": "Burczyk",
+    "tekst": "Cztery! Sam policzyłem!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_no_five.mp3",
+    "postać": "Chrapek",
+    "tekst": "A właśnie, że pięć!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_no_four.mp3",
+    "postać": "Chrapek",
+    "tekst": "Nieprawda! Cztery!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_no_seven.mp3",
+    "postać": "Chrapek",
+    "tekst": "Nieprawda! Siedem!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_nose.mp3",
+    "postać": "Chrapek",
+    "tekst": "Bo policzyłeś też swój nos!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_retry.mp3",
+    "postać": "Gapa",
+    "tekst": "Hej, nos się nie liczy! Spróbujmy jeszcze raz."
+  },
+  {
+    "plik": "audio/story/route_quarrel_right.mp3",
+    "postać": "Gapa",
+    "tekst": "Cicho! Bilbo ma rację!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_six.mp3",
+    "postać": "Burczyk",
+    "tekst": "Sześć! Sam policzyłem!"
+  },
+  {
+    "plik": "audio/story/route_quarrel_three.mp3",
+    "postać": "Burczyk",
+    "tekst": "Trzy! Policzyłem na własnych palcach!"
   },
   {
     "plik": "audio/story/route_range.mp3",

@@ -1,10 +1,26 @@
 extends RefCounted
 
-const ROUTE := ["valley_intro","door","pack","kids_arrive","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]
+const ROUTE := ["valley_intro","door","pack","kids_arrive","range","dummy","guard","chief","tobo","blanket","bridge","cross","lanterns","invitation","village","mill","coop","dairy","delivery","recipe","eggs","milk","homecoming","stable","night_bridge","chief_sad","fork","camp","troll_dawn","troll_cave","chief_happy","stable_home","map_sleep","dragon_map","dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","dragon_flight","cave_descent","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit","continued"]
 const GEAR := ["Latarka","Sznurek","Młotek","Gwoździe","Miecz","Łuk","Tarcza"]
 const POSITIONS := [Vector3(-3.15,0,-2.05),Vector3(-1.35,0,-2.05),Vector3(.95,0,-1.8),Vector3(3,0,-.55),Vector3(2.6,0,2),Vector3(-2.9,0,1.65),Vector3(0,0,2.05)]
 const VILLAGE := {"lanterns":-11.0,"mill":-19.0,"coop":-27.0,"dairy":-36.0}
 const WORDS := {
+	"map_packed":"Mapa i jabłka są w plecaku. Wracamy do herszta!",
+	"quarrel_doubt":"Chwileczkę! Mnie wyszło inaczej!",
+	"quarrel_nose":"Bo policzyłeś też swój nos!",
+	"quarrel_retry":"Hej, nos się nie liczy! Spróbujmy jeszcze raz.",
+	"map_wonder":"Hmm… Tam może być coś ciekawego.",
+	"map_sleep":"Wieczorem Bilbo zasnął w swojej chatce, tuląc mapę Dymiącej Góry.",
+	"map_morning":"Rano obudził go zapach jabłek z sadu. Czas na nową przygodę!",
+	"cave_descent":"Mama smoczyca wylądowała przy jaskini. Bilbo oświetlił wejście latarką.",
+	"continued":"Bilbo wyszedł z jaskini z odzyskaną latarką. Ciąg dalszy nastąpi!",
+	"quarrel_three":"Trzy! Policzyłem na własnych palcach!",
+	"quarrel_four":"Cztery! Sam policzyłem!",
+	"quarrel_six":"Sześć! Sam policzyłem!",
+	"quarrel_no_four":"Nieprawda! Cztery!",
+	"quarrel_no_five":"A właśnie, że pięć!",
+	"quarrel_no_seven":"Nieprawda! Siedem!",
+	"quarrel_right":"Cicho! Bilbo ma rację!",
 	"sad_given_6":"Dałeś mi sześć. Ile teraz mam w koszu?",
 	"sad_given_5":"Dałeś mi pięć. Ile teraz mam w koszu?",
 	"sad_given_4":"Dałeś mi cztery. Ile teraz mam w koszu?",

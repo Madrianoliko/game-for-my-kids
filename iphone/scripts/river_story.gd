@@ -38,6 +38,7 @@ const PROVISIONS := Vector3(2.7,0,2.2)
 var waving_paw:Node3D
 var chapters:=0
 var reward:=Label.new()
+var map_sheet:=TextureButton.new()
 var curtain:=ColorRect.new()
 var transition_time:=0.0
 var village_pos:=Square.ENTRY
@@ -118,6 +119,24 @@ func setup(game) -> void:
 		for mesh in statue.find_children("*","MeshInstance3D",true,false): mesh.material_override=stone
 	stone_hill.hide()
 	stable.counted.connect(count_pen)
+	host.ui.add_child(map_sheet)
+	host.ui.move_child(map_sheet,0)
+	map_sheet.texture_normal=preload("res://art/mountain_map.svg")
+	map_sheet.ignore_texture_size=true
+	map_sheet.stretch_mode=TextureButton.STRETCH_SCALE
+	map_sheet.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	map_sheet.accessibility_name="Zwiń mapę"
+	map_sheet.hide()
+	map_sheet.pressed.connect(func():
+		if not active or host.paused or busy or id()!="troll_cave" or part!=2: return
+		busy=true
+		if anim: anim.kill()
+		anim=create_tween()
+		anim.tween_property(map_sheet,"scale",Vector2(.06,.12),.28)
+		anim.parallel().tween_property(map_sheet,"position",bag.position-map_sheet.pivot_offset+Vector2(18,18),.28)
+		anim.tween_callback(func():
+			if ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
+			go_to("troll_cave",1)))
 	host.ui.add_child(reward)
 	reward.text="★"
 	reward.modulate=Color.GOLD
@@ -247,7 +266,7 @@ func prompt(clip:String,words:String) -> void:
 	voice=clip
 	caption.text=words
 	if host.sound: host.play_clip(host.narrator,"story/"+clip)
-	if active and id() in ["valley_intro","door","kids_arrive","homecoming"]:
+	if active and id() in ["valley_intro","door","kids_arrive","homecoming","map_sleep","cave_descent","dragon_flight","whisper_exit","troll_cave"]:
 		var stream:AudioStream=host.narrator.stream if host.sound else AudioStreamMP3.load_from_file("res://audio/story/"+clip+".mp3")
 		speech_end=age+stream.get_length()+.35
 
@@ -277,7 +296,7 @@ func read_save() -> bool:
 	chapters=int(cfg.get_value("story","chapters_completed",0))
 	stone_hill.visible=bool(cfg.get_value("story","stone_hill",chapters>=2 or cfg.get_value("story","route","")=="stable_home"))
 	var former_end:String=str(cfg.get_value("story","route","")) if cfg.get_value("story","ended",false) else ""
-	var extensions:={"dragon_berries":"mountain_fork","warm_cave":"mole_candles"}
+	var extensions:={"stable_home":"map_sleep","dragon_flight":"cave_descent","whisper_exit":"continued","dragon_berries":"mountain_fork","warm_cave":"mole_candles"}
 	if cfg.get_value("story","ended",false) and not extensions.has(former_end):
 		items=cfg.get_value("story","items",PackedStringArray())
 		if chapters>=2 and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
@@ -321,6 +340,8 @@ func read_save() -> bool:
 			marks=0
 	if extensions.has(former_end):
 		index=Data.ROUTE.find(extensions[former_end])
+		if former_end=="stable_home" and ReturnTrip.MAP not in items: items.append(ReturnTrip.MAP)
+		if former_end=="dragon_flight" and "Latarka" not in items: items.append("Latarka")
 		part=0
 		marks=0
 	return true
@@ -356,6 +377,12 @@ func stop() -> void:
 	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
+	map_sheet.hide()
+	host.leo.rotation.z=0
+	var lamp=host.leo.get_node_or_null("ChapterLamp")
+	if lamp:
+		host.leo.remove_child(lamp)
+		lamp.queue_free()
 	reward.hide()
 	if is_instance_valid(camp) and not camp.is_queued_for_deletion(): camp.dispose()
 	camp=null
@@ -394,7 +421,7 @@ func show_controls() -> void:
 		return
 	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or id() in ["cross","night_bridge","dragon_orchard"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
-	replay.visible=actions.visible and id()!="cross"
+	replay.visible=(actions.visible and id()!="cross") or (active and id()=="troll_cave" and part==2 and not host.paused)
 	if id() in ["night_bridge","fork","chief_happy","dragon_orchard"]: actions.hide()
 	if id()=="dragon_orchard": replay.hide()
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
@@ -436,6 +463,12 @@ func render() -> void:
 	host.beaver.show()
 	stable.set_pens(false,0,false)
 	curtain.color.a=0
+	map_sheet.hide()
+	host.leo.rotation.z=0
+	var lamp=host.leo.get_node_or_null("ChapterLamp")
+	if lamp:
+		host.leo.remove_child(lamp)
+		lamp.queue_free()
 	reward.hide()
 	refresh_bag()
 	food_models.clear()
@@ -475,7 +508,7 @@ func render() -> void:
 	foe=null
 	props.hide()
 	scene.show()
-	var indoors:=id() in ["dragon_map","door","pack","delivery","homecoming"]
+	var indoors:=id() in ["map_sleep","dragon_map","door","pack","delivery","homecoming"]
 	host.cottage.room.visible=indoors
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
@@ -772,6 +805,27 @@ func render() -> void:
 					advance()
 				else: host.home())
 			camp.begin(host,marks,numbers.get("camp",7))
+		"map_sleep":
+			host.hud.text="Wieczór w chatce" if part==0 else "Poranek w dolinie"
+			host.camera.attributes=light_filter
+			light_filter.exposure_multiplier=.38 if part==0 else 1.0
+			host.camera.attributes=light_filter
+			light_filter.exposure_multiplier=.35 if part==0 else 1.1
+			host.box(scene,Vector3(-2,.30,.6),Vector3(1.3,.55,2.3),Color.SADDLE_BROWN)
+			host.orb(scene,Vector3(-2,.66,-.2),.46,Color.WHEAT).scale=Vector3(1.2,.4,1)
+			host.leo.position=origin+Vector3(-1.6,.75,.5)
+			host.leo.rotation.z=-1.25 if part==0 else -.15
+			host.box(scene,Vector3(-1.58,1.07,.85),Vector3(.72,.07,.5),Color.WHEAT)
+			say("map_sleep" if part==0 else "map_morning")
+		"cave_descent","continued":
+			host.hud.text="Wejście do jaskini" if id()=="cave_descent" else "Ciąg dalszy nastąpi…"
+			for i in 9:
+				var angle:=PI*i/8
+				host.orb(scene,Vector3(2.5*cos(angle),2.7*sin(angle),-2),.84,Color.SLATE_GRAY)
+			host.orb(scene,Vector3(0,.9,-2.35),1.9,Color("#2c2936")).scale.z=.35
+			host.orb(host.leo,Vector3(.36,.82,.33),.14,Color.GOLD,true).name="ChapterLamp"
+			say(id())
+			if id()=="continued": button("Menu",host.home)
 		"homecoming":
 			actor("squirrel",Vector3(1.55,0,-.7))
 			host.hud.text="Urodziny Tygryska"
@@ -1070,8 +1124,7 @@ func stable_tick() -> void:
 	elif part==0 and marks==stable.FULL_MASK: go_to("stable_home",1,marks)
 	elif part==1:
 		chapters=maxi(chapters,2)
-		checkpoint(true)
-		host.home()
+		advance()
 
 func advance() -> void:
 	if id()=="valley_intro":
@@ -1208,6 +1261,23 @@ func strike() -> void:
 func _physics_process(dt:float) -> void:
 	if not active or host.paused: return
 	age+=dt
+	if id()=="troll_cave" and part==3:
+		if age>=speech_end: go_to("troll_cave",2)
+		return
+	if id()=="continued":
+		host.leo.position=origin+Vector3(0,0,-1.5).lerp(Vector3(-1,0,1.3),smoothstep(0,2.5,age))
+		return
+	if id()=="map_sleep":
+		if part==0: host.leo.rotation.z=lerpf(0,-1.25,smoothstep(0,1.8,age))
+		else: light_filter.exposure_multiplier=lerpf(.35,1.1,smoothstep(0,1.6,age))
+		if age>=speech_end:
+			if part==0: go_to("map_sleep",1)
+			else: advance()
+		return
+	if id()=="cave_descent":
+		host.leo.position=origin+Vector3(-1,0,1.3).lerp(Vector3(0,0,-1.5),smoothstep(0,4,age))
+		if age>=maxf(4,speech_end): advance()
+		return
 	if id() in ["valley_intro","door","kids_arrive"]:
 		if id()=="valley_intro": intro_camera(age/7.0)
 		if age>=speech_end and (id()!="valley_intro" or age>=7.5): advance()

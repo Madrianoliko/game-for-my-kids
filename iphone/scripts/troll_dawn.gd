@@ -16,7 +16,11 @@ var deadline:float
 var catching_arm:Node3D
 var eaten_from:Vector3
 var counted:Array[int]=[]
-var chuckle:=0.0
+var debating_mistake:=false
+const DISPUTES := {Beat.ARGUE_ROCKS:Beat.ROCKS,Beat.ARGUE_FOOD:Beat.SAUSAGES,Beat.ARGUE_CONES:Beat.CONES}
+const SPEAKERS := [1,2,0]
+var line:=0
+var arms:Array[Node3D]=[]
 var daylight:=0
 var sun:Node3D
 
@@ -24,6 +28,7 @@ func setup(owner_story) -> void:
 	story=owner_story
 	game=story.host
 	beat=story.part
+	if DISPUTES.has(beat): line=clampi(story.marks,0,2)
 	answers[Beat.ROCKS]=story.numbers.get("rocks",4)
 	answers[Beat.SAUSAGES]=story.numbers.get("sausages",3)
 	answers[Beat.CONES]=story.numbers.get("cones",6)
@@ -42,8 +47,14 @@ func setup(owner_story) -> void:
 	for i in 3:
 		var troll=story.actor("troll",POS[i],1.22 if i==1 else 1.1)
 		trolls.append(troll)
-		for side in [-1,1]:
-			game.orb(troll,Vector3(side*.53,.93,.22),.23,Color("#709eab"))
+		var arm:=Node3D.new()
+		troll.add_child(arm)
+		arm.position=Vector3(.43,.93,.12)
+		arms.append(arm)
+		game.orb(arm,Vector3(.24,0,.14),.22,Color("#709eab")).scale.x=1.6
+		game.orb(troll,Vector3(-.53,.93,.22),.23,Color("#709eab"))
+		if DISPUTES.has(beat):
+			troll.look_at(to_global(POS[2 if i==1 else 1]),Vector3.UP,true)
 	if beat==Beat.CAUGHT:
 		catching_arm=Node3D.new()
 		trolls[0].add_child(catching_arm)
@@ -73,6 +84,14 @@ func setup(owner_story) -> void:
 		if story.marks>=2: story.hint_miss(objects.size(),show_count)
 
 func narrate() -> void:
+	if debating_mistake or DISPUTES.has(beat):
+		var words:Array=["doubt","nose","retry"]
+		if not debating_mistake:
+			var total:int=answers[DISPUTES[beat]]
+			words=[{3:"three",4:"four",6:"six"}[total],{3:"no_four",4:"no_five",6:"no_seven"}[total],"right"]
+		story.say("quarrel_"+str(words[line]))
+		deadline=story.age+(game.narrator.stream.get_length() if game.sound else 1.6)+.25
+		return
 	var clip:String="dawn_"+CLIPS[beat]
 	if (beat in [Beat.ROCKS,Beat.ARGUE_ROCKS] and answers[Beat.ROCKS]!=4) or (beat in [Beat.SKEWER,Beat.ARGUE_FOOD] and answers[Beat.SAUSAGES]!=3) or (beat in [Beat.CONES,Beat.ARGUE_CONES] and answers[Beat.CONES]!=6):
 		clip+="_alt"
@@ -95,7 +114,10 @@ func build_objects() -> void:
 			for stripe in [-1,1]:
 				game.box(obj,Vector3(0,stripe*.12,.31),Vector3(.24,.03,.035),Color("#773821"))
 		elif beat==Beat.CONES:
-			obj=game.orb(self,pos,.32,Color("#96542f"))
+			var hand_side:= -1 if i<total/2 else 1
+			var per_hand:=int(total/2)
+			var local_x:float=hand_side*1.76+(i%per_hand-(per_hand-1)*.5)*.93
+			obj=game.orb(trolls[0],Vector3(local_x,1.10,.85),.40,Color("#96542f"))
 			obj.scale.y=1.32
 			for row in 3:
 				for side in [-1,1]:
@@ -105,7 +127,11 @@ func build_objects() -> void:
 			obj.scale=Vector3(1,.76,.9)
 		objects.append(obj)
 	if beat==Beat.SKEWER: eaten_from=objects.back().position
-	if not food:
+	if beat==Beat.CONES:
+		for side in [-1,1]:
+			game.orb(trolls[0],Vector3(side*.96,.83,.44),.35,Color("#709eab")).scale=Vector3(2,.72,1)
+			game.orb(trolls[0],Vector3(side*1.76,.73,.84),.56,Color("#8fb8bb")).scale=Vector3(2.85,.46,1.1)
+	elif not food:
 		for side in [-1,1]:
 			# A palm below each separate group keeps the two addends visible.
 			var x:float=side*(1.48 if total==6 else 1.12)
@@ -125,19 +151,23 @@ func show_count(total:int) -> void:
 		if i<total: highlight(i)
 
 func answer(n:int) -> void:
-	if story.host.paused or story.part!=beat: return
+	if story.host.paused or story.part!=beat or debating_mistake: return
 	if n==answers[beat]:
 		game.chime.stop()
 		story.go_to("troll_dawn",beat+1)
 		return
 	story.marks+=1
 	story.checkpoint()
-	chuckle=.75
-	if story.hint_lit>=story.hint_total: story.effect("story/dawn_laugh")
-	story.hint_miss(objects.size(),show_count)
+	debating_mistake=true
+	line=0
+	for i in 3: trolls[i].look_at(to_global(POS[2 if i==1 else 1]),Vector3.UP,true)
+	for b in story.options.get_children():
+		if b.text.is_valid_int(): b.disabled=true
+	story.effect("story/dawn_laugh")
+	narrate()
 
 func _input(event:InputEvent) -> void:
-	if not is_visible_in_tree() or game.paused or not answers.has(beat) or story.hint_total>0: return
+	if not is_visible_in_tree() or game.paused or debating_mistake or not answers.has(beat) or story.hint_total>0: return
 	if not ((event is InputEventScreenTouch or (event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT)) and event.pressed): return
 	if story.dock.get_global_rect().has_point(event.position) or game.pause_button.get_global_rect().has_point(event.position): return
 	var nearest:=-1
@@ -165,9 +195,24 @@ func tick(dt:float) -> void:
 		trolls[2].rotation.z=(1-wake)*.98
 		trolls[1].rotation.x=(1-wake)*.4
 		if beat==Beat.CAUGHT: trolls[0].position=POS[0].lerp(Vector3(-.66,0,-.3),smoothstep(0,.75,t))
-	if beat in [Beat.ARGUE_ROCKS,Beat.ARGUE_FOOD,Beat.ARGUE_CONES] or chuckle>0:
-		chuckle=maxf(0,chuckle-dt)
-		for i in 3: trolls[i].rotation.z=.17*sin(10*t+i*2)
+	if debating_mistake or DISPUTES.has(beat):
+		for i in 3:
+			arms[i].rotation.z=(.55+.43*sin(10*t)) if i==SPEAKERS[line] else 0.0
+		if t>=deadline and line<2:
+			line+=1
+			if not debating_mistake:
+				story.marks=line
+				story.checkpoint()
+			narrate()
+		elif t>=deadline and debating_mistake:
+			debating_mistake=false
+			for i in 3:
+				trolls[i].rotation.y=0
+				arms[i].rotation.z=0
+			for b in story.options.get_children():
+				if b.text.is_valid_int(): b.disabled=false
+			narrate()
+			story.hint_miss(objects.size(),show_count)
 	if beat==Beat.ARGUE_CONES: sun.position.y=lerpf(1.5,3.35,smoothstep(0,2,t))
 	if beat==Beat.SKEWER:
 		var bite:=smoothstep(deadline-1.15,deadline-.2,t)

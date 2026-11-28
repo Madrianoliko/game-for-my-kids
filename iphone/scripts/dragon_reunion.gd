@@ -178,11 +178,7 @@ func _process(dt:float) -> void:
 	if story.id()=="dragon_flight":
 		elapsed=minf(elapsed+dt,FLIGHT_TIME)
 		fly(elapsed)
-		if elapsed>=FLIGHT_TIME and story.part==0:
-			story.part=1
-			story.checkpoint()
-			var next:Button=story.button("Dalej",end_chapter)
-			story.options.move_child(next,0)
+		if elapsed>=FLIGHT_TIME and story.age>=story.speech_end: end_chapter()
 		return
 	if trial==0: return
 	timer-=dt
@@ -229,7 +225,6 @@ func build_flight() -> void:
 	if story.part==1: elapsed=FLIGHT_TIME
 	fly(elapsed)
 	story.say("dragon_flight")
-	if story.part==1: story.button("Dalej",end_chapter)
 
 func fly(t:float) -> void:
 	var fraction:=t/FLIGHT_TIME
@@ -244,4 +239,5 @@ func fly(t:float) -> void:
 
 func end_chapter() -> void:
 	story.chapters=maxi(story.chapters,3)
-	finish()
+	if "Latarka" not in story.items: story.items.append("Latarka")
+	story.advance()

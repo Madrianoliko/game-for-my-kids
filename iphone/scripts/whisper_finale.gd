@@ -211,16 +211,17 @@ func build_exit() -> void:
 	lamp.light_color=Color("#ffdea3")
 	lamp.light_energy=0
 	lamp.create_tween().tween_property(lamp,"light_energy",2.4,1.15)
-	story.button("Dalej",finish_chapter)
 
 func finish_chapter() -> void:
 	story.chapters=maxi(4,story.chapters)
-	story.checkpoint(true)
-	game.home()
+	story.advance()
 
 func _process(dt:float) -> void:
 	super._process(dt)
 	if not is_visible_in_tree() or game.paused: return
+	if story.id()=="whisper_exit" and story.age>=maxf(1.5,story.speech_end):
+		finish_chapter()
+		return
 	if story.id()=="fish_pool" and story.part==1:
 		motion_time+=dt
 		if motion_time>=1.4: story.go_to("fish_pool",2)
