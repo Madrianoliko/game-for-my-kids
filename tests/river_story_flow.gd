@@ -509,13 +509,21 @@ func run() -> void:
 			touch(game.ui,xy,true)
 			touch(game.ui,xy,false)
 		if not check(story.dawn.counted.size()==answer,"Liczenie przedmiotów dotykiem"): return
-		for error in 2: await click(numeric_button(story.options,answer,false))
+		for error in 2:
+			await click(numeric_button(story.options,answer,false))
+			while story.dawn.debating_mistake: await physics_frame
 		if not check(story.part==stage and story.dawn.daylight==round_index and story.marks==2,"Śmiech bez zmiany pory dnia"): return
 		if round_index==1: await reopen()
 		while story.hint_lit<answer: await physics_frame
 		if not check(story.hint_lit==answer,"Podpowiedź liczy wszystkie przedmioty"): return
 		await click(numeric_button(story.options,answer,true))
 		if not check(story.dawn.daylight==round_index+1,"Poprawna odpowiedź rozjaśnia niebo"): return
+		for speaker in 3:
+			while story.dawn.line<speaker: await physics_frame
+			if round_index==0 and speaker==1:
+				await reopen()
+				if not check(story.dawn.line==1,"Wznowienie riposty Chrapka"): return
+			if not check(story.voice.begins_with("route_quarrel_") and story.dawn.DISPUTES.has(story.part),"Trzy głosy po dobrej odpowiedzi"): return
 	while story.part!=story.dawn.Beat.END: await physics_frame
 	await physics_frame
 	for troll in story.dawn.trolls:
@@ -523,8 +531,16 @@ func run() -> void:
 	await click(story.options.get_child(0))
 	if not check(story.id()=="troll_cave" and story.part==0,"Wejście do jaskini za trollami"): return
 	await click(story.options.get_child(0))
+	if not check(story.part==3 and story.voice=="route_cave_find","Otwarta skrzynia z mapą i jabłkami"): return
+	while story.part==3: await physics_frame
 	await reopen()
-	if not check(story.part==1 and story.items.count(story.ReturnTrip.MAP)==1 and story.ReturnTrip.APPLES in story.items,"Zawartość skrzyni po wznowieniu"): return
+	if not check(story.part==2 and story.map_sheet.visible and story.ReturnTrip.MAP not in story.items,"Rozwinięta mapa po wznowieniu"): return
+	await create_timer(.3).timeout
+	var map_center:Vector2=game.ui.size*.5
+	touch(game.ui,map_center,true)
+	touch(game.ui,map_center,false)
+	await create_timer(.4).timeout
+	if not check(story.part==1 and not story.map_sheet.visible and story.items.count(story.ReturnTrip.MAP)==1 and story.ReturnTrip.APPLES in story.items,"Złożona mapa w plecaku"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="chief_happy" and story.part==0,"Herszt czeka na trakcie"): return
 	await click(story.options.get_child(0))
@@ -558,12 +574,10 @@ func run() -> void:
 		await click(story.stable.targets[i])
 		var badge=story.stable.floors[i].get_node("CountBadge")
 		if not check(badge.text==str(pen_order.find(i)+1) and badge.modulate==story.Count.PRESENT,"Kolejność zielonych numerków"): return
-	while not game.atlas.visible: await physics_frame
-	var cfg:=ConfigFile.new()
-	cfg.load(story.FILE)
-	if not check(cfg.get_value("story","chapters_completed")==2 and game.atlas.chapter_two.visible and game.atlas.stone_marker.visible and not game.atlas.resume.visible,"Ukończenie rozdziału 2"): return
-	if not check(game.atlas.chapter_three.visible and not game.atlas.chapter_four.visible,"Odblokowanie smoczka przed kryształami"): return
-	await click(game.atlas.chapter_three)
+	while story.id()=="stable_home": await physics_frame
+	await reopen()
+	if not check(story.id()=="map_sleep" and story.chapters==2,"Wieczór po powrocie kucyków"): return
+	while story.id()=="map_sleep": await physics_frame
 	if not check(story.id()=="dragon_map" and story.ReturnTrip.MAP in story.items,"Mapa w chatce"): return
 	await click(story.options.get_child(0))
 	await move_to(story.origin+story.iskierka.SHRUB)
@@ -665,19 +679,10 @@ func run() -> void:
 	var takeoff:Vector3=game.camera.position
 	await create_timer(4).timeout
 	if not check(story.id()=="dragon_flight" and game.camera.position.distance_to(takeoff)>4 and story.square.is_visible_in_tree(),"Lot nad znajomą doliną"): return
-	await create_timer(5.5).timeout
+	while story.id()=="dragon_flight": await physics_frame
 	await reopen()
-	if not check(story.part==1 and story.stone_hill.is_visible_in_tree(),"Wznowienie przy wzgórzu trolli"): return
-	await click(story.options.get_child(0))
-	cfg.load(story.FILE)
-	if not check(game.atlas.visible and cfg.get_value("story","chapters_completed")==3 and cfg.get_value("story","ended"),"Zakończony trzeci rozdział"): return
-	# Reload the completed dragon_flight save as written before the cave existed.
-	reload_current_scene()
-	await scene_changed
-	game=current_scene
-	story=game.bystra
-	if not check(game.atlas.chapter_four.visible,"Kryształ dostępny po wczytaniu zapisu rozdziału 3"): return
-	await click(game.atlas.chapter_four)
+	if not check(story.id()=="cave_descent" and story.chapters==3,"Wznowienie zejścia do jaskini"): return
+	while story.id()=="cave_descent": await physics_frame
 	if not check(story.id()=="whisper_cave" and "Latarka" in story.items,"Bilbo wchodzi z latarką"): return
 	await click(story.options.get_child(0))
 	if not check("Latarka" not in story.items,"Szeptek zabiera latarkę"): return
@@ -742,16 +747,14 @@ func run() -> void:
 		await click(numeric_button(story.options,total,true))
 	await reopen()
 	if not check(story.id()=="whisper_exit" and story.items.count("Latarka")==1 and story.whisper.wall_gems.all(func(g): return g.material_override.emission_enabled),"Latarka i siedem zapalonych kryształów po wznowieniu"): return
+	while story.id()=="whisper_exit": await physics_frame
+	await reopen()
+	if not check(story.id()=="continued" and story.chapters==4 and "Latarka" in story.items,"Wznowienie po zakończeniu czwartego rozdziału"): return
 	await click(story.options.get_child(0))
-	var finish_save:=ConfigFile.new()
-	finish_save.load(story.FILE)
-	if not check(game.atlas.visible and finish_save.get_value("story","chapters_completed")==4 and finish_save.get_value("story","ended"),"Koniec rozdziału 4"): return
-	cfg.save(story.FILE)
-	reload_current_scene()
-	await scene_changed
-	game=current_scene
-	story=game.bystra
+	if not check(game.atlas.visible and game.atlas.resume.visible and game.atlas.chapter_four.visible and game.atlas.chapter_three.visible,"Mapa rozdziałów po zakończeniu"): return
 	await click(game.atlas.chapter_two)
+	for dialog in game.ui.get_children():
+		if dialog is ConfirmationDialog: dialog.confirmed.emit()
 	if not check(story.id()=="stable","Wejście do rozdziału 2 z menu"): return
 	# Accelerated tests advance game time faster than the audio mixer drains MP3 playback.
 	game.narrator.stop()

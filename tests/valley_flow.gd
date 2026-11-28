@@ -73,5 +73,15 @@ func check_flow() -> void:
 	game=current_scene
 	await click(game.atlas.resume)
 	if not require(game.bystra.id()=="mill" and game.bystra.part==2 and game.bystra.chapters==0,"Stary zapis w młynie"): return
+	for pair in [["stable_home","map_sleep",2],["dragon_flight","cave_descent",3],["whisper_exit","continued",4]]:
+		legacy.set_value("story","route",pair[0])
+		legacy.set_value("story","chapters_completed",pair[2])
+		legacy.set_value("story","ended",true)
+		legacy.save(game.bystra.FILE)
+		reload_current_scene()
+		await scene_changed
+		game=current_scene
+		await click(game.atlas.resume)
+		if not require(game.bystra.id()==pair[1],"Wznowienie dawnego końca "+pair[0]): return
 	print("PASS menu, wznowienie i wcześniejszy zapis z młyna")
 	quit()
