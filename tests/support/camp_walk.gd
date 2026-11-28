@@ -17,42 +17,55 @@ func walk(target:Vector3) -> void:
 		await tree.physics_frame
 	game.stick.vector=Vector2.ZERO
 
-func next_window() -> void:
-	while camp.phase!=camp.Phase.LOOK: await tree.physics_frame
-	while camp.phase!=camp.Phase.BACK: await tree.physics_frame
+# Poczekaj w sianie na przejście patrolu, uwzględniając czas dojścia do celu.
+func safe_leg(target:Vector3, round_trip:bool) -> bool:
+	var start:Vector3=camp.ground
+	var duration:=start.distance_to(target)/float(camp.WALK_SPEED)
+	var end_time:=duration*2+.18 if round_trip else duration
+	for frame in ceili(end_time*30)+1:
+		var t:=frame/30.0
+		var position:=start.move_toward(target,camp.WALK_SPEED*t)
+		if round_trip and t>duration+.18:
+			position=target.move_toward(start,camp.WALK_SPEED*(t-duration-.18))
+		if camp.cover(position)>=0: continue
+		var angle:float=camp.patrol_angle+t*camp.PATROL_SPEED/camp.PATROL_RADIUS
+		var offset:Vector3=position-camp.PATROL_CENTER-Vector3(cos(angle),0,sin(angle))*camp.PATROL_RADIUS
+		if offset.length()<camp.LOOK_RANGE+.2 and offset.normalized().dot(Vector3(-sin(angle),0,cos(angle)))>cos(deg_to_rad(camp.LOOK_ANGLE*.5+5)): return false
+	return true
+
+func cross_to(target:Vector3, round_trip:=false) -> bool:
+	for tick in 1500:
+		if safe_leg(target,round_trip):
+			await walk(target)
+			return camp.ground.distance_to(target)<.12
+		await tree.physics_frame
+	return false
 
 func rescue(i:int,click:Callable) -> bool:
 	while camp.phase==camp.Phase.INTRO: await tree.physics_frame
 	if camp.phase==camp.Phase.FIRST:
-		while camp.phase==camp.Phase.FIRST:
-			var delta:Vector3=camp.STACKS[0]-camp.ground
-			game.stick.vector=Vector2(delta.x,delta.z).normalized()
-			await tree.physics_frame
-		game.stick.vector=Vector2.ZERO
-	while camp.phase!=camp.Phase.BACK: await tree.physics_frame
-	var last:int=[2,4,5][i]
-	for j in range(1,last+1):
-		await walk(camp.STACKS[j])
-		if camp.inside!=j: return false
-		await next_window()
-	if i<2:
-		await walk(camp.SIDE_STACKS[i])
-		await next_window()
-	await walk(camp.TETHERS[i])
+		await walk(camp.STACKS[0])
+	while camp.phase!=camp.Phase.PATROL: await tree.physics_frame
+	if camp.inside!=0 and not await cross_to(camp.STACKS[0]): return false
+	var route:Array=[[1,4],[2,5],[3,6]][i]
+	for j in route:
+		if not await cross_to(camp.STACKS[j]): return false
+	if not await cross_to(camp.TETHERS[i],true): return false
 	await click.call(camp.hand)
 	if not camp.following or camp.chosen!=i: return false
-	if i<2:
-		await walk(camp.SIDE_STACKS[i])
-		await next_window()
-	for j in range(last,-1,-1):
-		await walk(camp.STACKS[j])
-		if camp.inside!=j: return false
-		await next_window()
+	route.reverse()
+	await walk(camp.STACKS[route[0]])
+	if camp.inside!=route[0]: return false
+	if not await cross_to(camp.STACKS[route[1]]): return false
+	if not await cross_to(camp.STACKS[0]): return false
+	while not safe_leg(camp.TOBO,false): await tree.physics_frame
 	var mask:int=camp.rescued_mask
 	for tick in 150:
-		var delta:Vector3=camp.TOBO-camp.ground
-		game.stick.vector=Vector2(delta.x,delta.z).normalized()
+		var towards:Vector3=camp.ground.direction_to(camp.TOBO)
+		game.stick.vector=Vector2(towards.x,towards.z)
 		await tree.physics_frame
-		if camp.rescued_mask!=mask: break
+		if camp.rescued_mask!=mask:
+			game.stick.vector=Vector2.ZERO
+			return camp.rescued_mask==(mask | (1<<i))
 	game.stick.vector=Vector2.ZERO
-	return camp.rescued_mask==(mask | (1<<i))
+	return false

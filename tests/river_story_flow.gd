@@ -46,7 +46,7 @@ func walk() -> void:
 
 func walk_fork(target:Vector3) -> void:
 	for tick in 180:
-		if story.id()!="fork" or story.bank.visible or story.fork_trail.roll>0: break
+		if story.id()!="fork" or story.bank.visible: break
 		var delta:Vector3=target-story.fork_trail.to_local(game.leo.global_position)
 		if delta.length()<.08: break
 		game.stick.vector=Vector2(delta.x,delta.z).normalized()
@@ -467,20 +467,11 @@ func run() -> void:
 	if not check(story.id()=="fork" and game.stick.visible,"Rozwidlenie po spotkaniu"): return
 	var fork_save:=ConfigFile.new()
 	fork_save.load(story.FILE)
-	var path=story.fork_trail
-	await walk_fork(path.SHORT[1])
-	await reopen()
-	path=story.fork_trail
-	if not check(story.fork_path=="short","Zapis krótkiej drogi"): return
-	await walk_fork(path.SLEEPER)
-	if not check(path.roll>0,"Brak reakcji śpiącego trolla"): return
-	while path.roll>0: await physics_frame
-	if not check(path.to_local(game.leo.global_position).distance_to(path.SHORT[1])<.1,"Powrót przed krąg"): return
-	for point in path.SHORT.slice(2): await walk_fork(point)
-	if not check(story.id()=="camp" and story.fork_path=="short","Obejście Chrapka"): return
+	fork_save.set_value("story","fork_path","short")
 	fork_save.save(story.FILE)
 	await reopen()
-	path=story.fork_trail
+	var path=story.fork_trail
+	if not check(story.fork_path=="long" and story.voice=="route_fork_stream","Dawna krótka droga prowadzi nad strumień"): return
 	await walk_fork(path.LONG[1])
 	await walk_fork(path.STREAM)
 	if not check(story.bank.visible and story.bank.mode()=="hops","Wejście do strumienia"): return
