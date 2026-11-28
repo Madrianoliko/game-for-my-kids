@@ -153,7 +153,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Mapa:** po wyjęciu ze skrzyni mapa rozwija się na cały ekran: dolina, most, dymiąca góra i znak X. Bilbo: „Hmm… Tam może być coś ciekawego.” Dotknięcie zwija mapę do paska plecaka.
 - **Przejście do rozdziału 3:** po policzeniu kucyków w stajni nie wracaj do menu. Scenka: wieczór, Bilbo w chatce zasypia z mapą, rano narrator zaczyna rozdział 3. Gra płynie dalej, a zapis i „Wznów” wracają do ostatniego momentu. To samo zrób na końcu rozdziału 3 (przejście do rozdziału 4) i 4 (do rozdziału 5 albo na razie do napisu „Ciąg dalszy nastąpi”). Przyciski rozdziałów w menu zostają do powtórek.
 
-### [ ] U06 — Uwagi z testu: rozdział 3 (uwagi 24, 25, 26, 28, 29, 30, 31, 32)
+### [x] U06 — Uwagi z testu: rozdział 3 (uwagi 24, 25, 26, 28, 29, 30, 31, 32) (2026-11-28)
 - **Ślad łapek:** droga od sadu do Iskierki ma trwać co najmniej ok. 10 sekund marszu, ślady widoczne na ziemi.
 - **Latarnia:** usuń niezrozumiałe ikonki (dwa ogniska i głośnik). Bilbo idzie za Iskierką do latarni. Iskierka wyjaśnia: „Patrz! Umiem kichać ogniem!”, pokazuje kichnięcie, a potem: „Dotknij płomyka, a ja kichnę.” Przycisk z płomykiem pojawia się dopiero wtedy, z delikatnym pulsowaniem.
 - **Więcej chodzenia:** sad, krzaki, latarnia i jagody są oddalone od siebie i połączone chodzeniem gałką (zasada 16).

@@ -1,3 +1,12 @@
+## 2026-11-28 — U06. Śladami Iskierki przez sad i góry
+
+Bilbo idzie 37 m śladami łapek (około 11 s przy 3,4 m/s), potem za Iskierką do latarni i dalej po jagody. Jeden pulsujący płomyk pojawia się po pokazie kichnięcia.
+Zgodnie z kolejką obie przeszkody z planu przygód są na jednej drodze. Po kamieniach Bilbo idzie do jeżyn, po wypaleniu przejścia podchodzi do schodów, a po ułożeniu stopni wchodzi gałką do jaskini.
+U kreta pali się początkowo od jednej do trzech losowych świeczek. Dziecko liczy brakujące kichnięcia. W gnieździe brakuje jednego lub dwojga dzieci z pięciorga. W drugim wariancie wraz z Iskierką wraca jej braciszek.
+Losowania i kolejność dotykania smoczątek przetrwają wznowienie. Nazwy i kolejność kroków ROUTE pozostały bez zmian. Wszystkie nowe kwestie mają nagrania Zosi.
+Pakiet iPhone ma 12 228 404 bajty (wcześniej 12 144 820). Wszystkie trzy testy przeszły na pakiecie przy 60 kl./s. Przy zamykaniu testów obozu i doliny Godot nadal zgłasza pozostające obiekty.
+Do sprawdzenia na telefonie z dzieckiem: czy samodzielnie podąża za Iskierką oraz czy po pokazie rozpoznaje płomyk. Bez otwartych pytań.
+
 ## 2026-11-28 — U05. Sprzeczka trolli, mapa i przejścia między rozdziałami
 
 Po odpowiedzi Burczyk, Chrapek i Gapa odwracają się do rozmówców, gestykulują i mówią po kolei. Przy błędzie żartują z liczenia nosa i zachęcają do następnej próby. Na rozłożonych łapach Gapy leżą dwie grupy większych szyszek. Dotknięcie podświetla szyszkę i pokazuje jej numer.

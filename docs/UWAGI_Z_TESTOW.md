@@ -27,15 +27,15 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 21. Mapa i jabłka w skrzyni są super, ale mapę można rozwinąć: otworzyć ją i pokazać „hmm, tam może być coś ciekawego”. — uwzględnione (2026-11-28, 5c71af5)
 22. Liczenie kucyków po powrocie: kliknięty boks powinien się podświetlać na zielono, a nad nim pojawiać się cyferka. — uwzględnione (2026-11-27, d512739)
 23. Po policzeniu kucyków nie wychodź z gry. Zrób scenkę przejścia do rozdziału 3. Po wyjściu z gry gracz powinien móc zacząć od ostatniego momentu. — uwzględnione (2026-11-28, 5c71af5)
-24. Rozdział 3, „idź śladem małych łapek”: niech Bilbo idzie co najmniej 10 sekund, a nie tak blisko.
-25. „Podejdź ze mną do latarni”: wyświetlają się dwa ogniska i głośnik. Nie wiem, co to oznacza. Lepiej, żeby tego nie było, a Bilbo po prostu szedł za zwierzakiem.
-26. Więcej chodzenia między obiektami oddalonymi od siebie zamiast przeskakiwania między scenami. Nie rozumiałem na początku, że Iskierka kicha ogniem.
+24. Rozdział 3, „idź śladem małych łapek”: niech Bilbo idzie co najmniej 10 sekund, a nie tak blisko. — uwzględnione (2026-11-28, c14d8db)
+25. „Podejdź ze mną do latarni”: wyświetlają się dwa ogniska i głośnik. Nie wiem, co to oznacza. Lepiej, żeby tego nie było, a Bilbo po prostu szedł za zwierzakiem. — uwzględnione (2026-11-28, c14d8db)
+26. Więcej chodzenia między obiektami oddalonymi od siebie zamiast przeskakiwania między scenami. Nie rozumiałem na początku, że Iskierka kicha ogniem. — uwzględnione (2026-11-28, c14d8db)
 27. Dzielenie jagód: super.
-28. Strumień nie wygląda za dobrze. Lepiej iść dalej w prawo: najpierw strumień, potem krzak jeżyn.
-29. Schody są super, ale po nich chodźmy do jaskini, np. wejście gałką po tych schodach.
-30. Kichanie Iskierki to jednak fajny pomysł. Można je przerobić, np. palą się świeczki 1 i 3: ile razy Iskierka musi kichnąć, żeby paliło się wszystkie 5?
+28. Strumień nie wygląda za dobrze. Lepiej iść dalej w prawo: najpierw strumień, potem krzak jeżyn. — uwzględnione (2026-11-28, c14d8db)
+29. Schody są super, ale po nich chodźmy do jaskini, np. wejście gałką po tych schodach. — uwzględnione (2026-11-28, c14d8db)
+30. Kichanie Iskierki to jednak fajny pomysł. Można je przerobić, np. palą się świeczki 1 i 3: ile razy Iskierka musi kichnąć, żeby paliło się wszystkie 5? — uwzględnione (2026-11-28, c14d8db)
 31. Liczenie dzieci w gnieździe: zaznaczone dziecko powinno się lekko podświetlić i mieć na sobie numerek. — uwzględnione (2026-11-27, d512739)
-32. Na końcu nie „kogo brakuje”, tylko „ile dzieci brakuje”.
+32. Na końcu nie „kogo brakuje”, tylko „ile dzieci brakuje”. — uwzględnione (2026-11-28, c14d8db)
 
 ## 2026-11-28 — drugi test Adriana na iPhonie (wersja po U05)
 
