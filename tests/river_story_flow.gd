@@ -165,6 +165,18 @@ func riverbank() -> bool:
 			if not check(bank.visible and bank.marks==(4 if mode=="stones" else (2 if mode=="crack" else 1)),"Lost progress at "+mode): return false
 	return true
 
+func walk_until_change(direction:Vector2, limit:=300) -> int:
+	var route:String=story.id()
+	var phase:int=story.part
+	for frame in limit:
+		game.stick.vector=direction
+		await physics_frame
+		if story.id()!=route or story.part!=phase:
+			game.stick.vector=Vector2.ZERO
+			return frame+1
+	game.stick.vector=Vector2.ZERO
+	return -1
+
 func move_to(target:Vector3) -> void:
 	for i in 200:
 		var diff:Vector3=target-game.leo.position
@@ -580,17 +592,17 @@ func run() -> void:
 	while story.id()=="map_sleep": await physics_frame
 	if not check(story.id()=="dragon_map" and story.ReturnTrip.MAP in story.items,"Mapa w chatce"): return
 	await click(story.options.get_child(0))
-	await move_to(story.origin+story.iskierka.SHRUB)
-	if not check(story.part==1,"Spotkanie w krzakach"): return
-	await click(story.options.get_child(0))
-	if not check(story.part==1 and not story.iskierka.flame.visible,"Zasięg ognia"): return
+	var frames:=await walk_until_change(Vector2.RIGHT,800)
+	if not check(frames>=600 and story.part==1,"Ponad dziesięć sekund śladami łapek"): return
+	if not check(story.options.get_child_count()==0 and game.stick.visible,"Iskierka prowadzi bez ikon akcji"): return
 	await move_to(story.origin+story.iskierka.LANTERN)
-	if not check(story.iskierka.dragon.position.distance_to(story.iskierka.LANTERN)<1.85,"Smoczyca idzie za Bilbem"): return
-	await click(story.options.get_child(0))
+	await create_timer(9).timeout
+	if not check(story.part==3 and story.options.get_child_count()==1 and story.voice=="route_dragon_fire","Pojedynczy płomyk po pokazie"): return
+	await click(story.iskierka.fire_button)
 	await create_timer(.5).timeout
 	if not check(story.part==2 and story.iskierka.flame.visible,"Kichnięcie zapala latarnię"): return
-	await click(story.options.get_child(0))
-	if not check(story.id()=="dragon_berries","Sześć jagód"): return
+	await walk_until_change(Vector2.RIGHT)
+	if not check(story.id()=="dragon_berries","Dojście do krzaka z jagodami"): return
 	for i in 6:
 		await move_berry(i,0 if i<4 else 1)
 		if i==2:
@@ -604,19 +616,21 @@ func run() -> void:
 	old_end.set_value("story","ended",true)
 	await click(story.options.get_child(0))
 	if not check(story.id()=="mountain_fork","Droga za sadem"): return
-	await tap_model(story.iskierka.rocks[0])
-	for i in 3:
-		await tap_model(story.iskierka.rocks[i])
-		await create_timer(.55).timeout
-	if not check(story.id()=="mountain_steps","Przeprawa przez strumień"): return
 	old_end.save(story.FILE)
 	await reopen()
 	if not check(story.id()=="mountain_fork" and story.part==0,"Starszy zapis po nakarmieniu Iskierki"): return
 	await tap_model(story.iskierka.bush)
-	if not check(story.part==2,"Ścieżka przez jeżyny"): return
+	if not check(story.part==0,"Jeżyny czekają za strumieniem"): return
+	for i in 3:
+		await tap_model(story.iskierka.rocks[i])
+		await create_timer(.55).timeout
+	if not check(story.part==3 and game.stick.visible,"Po kamieniach Bilbo idzie dalej"): return
+	await walk_until_change(Vector2.RIGHT)
+	if not check(story.part==2,"Dojście do jeżyn"): return
 	await click(story.options.get_child(0))
 	await create_timer(1).timeout
-	if not check(story.id()=="mountain_steps","Wypalenie przejścia"): return
+	await walk_until_change(Vector2.RIGHT)
+	if not check(story.id()=="mountain_steps","Marsz do schodów"): return
 	for i in 2:
 		await place_step(5,2)
 		await create_timer(.55).timeout
@@ -627,7 +641,8 @@ func run() -> void:
 	await place_step(7,7)
 	await place_step(5,5)
 	if not check(story.marks==7,"Trzy złote stopnie"): return
-	await click(story.options.get_child(0))
+	await walk_until_change(Vector2.RIGHT)
+	if not check(story.id()=="warm_cave","Wejście po stopniach gałką"): return
 	var side:int=story.iskierka.large_side
 	await reopen()
 	if not check(story.id()=="warm_cave" and story.iskierka.large_side==side,"Wznowienie z tymi samymi kupkami"): return
@@ -653,26 +668,33 @@ func run() -> void:
 			await reopen()
 			if not check(story.marks==3,"Wznowienie po dwóch świeczkach"): return
 	if not check(story.part==2,"Policzone świeczki na torcie i na półce"): return
-	await click(numeric_button(story.options,4,true))
+	var missing:int=story.iskierka.unlit.size()
+	if not check(missing in [2,3,4],"Część świeczek już płonie"): return
+	var initial:int=story.iskierka.initial_lights
+	await reopen()
+	if not check(story.iskierka.initial_lights==initial,"Zapalone świeczki po wznowieniu"): return
+	await click(numeric_button(story.options,missing-1,true))
 	await create_timer(3).timeout
-	if not check(story.iskierka.lights[3].visible and not story.iskierka.lights[4].visible,"Cztery kichnięcia zostawiają zgaszoną świeczkę"): return
-	await click(numeric_button(story.options,6,true))
+	if not check(story.iskierka.lights.filter(func(light): return light.visible).size()==4,"Jedna świeczka nadal zgaszona"): return
+	await click(numeric_button(story.options,missing+1,true))
 	await create_timer(3.9).timeout
-	if not check(story.hint_total==5 and story.iskierka.hat.rotation.z>.4,"Przypalona czapka i pomoc w liczeniu"): return
-	await click(numeric_button(story.options,5,true))
+	if not check(story.hint_total==missing and story.iskierka.hat.rotation.z>.4,"Przypalona czapka i pomoc w liczeniu"): return
+	await click(numeric_button(story.options,missing,true))
 	await create_timer(3.2).timeout
 	if not check(story.part==3 and story.iskierka.lights.all(func(light): return light.visible),"Pięć płomyków"): return
 	await click(story.options.get_child(0))
 	if not check(story.id()=="dragon_nest","Mama na szczycie"): return
 	await click(story.options.get_child(0))
+	var missing_kids:int=story.iskierka.empty_seats.size()
 	for i in [2,0,3,1]:
+		if i>=5-missing_kids: continue
 		await tap_model(story.iskierka.tokens[i])
 		if i==0:
 			await reopen()
 			if not check(story.iskierka.tokens[2].get_node("CountBadge").text=="1" and story.iskierka.tokens[0].get_node("CountBadge").text=="2","Kolejność smoczątek po wznowieniu"): return
-	for i in 2: await click(numeric_button(story.options,2,true))
-	if not check(story.part==2 and story.hint_total==1,"Mama pokazuje puste miejsce"): return
-	await click(numeric_button(story.options,1,true))
+	for i in 2: await click(numeric_button(story.options,missing_kids,false))
+	if not check(story.part==2 and story.hint_total==missing_kids,"Mama pokazuje puste miejsca"): return
+	await click(numeric_button(story.options,missing_kids,true))
 	await create_timer(1).timeout
 	if not check(story.part==3 and story.iskierka.mother.wings[0].rotation.x>1,"Mama obejmuje Iskierkę"): return
 	await click(story.options.get_child(0))
