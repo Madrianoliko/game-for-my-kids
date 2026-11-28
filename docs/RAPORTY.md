@@ -1,3 +1,14 @@
+## 2026-11-28 — U07. Obóz Gapy i powrót z kucykami
+
+Tobo mówi dwie krótkie kwestie, przelot w jedną stronę trwa 1,2 s, a pierwszy stóg pokazuje działanie osłony. Złoty krąg wskazuje cel marszu, w tym Toba po odwiązaniu kucyka.
+Zielona strzałka była przyciskiem „Wróć do mapy”. Usunięto ją z obozu. Powrót do menu prowadzi przez pauzę. W pauzie rodzic może włączyć domyślnie ukryte napisy. Gra zapamiętuje ustawienie.
+Gapa chodzi po kwadracie o boku 3,6 m z prędkością 1,425 m/s. Na każdym rogu stoi przez 1,25 s i omiata pole latarnią. Wybrano powtarzalny patrol, żeby dziecko mogło przewidzieć ruch.
+Symulacja pełnego obiegu dla 24 skierowanych przejść między sąsiednimi stogami, z 240 momentami startu na przejście, dała średnio 5,1 s na rozpoczęcie bezpiecznego biegu w oknach rozdzielonych zagrożeniem.
+Po świcie gałka prowadzi do jaskini, skrzyni i wyjścia, następnie traktem do herszta i z kucykami przez most do stajni. Dłoń otwiera skrzynię i oddaje jabłka w zasięgu. Nazwy i kolejność kroków ROUTE zachowano.
+Wszystkie nowe kwestie mają polskie nagrania Zosi. Pominięto opcjonalny dymek nad mówiącą postacią, żeby pozostawić miejsce na znacznik celu.
+Pakiet iPhone ma 12 221 324 bajty (poprzednio 12 228 404). Trzy testy na pakiecie przeszły przy 60 kl./s. Przy zamykaniu testów obozu i doliny Godot nadal zgłasza pozostające obiekty.
+Na telefonie pozostaje sprawdzić czytelność znacznika Toba i tempo patrolu z dzieckiem. Brak otwartych pytań.
+
 ## 2026-11-28 — U06. Śladami Iskierki przez sad i góry
 
 Bilbo idzie 37 m śladami łapek (około 11 s przy 3,4 m/s), potem za Iskierką do latarni i dalej po jagody. Jeden pulsujący płomyk pojawia się po pokazie kichnięcia.

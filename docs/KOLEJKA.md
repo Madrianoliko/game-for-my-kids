@@ -162,7 +162,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Świeczki kreta:** jest 5 świeczek, część już się pali (losowo, np. 1. i 3.). Pytanie: „Ile razy musi kichnąć Iskierka, żeby paliło się wszystkie pięć?”. Przyciski z kropkami. Dobra odpowiedź: Iskierka kicha tyle razy, a świeczki zapalają się po kolei z liczeniem. Pomyłki jak dotąd (za mało: jedna zostaje zgaszona, za dużo: przypalona czapka).
 - **Gniazdo:** dotknięte smoczątko lekko się podświetla i ma numerek (zasada 14). Pytanie: „Ile dzieci brakuje?” z przyciskami z kropkami (losowo: 1 lub 2 brakujące, mama mówi, ile ma dzieci razem).
 
-### [ ] U07 — Uwagi z drugiego testu: obóz, napisy i chodzenie w rozdziale 2
+### [x] U07 — Uwagi z drugiego testu: obóz, napisy i chodzenie w rozdziale 2 (2026-11-28)
 Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-28).
 - **Napisy:** domyślnie wyłącz napisy dialogów w całej grze. Głos i przycisk „Posłuchaj” zostają. W pauzie dodaj dla rodzica przełącznik napisów z obrazkiem (np. dymek z literami), domyślnie wyłączony i zapamiętywany w ustawieniach. Kiedy mówi postać, nad jej głową może na chwilę pojawić się mała ikonka dymka, żeby było widać, kto mówi. Nic nie może zasłaniać celu, do którego dziecko ma iść.
 - **Cel „Wracaj do Toba”:** nad Tobem (i nad każdym celem marszu w grze, jeśli go jeszcze nie ma) widoczny znacznik, np. pulsujący złoty krąg albo strzałka nad głową.

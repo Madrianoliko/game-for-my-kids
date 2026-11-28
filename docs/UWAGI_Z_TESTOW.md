@@ -41,10 +41,10 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 
 **Przeniesione do kolejki jako zadanie U07 (`docs/KOLEJKA.md`). Nie wprowadzaj ich osobno według zasady 1.**
 
-1. Obóz trolli: wstęp jest trochę za długi.
-2. Troll porusza się za szybko. Fajnie, gdyby poruszał się trochę nieregularnie albo chodził w kwadrat, a nie w kółko.
-3. Po lewej stronie u góry pojawia się zielona strzałka, która wychodzi do menu. Nie wiadomo, po co tam jest.
-4. „Wracaj do Toba”: przez napisy dialogu nie widać, gdzie jest Tobo.
-5. Może napisów w ogóle nie powinno być? Zasłaniają ekran, a dziecko nie umie czytać.
-6. Powrót do herszta i przeszukiwanie jaskini trolli powinny odbywać się przez chodzenie gracza, a nie przez przeskakiwanie scen.
-7. Rozdział 3 jeszcze nie był poprawiany (czeka na U06).
+1. Obóz trolli: wstęp jest trochę za długi. — uwzględnione (2026-11-28, a7286ce)
+2. Troll porusza się za szybko. Fajnie, gdyby poruszał się trochę nieregularnie albo chodził w kwadrat, a nie w kółko. — uwzględnione (2026-11-28, a7286ce)
+3. Po lewej stronie u góry pojawia się zielona strzałka, która wychodzi do menu. Nie wiadomo, po co tam jest. — uwzględnione (2026-11-28, a7286ce)
+4. „Wracaj do Toba”: przez napisy dialogu nie widać, gdzie jest Tobo. — uwzględnione (2026-11-28, a7286ce)
+5. Może napisów w ogóle nie powinno być? Zasłaniają ekran, a dziecko nie umie czytać. — uwzględnione (2026-11-28, a7286ce)
+6. Powrót do herszta i przeszukiwanie jaskini trolli powinny odbywać się przez chodzenie gracza, a nie przez przeskakiwanie scen. — uwzględnione (2026-11-28, a7286ce)
+7. Rozdział 3 jeszcze nie był poprawiany (czeka na U06). — uwzględnione (2026-11-28, c14d8db)
