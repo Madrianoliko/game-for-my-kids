@@ -18,10 +18,10 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 12. Dym na wzgórzu jest za blisko. Wygląda, jakby ognisko paliło się za stodołą. — uwzględnione (2026-11-27, d8bf080)
 13. „Weź jabłka na drogę”: Bilbo powinien podejść po te jabłka i je wziąć. — uwzględnione (2026-11-27, d8bf080)
 14. Jabłka do kosza: zwiększyć do 6. Np. herszt miał 2, a ja dałem 4, i pytania: „Ile mi dałeś?” oraz „Ile teraz mam?”. — uwzględnione (2026-11-27, d8bf080)
-15. Wybór ścieżki do obozu: chrapanie słabo wychodzi. Lepiej to usunąć.
-16. Ścieżka między stogami jest niepotrzebna.
-17. Przy pierwszych stogach nie widać, gdzie patrzy troll, bo stoi za daleko z przodu. Niech nie mówi „Hmm” i „raz, dwa, trzy”, tylko chodzi po polu z widocznym, przezroczystym wzrokiem.
-18. Misja z trollami jest fajna, ale trzeba wydłużyć do 5 sekund albo zrobić pole w kwadrat, po którym troll chodzi między stogami.
+15. Wybór ścieżki do obozu: chrapanie słabo wychodzi. Lepiej to usunąć. — uwzględnione (2026-11-28, 6952550)
+16. Ścieżka między stogami jest niepotrzebna. — uwzględnione (2026-11-28, 6952550)
+17. Przy pierwszych stogach nie widać, gdzie patrzy troll, bo stoi za daleko z przodu. Niech nie mówi „Hmm” i „raz, dwa, trzy”, tylko chodzi po polu z widocznym, przezroczystym wzrokiem. — uwzględnione (2026-11-28, 6952550)
+18. Misja z trollami jest fajna, ale trzeba wydłużyć do 5 sekund albo zrobić pole w kwadrat, po którym troll chodzi między stogami. — uwzględnione (2026-11-28, 6952550)
 19. Złapanie włamywacza i liczenie kamyków: super! Nie rozumiem tylko „a ty mówiłeś, że 5?”. Że trolle się kłócą? Fajne, ale trzeba to podkreślić.
 20. Nie widać, że w jednej łapie są 3 szyszki. Reszta super.
 21. Mapa i jabłka w skrzyni są super, ale mapę można rozwinąć: otworzyć ją i pokazać „hmm, tam może być coś ciekawego”.

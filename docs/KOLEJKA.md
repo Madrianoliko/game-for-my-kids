@@ -140,7 +140,7 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Jabłka na drogę:** w stajni stoi koszyk jabłek. Tobo mówi „Weź jabłka na drogę”, Bilbo podchodzi do koszyka i bierze je dłonią (trafiają do paska plecaka).
 - **Herszt:** w koszu herszta leżą już jabłka (losowo 1–3, widoczne). Bilbo ma przy sobie 3–6 jabłek (losowo, razem w koszu najwyżej 9) i podaje je po jednym z liczeniem na głos. Pytania: „Ile mi dałeś?”, a potem „Ile teraz mam w koszu?”. Przy drugim pytaniu można dotknąć jabłek w koszu (zasada 14). Kwestie w wariantach liczb.
 
-### [ ] U04 — Uwagi z testu: przebudowa obozu trolli (uwagi 15, 16, 17, 18)
+### [x] U04 — Uwagi z testu: przebudowa obozu trolli (uwagi 15, 16, 17, 18) (2026-11-28)
 - **Rozwidlenie:** usuń drogę obok chrapiącego Chrapka. Krok `fork` zostaje, ale prowadzi tylko przez strumień po kamieniach. Zapisy z wybraną drogą obok Chrapka wznawiają się na drodze przez strumień.
 - **Pole:** usuń wydeptaną ścieżkę między stogami. Stogi ustaw w polu mniej więcej w kwadrat (np. siatka 3×3 lub podobna), kucyki przy krawędziach pola.
 - **Nowa zasada patrolu (zastępuje liczenie i „Hmm”):** Gapa nie stoi w miejscu i nie liczy. Chodzi powoli po polu wokół stogów i między nimi po stałej trasie (np. po kwadracie) z latarnią. Przed nim na ziemi widać przezroczysty pomarańczowy stożek wzroku. Kto jest poza stogiem w stożku, zostaje złapany (łagodnie, jak dotąd). Za plecami Gapy i poza stożkiem można spokojnie biegać. Tempo patrolu dobierz tak, żeby między stogami było średnio ok. 5 sekund bezpiecznego biegu. Prędkość, długość stożka i kąt jako stałe do strojenia.

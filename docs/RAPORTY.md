@@ -1,3 +1,11 @@
+## 2026-11-28 — U04. Patrol Gapy w obozie trolli
+
+Droga do obozu prowadzi po kamieniach przez strumień. Wczytanie dawnej drogi obok Chrapka przenosi Bilba nad strumień. Nazwy i kolejność kroków ROUTE pozostają zgodne ze starymi zapisami.
+Zgodnie z uwagami U04 Gapa patroluje pole z dziewięcioma stogami, a pomarańczowy stożek na ziemi pokazuje, gdzie widzi. Tobo wyjaśnia regułę i pokazuje pierwszą kryjówkę. Zastąpiono wybór dróg i liczenie z pierwotnego planu.
+Stogi stoją co 4 m. Patrol biegnie po okręgu o promieniu 3 m, z prędkością 2,85 m/s. Światło ma zasięg 5 m i kąt 80°. Symulacja przejść między sąsiednimi stogami dała średnio 5,1 s na rozpoczęcie bezpiecznego biegu na odcinkach przecinanych światłem.
+Pakiet iPhone ma 11 736 388 bajtów. Wszystkie trzy testy przeszły, w tym złapanie poza sianem, bieg za plecami Gapy, ochrona w oświetlonym stogu, ratunek trzech kucyków i wznowienie po pierwszym. Godot zgłosił pozostające obiekty przy zamykaniu testów obozu i doliny.
+Wszystkie nowe kwestie mają polskie nagrania. Brak otwartych pytań. Czytelność światła i tempo patrolu pozostają do oceny z dzieckiem na telefonie.
+
 ## 2026-11-27 — U03. Urodziny Tygryska i kosz herszta
 
 Światło w chatce gaśnie, Tygrysek wchodzi, słychać „Niespodzianka!”, zapalają się trzy świeczki i dopiero wtedy pada „Sto lat”. Dym nad wzgórzem widać za mostkiem, około 24 m od stajni.
