@@ -2,10 +2,12 @@ extends Node3D
 
 const Props := preload("res://scripts/river_props.gd")
 const Icons := preload("res://scripts/river_icons.gd")
-const BACK_TIME := 2.5
-const TURN_TIME := 1.0
-const LOOK_TIME := 2.5
-const GRACE := 0.25
+const PATROL_CENTER := Vector3(0,0,-4)
+const PATROL_RADIUS := 3.0
+const PATROL_SPEED := 2.85
+const LOOK_RANGE := 5.0
+const LOOK_ANGLE := 80.0
+const DEMO_TIME := 1.8
 const HAY_RADIUS := 1.0
 const PARK_DISTANCE := 1.55
 const HIDE_TIME := .22
@@ -22,33 +24,30 @@ const REACH_HEIGHT := .68
 const STRIDE_RATE := 10.0
 const ORIGIN := Vector3(500,0,0)
 const START := Vector3(-.8,0,2)
-const TOBO := Vector3(-2,0,2.6)
-const STACKS := [Vector3(-.8,0,0),Vector3(.8,0,-6.4),Vector3(-.8,0,-12.8),
-	Vector3(.8,0,-19.6),Vector3(-.8,0,-26.4),Vector3(.8,0,-32.8)]
-const TETHER := Vector3(.8,0,-37)
-const TETHERS := [Vector3(-4,0,-13.6),Vector3(4,0,-27.4),TETHER]
-const SIDE_STACKS := [Vector3(-3,0,-11.5),Vector3(3,0,-24.7)]
+const TOBO := Vector3(-2,0,3.6)
+const STACKS := [Vector3.ZERO,Vector3(-4,0,0),Vector3(4,0,0),
+	Vector3(0,0,-4),Vector3(-4,0,-4),Vector3(4,0,-4),
+	Vector3(0,0,-8),Vector3(-4,0,-8),Vector3(4,0,-8)]
+const TETHER := Vector3(0,0,-10.5)
+const TETHERS := [Vector3(-6.2,0,-4),Vector3(6.2,0,-4),TETHER]
 const TREE := TETHER+Vector3(1.3,0,-.3)
-const WATCH := TETHER+Vector3(-2.4,0,-1.3)
-const FIRE := WATCH+Vector3(-1.7,0,-.7)
-const X_LIMIT := 4.5
-const Z_MIN := -38.0
+const WATCH := PATROL_CENTER+Vector3.BACK*PATROL_RADIUS
+const FIRE := TETHER+Vector3(-2.2,0,-.5)
+const X_LIMIT := 7.0
+const Z_MIN := -11.5
 const Z_MAX := 4.0
 const CAMERA_OFFSET := Vector3(0,16,12)
-const VIEW_HEIGHT := 21.0
+const VIEW_HEIGHT := 19.5
 const EXPOSURE := .55
 const WORDS := {
 	"intro_stolen":"Bilbo! Troll Gapa ukradł moje kucyki!",
 	"intro_there":"Tam są! Przy drzewie, przy wozie i obok ogniska.",
-	"intro_run":"Wybierz kucyka. Kiedy Gapa się odwraca i liczy, biegnij!",
-	"intro_hide":"Kiedy Gapa mówi „Hmm?”, wskocz do stogu siana. W stogu cię nie zobaczy!",
+	"intro_run":"To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!",
 	"intro_first":"Wejdź do stogu.",
 	"intro_safe":"Widzisz? Nie zobaczył cię!",
-	"count":"Raz… dwa… trzy…",
-	"turn":"Hmm? Kto tu łazi?",
 	"caught":"Aha! Widzę cię! Wracaj do stogu!",
 	"caught_again":"Znowu ty? Hi, hi!",
-	"hint":"Kiedy Gapa mówi „Hmm?”, szybko do stogu!",
+	"hint":"Schowaj się w stogu, kiedy światło się zbliża.",
 	"pony":"Dotknij dłoni. Odwiąż kucyka i daj mu siana.",
 	"follow":"Kucyk idzie za tobą! Wracaj do Toba.",
 	"one":"Jeden kucyk jest już u mnie! Zostały jeszcze dwa.",
@@ -59,7 +58,7 @@ const WORDS := {
 	"done_pair":"Oba kucyki są bezpieczne, Bilbo!",
 	"done":"Wszystkie trzy kucyki są bezpieczne, Bilbo!"
 }
-enum Phase { INTRO, FIRST, DEMO_TURN, DEMO_LOOK, BACK, TURN, LOOK, CAUGHT, DONE }
+enum Phase { INTRO, FIRST, DEMO, PATROL, CAUGHT, DONE }
 var host
 var phase := Phase.INTRO
 var elapsed := 0.0
@@ -81,8 +80,9 @@ var pony:Node3D
 var fade:=ColorRect.new()
 var stacks:Array[Node3D]=[]
 var eyes:=Node3D.new()
-var flood:=DirectionalLight3D.new()
-var beacon:=TextureRect.new()
+var cone:=MeshInstance3D.new()
+var patrol_angle:=PI/2
+var catch_origin:=WATCH
 var rustle:=AudioStreamPlayer.new()
 var ground:=START
 var inside:=-1
@@ -91,7 +91,7 @@ var rustle_left:=0.0
 var park_at:=Vector3.ZERO
 var cap:=Node3D.new()
 var intro_step:=0
-const INTRO := ["intro_stolen","intro_there","intro_run","intro_hide"]
+const INTRO := ["intro_stolen","intro_there","intro_run"]
 
 var camera := Camera3D.new()
 var controls := Control.new()
@@ -100,7 +100,6 @@ var replay:Button
 var back:Button
 
 var caption := Label.new()
-var cue := AudioStreamPlayer.new()
 var message := "intro_stolen"
 var speech_left := 0.0
 var hint_pending := false
@@ -136,7 +135,6 @@ func begin(game, saved_mask:int, pony_mask:=7) -> void:
 	sky.ambient_light_energy=.85
 	camera.environment=sky
 	camera.make_current()
-	add_child(cue)
 	build_controls()
 	back.disabled=true
 	add_child(rustle)
@@ -152,7 +150,7 @@ func begin(game, saved_mask:int, pony_mask:=7) -> void:
 	elif rescued_mask!=0:
 		back.disabled=false
 		ground=STACKS[0]
-		begin_back()
+		begin_patrol()
 		speak("two" if count_rescued()==2 else "one")
 	else: speak(INTRO[0])
 
@@ -166,19 +164,14 @@ func troll(at:Vector3, amount:float) -> Node3D:
 	return actor
 
 func build_camp() -> void:
-	host.box(self,Vector3(0,-.23,-19),Vector3(42,.44,68),Color("#36554f"))
+	host.box(self,Vector3(0,-.23,-4),Vector3(32,.44,32),Color("#36554f"))
 	# Ciemna linia lasu obramowuje jaśniejszą, grywalną polanę.
 	for side in [-1,1]:
-		for z in range(-47,10,3):
-			var edge:=Vector3(side*(6.8+.45*cos(z)),0,z)
+		for z in range(-15,9,3):
+			var edge:=Vector3(side*(9.5+.45*cos(z)),0,z)
 			host.box(self,edge+Vector3.UP,Vector3(.38,2,.42),Color("#654a43"))
 			host.orb(self,edge+Vector3.UP*2.2,1.25,Color("#274c4d")).scale.y=1.35
-	var previous:=START
-	for at:Vector3 in STACKS:
-		path_to(previous,at)
-		add_stack(at)
-		previous=at
-	path_to(previous,TETHER)
+	for at:Vector3 in STACKS: add_stack(at)
 	var tobo:=troll(TOBO,.86)
 	for i in 3:
 		host.box(tobo,Vector3(-.55,.85+i*.12,0),Vector3(.32,.1,1.35),Color("#bb905e"))
@@ -187,11 +180,8 @@ func build_camp() -> void:
 	gapa.add_child(eyes)
 	for side in [-1,1]:
 		host.orb(eyes,Vector3(side*.19,1.44,.51),.085,Color("#ff9a36"),true)
-	add_child(flood)
-	flood.rotation_degrees=Vector3(-68,15,0)
-	flood.light_color=Color("#ff842e")
-	flood.light_energy=2.6
-	watching(false)
+	build_cone()
+	watching(true)
 	var gold:=Color("#ffbe5b")
 	host.orb(gapa,Vector3(.6,1,.36),.24,gold,true)
 	host.box(gapa,Vector3(.6,1.24,.36),Vector3(.35,.1,.35),Color("#665343"))
@@ -212,10 +202,6 @@ func build_camp() -> void:
 	light.omni_range=8
 	host.box(self,TREE+Vector3.UP,Vector3(.48,2,.48),Color("#97724c"))
 	host.box(self,TREE+Vector3(.34,1.64,0),Vector3(.95,.18,.23),Color("#97724c")).rotation.z=.45
-	for i in SIDE_STACKS.size():
-		add_stack(SIDE_STACKS[i])
-		path_to(STACKS[2+i*2],SIDE_STACKS[i])
-		path_to(SIDE_STACKS[i],TETHERS[i])
 	var tree:Vector3=TETHERS[0]+Vector3.LEFT
 	host.box(self,tree+Vector3.UP,Vector3(.45,2,.45),Color.SADDLE_BROWN)
 	host.orb(self,tree+Vector3.UP*2.4,1.05,Color.DARK_SEA_GREEN)
@@ -237,10 +223,6 @@ func build_camp() -> void:
 		horse.visible=bool(available & (1<<i))
 		line.visible=horse.visible
 		if rescued_mask & (1<<i): park_pony(i)
-
-func path_to(a:Vector3,b:Vector3) -> void:
-	var strip:MeshInstance3D=host.box(self,(a+b)*.5,Vector3(2.35,.035,a.distance_to(b)+.3),Color("#927554"))
-	strip.rotation.y=atan2(b.x-a.x,b.z-a.z)
 
 func add_stack(at:Vector3) -> void:
 	var stack:=Node3D.new()
@@ -268,13 +250,40 @@ func add_stack(at:Vector3) -> void:
 		tuft.rotation.z=-.68*sin(angle)
 		tuft.rotation.x=.68*cos(angle)
 
+func build_cone() -> void:
+	var fan:=ImmediateMesh.new()
+	var mat:=StandardMaterial3D.new()
+	mat.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.cull_mode=BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color=Color(1,.47,.09,.54)
+	fan.surface_begin(Mesh.PRIMITIVE_TRIANGLES,mat)
+	for i in 32:
+		fan.surface_add_vertex(Vector3.ZERO)
+		for edge in [i,i+1]:
+			var angle:float=deg_to_rad(LOOK_ANGLE)*(edge/32.0-.5)
+			fan.surface_add_vertex(Vector3(sin(angle),0,cos(angle))*LOOK_RANGE)
+	fan.surface_end()
+	cone.mesh=fan
+	add_child(cone)
+	cone.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	face_light(STACKS[0]-gapa.position)
+
+func face_light(direction:Vector3) -> void:
+	gapa.rotation.y=atan2(direction.x,direction.z)
+	cone.position=gapa.position+Vector3.UP*.045
+	cone.rotation.y=gapa.rotation.y
+
+func in_light(at:Vector3) -> bool:
+	var delta:=at-gapa.position
+	return delta.length_squared()<=LOOK_RANGE*LOOK_RANGE and (delta.is_zero_approx() or delta.normalized().dot(cone.basis.z)>=cos(deg_to_rad(LOOK_ANGLE*.5)))
+
 func watching(enabled:bool) -> void:
 	eyes.visible=enabled
-	flood.visible=enabled
-	beacon.modulate=Color("#ff933c") if enabled else Color("#ffe6a4")
+	cone.visible=enabled
 
 func frame_path(at:Vector3) -> void:
-	var focus:=Vector3(at.x*.3,.6,at.z)
+	var focus:=Vector3(at.x*.10,.6,-4+at.z*.05)
 	camera.look_at_from_position(to_global(focus+CAMERA_OFFSET),to_global(focus))
 
 func build_controls() -> void:
@@ -293,18 +302,6 @@ func build_controls() -> void:
 	caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	caption.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	caption.add_theme_font_size_override("font_size",21)
-	controls.add_child(beacon)
-	# Pokazuje światło rzeczywistej latarni przy krawędzi ekranu, gdy Gapa jest poza kadrem.
-	var gradient:=Gradient.new()
-	gradient.colors=PackedColorArray([Color.WHITE,Color(1,.72,.24,.75),Color(1,.5,.15,0)])
-	gradient.offsets=PackedFloat32Array([0,.32,1])
-	var glow:=GradientTexture2D.new()
-	glow.gradient=gradient
-	glow.fill=GradientTexture2D.FILL_RADIAL
-	glow.fill_from=Vector2(.5,.5)
-	glow.fill_to=Vector2(1,.5)
-	beacon.texture=glow
-	beacon.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	controls.add_child(fade)
 	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	fade.color=Color(0,0,0,0)
@@ -327,25 +324,22 @@ func speak(key:String) -> void:
 		if key=="done": key="done_pair"
 	message=key
 	caption.text=WORDS[key]
-	cue.stop()
 	if host.sound:
 		host.play_clip(host.narrator,"story/camp_"+key)
 		speech_left=host.narrator.stream.get_length()
 	else:
-		speech_left=2.5 if phase==Phase.INTRO or phase==Phase.DEMO_LOOK else 0.0
+		speech_left=2.5 if phase==Phase.INTRO or phase==Phase.DEMO else 0.0
 
-func cycle_voice(key:String) -> void:
-	if host.sound:
-		cue.volume_db=-12 if speech_left>0 else 0
-		host.play_clip(cue,"story/camp_"+key)
-
-func begin_back() -> void:
-	phase=Phase.BACK
+func begin_patrol() -> void:
+	phase=Phase.PATROL
 	elapsed=0
-	watching(false)
-	gapa.position=WATCH
-	gapa.rotation.y=PI
-	cycle_voice("count")
+	watching(true)
+	update_patrol(0)
+
+func update_patrol(dt:float) -> void:
+	patrol_angle=fmod(patrol_angle+dt*PATROL_SPEED/PATROL_RADIUS,TAU)
+	gapa.position=PATROL_CENTER+Vector3(cos(patrol_angle),0,sin(patrol_angle))*PATROL_RADIUS
+	face_light(Vector3(-sin(patrol_angle),0,cos(patrol_angle)))
 
 func cover(at:Vector3) -> int:
 	for i in stacks.size():
@@ -390,7 +384,7 @@ func introduction() -> void:
 	elif intro_step!=2: speak(INTRO[intro_step])
 
 func untie() -> void:
-	if following or phase not in [Phase.BACK,Phase.TURN,Phase.LOOK]: return
+	if following or phase!=Phase.PATROL: return
 	chosen=nearby_pony()
 	if chosen<0: return
 	pony=ponies[chosen]
@@ -405,6 +399,7 @@ func caught(at:Vector3) -> void:
 	phase=Phase.CAUGHT
 	catches+=1
 	if catches==2: hint_pending=true
+	catch_origin=gapa.position
 	catch_from=at
 	if following: pony_from=pony.position
 	elapsed=0
@@ -419,34 +414,28 @@ func recover() -> void:
 	hero.global_position=to_global(catch_from.lerp(lift,sin(t*PI*.5)).lerp(last_cover,slide))
 	# Gapa wyciąga łapę pod Bilba, a potem odstawia go do siana.
 	var reach:=catch_from+Vector3.FORWARD*REACH_HEIGHT
-	gapa.position=WATCH.lerp(reach,sin(t*PI*.5)).lerp(WATCH,slide)
+	gapa.position=catch_origin.lerp(reach,sin(t*PI*.5)).lerp(catch_origin,slide)
 	gapa.rotation.z=.22*sin(t*PI)
 	hero.rotation.z=.3*sin(t*PI)
 	if following: pony.position=pony_from.lerp(last_cover+Vector3.BACK*PARK_DISTANCE,slide)
 	if elapsed>=LIFT_TIME+RETURN_TIME:
 		ground=last_cover
 		host.stick.reset()
-		begin_back()
+		begin_patrol()
 
 func _physics_process(dt:float) -> void:
 	if not host or host.paused or is_queued_for_deletion(): return
 	elapsed+=dt
 	speech_left=maxf(0,speech_left-dt)
 	if phase==Phase.INTRO:
+		update_patrol(dt)
 		introduction()
 		return
-	if phase==Phase.DEMO_TURN or phase==Phase.DEMO_LOOK:
+	if phase==Phase.DEMO:
 		show_cover(dt)
-		if phase==Phase.DEMO_TURN:
-			gapa.rotation.y=lerpf(PI,0,minf(1,elapsed/TURN_TIME))
-			if elapsed>=TURN_TIME:
-				phase=Phase.DEMO_LOOK
-				elapsed=0
-				watching(true)
-				speak("intro_safe")
-		elif elapsed>=LOOK_TIME and speech_left<=0:
+		if elapsed>=DEMO_TIME and speech_left<=0:
 			back.disabled=false
-			begin_back()
+			begin_patrol()
 		return
 	if phase==Phase.CAUGHT:
 		recover()
@@ -459,20 +448,7 @@ func _physics_process(dt:float) -> void:
 	if hint_pending and speech_left<=0:
 		hint_pending=false
 		speak("hint")
-	match phase:
-		Phase.BACK:
-			if elapsed>=BACK_TIME:
-				phase=Phase.TURN
-				elapsed=0
-				cycle_voice("turn")
-		Phase.TURN:
-			gapa.rotation.y=lerpf(PI,0,minf(1,elapsed/TURN_TIME))
-			if elapsed>=TURN_TIME:
-				phase=Phase.LOOK
-				elapsed=0
-				watching(true)
-		Phase.LOOK:
-			if elapsed>=LOOK_TIME: begin_back()
+	if phase in [Phase.FIRST,Phase.PATROL]: update_patrol(dt)
 	var motion:Vector2=host.stick.vector
 	if motion.is_zero_approx(): motion=Input.get_vector("ui_left","ui_right","ui_up","ui_down")
 	var at:=ground
@@ -489,15 +465,13 @@ func _physics_process(dt:float) -> void:
 	show_cover(dt)
 	frame_path(at)
 	if phase==Phase.FIRST:
-		if inside==0:
-			if rescued_mask!=0:
-				begin_back()
-				return
-			phase=Phase.DEMO_TURN
+		if inside==0 and in_light(at):
+			phase=Phase.DEMO
 			elapsed=0
-			cycle_voice("turn")
+			watching(true)
+			speak("intro_safe")
 		return
-	if inside<0 and phase==Phase.LOOK and elapsed>=GRACE:
+	if inside<0 and phase==Phase.PATROL and in_light(at):
 		caught(at)
 		return
 	if following:
@@ -514,13 +488,8 @@ func _physics_process(dt:float) -> void:
 			rescued.emit(rescued_mask)
 			if rescued_mask==available: finish_camp()
 			else:
-				# Bezpieczny nowy start po krótkiej rozmowie z Tobem.
-				phase=Phase.FIRST
-				elapsed=0
 				near_pony=false
 				host.stick.reset()
-				watching(false)
-				gapa.rotation.y=PI
 				speak("one" if count_rescued()==1 else "two")
 
 	else:
@@ -529,14 +498,6 @@ func _physics_process(dt:float) -> void:
 		hand.modulate=Color.GOLD if reachable else Color.WHITE
 		if reachable and not near_pony: speak("pony")
 		near_pony=reachable
-
-func _process(_dt:float) -> void:
-	if not camera.current or not beacon.is_inside_tree(): return
-	var lamp:=camera.unproject_position(gapa.to_global(Vector3(.6,1,.36)))
-	var margin:=Vector2(48,42)
-	beacon.size=Vector2(82,82) if flood.visible else Vector2(54,54)
-	beacon.position=lamp.clamp(margin,controls.size-margin)-beacon.size*.5
-	beacon.visible=not Rect2(Vector2.ZERO,controls.size).has_point(lamp)
 
 func nearby_pony() -> int:
 	for i in TETHERS.size():
@@ -568,7 +529,6 @@ func leave(complete:=false) -> void:
 	closed.emit(complete)
 
 func dispose() -> void:
-	cue.stop()
 	cap.queue_free()
 	hero.transform=original_pose
 	for limb in host.limbs: limb.rotation.x=0

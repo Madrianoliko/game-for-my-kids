@@ -170,11 +170,6 @@
     "tekst": "Znowu ty? Hi, hi!"
   },
   {
-    "plik": "audio/story/camp_count.mp3",
-    "postać": "Gapa",
-    "tekst": "Raz… dwa… trzy…"
-  },
-  {
     "plik": "audio/story/camp_done.mp3",
     "postać": "Tobo",
     "tekst": "Wszystkie trzy kucyki są bezpieczne, Bilbo!"
@@ -192,7 +187,7 @@
   {
     "plik": "audio/story/camp_hint.mp3",
     "postać": "Tobo",
-    "tekst": "Kiedy Gapa mówi „Hmm?”, szybko do stogu!"
+    "tekst": "Schowaj się w stogu, kiedy światło się zbliża."
   },
   {
     "plik": "audio/story/camp_intro_first.mp3",
@@ -200,14 +195,9 @@
     "tekst": "Wejdź do stogu."
   },
   {
-    "plik": "audio/story/camp_intro_hide.mp3",
-    "postać": "Tobo",
-    "tekst": "Kiedy Gapa mówi „Hmm?”, wskocz do stogu siana. W stogu cię nie zobaczy!"
-  },
-  {
     "plik": "audio/story/camp_intro_run.mp3",
     "postać": "Tobo",
-    "tekst": "Wybierz kucyka. Kiedy Gapa się odwraca i liczy, biegnij!"
+    "tekst": "To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!"
   },
   {
     "plik": "audio/story/camp_intro_safe.mp3",
@@ -245,11 +235,6 @@
     "tekst": "Tam są! Przy drzewie i obok ogniska."
   },
   {
-    "plik": "audio/story/camp_turn.mp3",
-    "postać": "Gapa",
-    "tekst": "Hmm? Kto tu łazi?"
-  },
-  {
     "plik": "audio/story/camp_two.mp3",
     "postać": "Tobo",
     "tekst": "Dwa kucyki! Został jeszcze jeden."
@@ -263,11 +248,6 @@
     "plik": "audio/story/enc_retry.mp3",
     "postać": "narrator",
     "tekst": "Spróbuj jeszcze raz. Popatrz na podpowiedź."
-  },
-  {
-    "plik": "audio/story/fork_murmur.mp3",
-    "postać": "Chrapek",
-    "tekst": "Mmm… Jeszcze chwilkę."
   },
   {
     "plik": "audio/story/nail_5.mp3",
@@ -600,19 +580,9 @@
     "tekst": "Wszystko spakowane! Podejdź do bobra przy drzwiach i dotknij dłoni."
   },
   {
-    "plik": "audio/story/route_fork_choose.mp3",
+    "plik": "audio/story/route_fork_stream.mp3",
     "postać": "narrator",
-    "tekst": "Wybierz ścieżkę do obozu."
-  },
-  {
-    "plik": "audio/story/route_fork_hint.mp3",
-    "postać": "narrator",
-    "tekst": "Przejdź obok Chrapka po zewnętrznej stronie jasnego koła."
-  },
-  {
-    "plik": "audio/story/route_fork_quiet.mp3",
-    "postać": "narrator",
-    "tekst": "Ciii, Chrapek śpi. Obejdź go cichutko."
+    "tekst": "Podejdź do kamieni w strumieniu."
   },
   {
     "plik": "audio/story/route_fork_walk.mp3",

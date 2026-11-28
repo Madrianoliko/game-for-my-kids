@@ -286,6 +286,7 @@ func read_save() -> bool:
 	room_saves={}
 	fork_path=str(cfg.get_value("story","fork_path",""))
 	index=Data.ROUTE.find(cfg.get_value("story","route",""))
+	if fork_path=="short": fork_path="long"
 	if index<0:
 		var old:=int(cfg.get_value("story","index",-1))
 		if old<0 or old>=34: return false
@@ -719,7 +720,7 @@ func render() -> void:
 		"fork":
 			light_filter.exposure_multiplier=.68
 			host.camera.attributes=light_filter
-			host.hud.text="Dwie drogi do obozu"
+			host.hud.text="Strumień przed obozem"
 			if part==2:
 				bank.begin("fork",0,marks)
 			else:

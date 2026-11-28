@@ -8,7 +8,7 @@ GAME = ROOT / "iphone"
 SCRIPTS = GAME / "scripts"
 VOICE = ROOT / "voice"
 EFFECTS = {"chime", "wood_tap", "swoosh", "story/water_drop", "story/camp_rustle",
-           "story/fork_snore", "story/dawn_laugh"}
+           "story/dawn_laugh"}
 UNKNOWN = "do ustalenia"
 
 
@@ -61,7 +61,7 @@ def catalog():
     for key, words in dictionary("river_story_data", "WORDS").items():
         record("story/route_" + key, route_speaker(key), words)
     for key, words in dictionary("troll_camp", "WORDS").items():
-        role = "Gapa" if key in {"count", "turn", "caught", "caught_again"} else "Tobo"
+        role = "Gapa" if key in {"caught", "caught_again"} else "Tobo"
         if key in {"pony", "follow"}:
             role = "narrator"
         record("story/camp_" + key, role, words)
