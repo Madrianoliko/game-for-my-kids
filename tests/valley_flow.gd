@@ -34,8 +34,12 @@ func check_flow() -> void:
 	if not require(game.atlas.visible and not game.atlas.resume.visible and not game.atlas.chapter_two.visible,"Menu bez zapisu"): return
 	await click(game.atlas.play)
 	while game.bystra.id()!="pack": await physics_frame
+	if not require(not game.subtitles and not game.bystra.caption.visible,"Napisy domyślnie wyłączone"): return
 	await click(game.pause_button)
 	var menu=game.ui.get_node("PauseMenu")
+	var subs:Button=menu.find_child("Napisy",true,false)
+	await click(subs)
+	if not require(game.subtitles and game.bystra.caption.visible,"Włączenie napisów w pauzie"): return
 	var volume:Button=menu.find_child("Głośnik",true,false)
 	var before:bool=game.sound
 	if not require(volume.icon!=null and volume.text=="" and volume.size.y>=game.bystra.hand.size.y,"Duże obrazki w pauzie"): return
@@ -72,6 +76,7 @@ func check_flow() -> void:
 	await scene_changed
 	game=current_scene
 	await click(game.atlas.resume)
+	if not require(game.subtitles,"Preferencja napisów po ponownym uruchomieniu"): return
 	if not require(game.bystra.id()=="mill" and game.bystra.part==2 and game.bystra.chapters==0,"Stary zapis w młynie"): return
 	for pair in [["stable_home","map_sleep",2],["dragon_flight","cave_descent",3],["whisper_exit","continued",4]]:
 		legacy.set_value("story","route",pair[0])

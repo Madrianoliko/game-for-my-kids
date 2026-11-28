@@ -45,10 +45,10 @@ func run() -> void:
 	camp=game.bystra.camp
 	if not expect(game.bystra.id()=="camp" and camp!=null and not game.atlas.visible,"Stary zapis obozu sprzed dodania nocnego mostu"): return
 	# Próba ominięcia opowieści dotykiem i ruchem.
-	await click(camp.back)
+	if not expect(game.pause_button.visible and camp.controls.get_children().filter(func(c): return c is Button and c.accessibility_name=="Wróć do mapy").is_empty(),"Wyjście tylko przez pauzę"): return
 	game.stick.vector=Vector2.UP
 	await click(camp.replay)
-	for line in ["intro_stolen","intro_there","intro_run","intro_first"]:
+	for line in ["intro_run","intro_first"]:
 		while camp.message!=line: await physics_frame
 	game.stick.vector=Vector2.ZERO
 	if not expect(camp.ground.distance_to(Camp.START)<.1,"Ruch podczas opowieści"): return
@@ -59,7 +59,13 @@ func run() -> void:
 	game.stick.vector=Vector2.ZERO
 	if not expect(camp.inside==0 and camp.cone.visible and camp.in_light(camp.ground),"Światło na pierwszym stogu"): return
 	await wait_phase(Camp.Phase.PATROL)
-	camp.patrol_angle=0
+	camp.patrol_time=camp.LEG_TIME+.1
+	camp.update_patrol(0)
+	var corner:=camp.gapa.position
+	var facing:=camp.cone.basis.z
+	camp.update_patrol(.4)
+	if not expect(camp.gapa.position.is_equal_approx(corner) and facing.distance_to(camp.cone.basis.z)>.1,"Postój i rozglądanie na rogu"): return
+	camp.patrol_time=0
 	camp.update_patrol(0)
 	var before:=camp.gapa.position
 	# Bieg za plecami Gapy w zasięgu latarni.
@@ -80,7 +86,8 @@ func run() -> void:
 	if not expect(lit_frames>10 and camp.catches==1,"Stóg chroni, gdy przechodzi światło"): return
 	var driver=load(get_script().resource_path.get_base_dir()+"/support/camp_walk.gd").new(camp)
 	if not expect(await driver.rescue(2,click),"Pierwszy kucyk przy Tobie"): return
-	await click(camp.back)
+	await click(game.pause_button)
+	await click(game.ui.get_node("PauseMenu").find_child("Menu",true,false))
 	reload_current_scene()
 	await scene_changed
 	game=current_scene

@@ -28,9 +28,9 @@ func safe_leg(target:Vector3, round_trip:bool) -> bool:
 		if round_trip and t>duration+.18:
 			position=target.move_toward(start,camp.WALK_SPEED*(t-duration-.18))
 		if camp.cover(position)>=0: continue
-		var angle:float=camp.patrol_angle+t*camp.PATROL_SPEED/camp.PATROL_RADIUS
-		var offset:Vector3=position-camp.PATROL_CENTER-Vector3(cos(angle),0,sin(angle))*camp.PATROL_RADIUS
-		if offset.length()<camp.LOOK_RANGE+.2 and offset.normalized().dot(Vector3(-sin(angle),0,cos(angle)))>cos(deg_to_rad(camp.LOOK_ANGLE*.5+5)): return false
+		var pose:Transform3D=camp.patrol_pose(camp.patrol_time+t)
+		var offset:=position-pose.origin
+		if offset.length()<camp.LOOK_RANGE+.2 and offset.normalized().dot(pose.basis.z)>cos(deg_to_rad(camp.LOOK_ANGLE*.5+5)): return false
 	return true
 
 func cross_to(target:Vector3, round_trip:=false) -> bool:

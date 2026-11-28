@@ -177,6 +177,15 @@ func walk_until_change(direction:Vector2, limit:=300) -> int:
 	game.stick.vector=Vector2.ZERO
 	return -1
 
+func walk_return() -> void:
+	var trip=story.return_trip
+	for frame in 650:
+		var delta:Vector3=trip.target-game.leo.global_position
+		game.stick.vector=Vector2(delta.x,delta.z).normalized()
+		await physics_frame
+		if not is_instance_valid(trip) or story.return_trip!=trip or trip.at_target: break
+	game.stick.vector=Vector2.ZERO
+
 func move_to(target:Vector3) -> void:
 	for i in 200:
 		var diff:Vector3=target-game.leo.position
@@ -540,9 +549,11 @@ func run() -> void:
 	await physics_frame
 	for troll in story.dawn.trolls:
 		if not check(troll.has_meta("stone"),"Kamienne trolle po wschodzie słońca"): return
-	await click(story.options.get_child(0))
+	await walk_return()
 	if not check(story.id()=="troll_cave" and story.part==0,"Wejście do jaskini za trollami"): return
-	await click(story.options.get_child(0))
+	if not check(not story.dock.visible,"Skrzynia poza zasięgiem dłoni"): return
+	await walk_return()
+	await click(story.return_trip.interact_button)
 	if not check(story.part==3 and story.voice=="route_cave_find","Otwarta skrzynia z mapą i jabłkami"): return
 	while story.part==3: await physics_frame
 	await reopen()
@@ -553,12 +564,13 @@ func run() -> void:
 	touch(game.ui,map_center,false)
 	await create_timer(.4).timeout
 	if not check(story.part==1 and not story.map_sheet.visible and story.items.count(story.ReturnTrip.MAP)==1 and story.ReturnTrip.APPLES in story.items,"Złożona mapa w plecaku"): return
-	await click(story.options.get_child(0))
+	await walk_return()
 	if not check(story.id()=="chief_happy" and story.part==0,"Herszt czeka na trakcie"): return
-	await click(story.options.get_child(0))
+	await walk_return()
+	await click(story.return_trip.interact_button)
 	await reopen()
 	if not check(story.part==1 and story.ReturnTrip.APPLES not in story.items and story.ReturnTrip.MAP in story.items,"Oddano jabłka, zachowano mapę"): return
-	await click(story.options.get_child(0))
+	await walk_return()
 	for actor in story.return_trip.ponies+[game.leo,game.marker]:
 		if not check(root.get_visible_rect().has_point(game.camera.unproject_position(actor.global_position)),"Kucyki i cel widoczne na początku przeprawy"): return
 	for expected in range(1,story.pony_count()+1):
