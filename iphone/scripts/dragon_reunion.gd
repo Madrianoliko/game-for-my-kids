@@ -8,7 +8,9 @@ const SNEEZE_INTERVAL := .55
 var tokens:Array[MeshInstance3D]=[]
 var lights:Array[MeshInstance3D]=[]
 var hat:MeshInstance3D
-var empty_seat:MeshInstance3D
+var empty_seats:Array[MeshInstance3D]=[]
+var unlit:Array[int]=[]
+var initial_lights:=0
 var mother
 var trial:=0
 var sneezes:=0
@@ -39,6 +41,14 @@ func setup(owner_story) -> void:
 
 func build_candles() -> void:
 	game.hud.text="Urodziny kreta"
+	if not story.numbers.has("lit_candles"):
+		var order:=[0,1,2,3,4]
+		order.shuffle()
+		var mask:=0
+		for n in randi_range(1,3): mask|=1<<int(order[n])
+		story.numbers.lit_candles=mask
+		story.checkpoint()
+	initial_lights=story.numbers.lit_candles
 	var cake=game.orb(self,Vector3(-1.75,.47,-1.25),1.3,Color("#edb58b"))
 	cake.scale=Vector3(1,.42,.8)
 	game.orb(self,Vector3(-1.75,.93,-1.25),1.22,Color.MISTY_ROSE).scale=Vector3(1,.12,.79)
@@ -50,7 +60,8 @@ func build_candles() -> void:
 		tokens.append(candle)
 		var light=game.orb(candle,Vector3(0,.46,0),.145,Color.ORANGE,true)
 		light.scale.y=1.6
-		light.visible=story.part==3
+		light.visible=story.part==3 or (initial_lights & (1<<i))!=0
+		if (initial_lights & (1<<i))==0: unlit.append(i)
 		lights.append(light)
 	var mole=game.orb(self,Vector3(2.7,.55,.85),.56,Color("#594b45"))
 	game.orb(mole,Vector3(0,.41,.06),.43,Color("#746157"))
@@ -76,16 +87,21 @@ func build_nest() -> void:
 	game.hud.text="Gniazdo na szczycie"
 	build_mother()
 	mother.position=Vector3(2.1,0,-2.35)
+	if not story.numbers.has("nest_missing"):
+		story.numbers.nest_missing=1 if story.part>0 else randi_range(1,2)
+		story.checkpoint()
 	for i in 5:
 		var at:=Vector3((i-2)*1.11,.17,-.30)
 		var seat=game.orb(self,at,.60,Color("#a67649"))
 		seat.scale=Vector3(1,.38,1)
 		game.orb(self,at+Vector3.UP*.17,.46,Color("#654a38")).scale.y=.22
-		if i==4:
-			empty_seat=seat
-			continue
+		if i>=5-int(story.numbers.nest_missing):
+			empty_seats.append(seat)
+			if story.part!=3 or i!=3: continue
 		var shell=game.orb(self,at+Vector3.UP*.38,.40,Color("#ffefc9"))
 		tokens.append(shell)
+		if story.part==3 and i==3 and empty_seats.has(seat):
+			shell.create_tween().tween_property(shell,"position",shell.position,.9).from(shell.position+Vector3(-2,0,-2.4))
 		var baby=game.orb(shell,Vector3(0,.33,0),.28,Color("#cc8964"))
 		for side in [-1,1]:
 			game.orb(baby,Vector3(side*.12,.08,.2),.045,Color.BLACK)
@@ -103,7 +119,7 @@ func prompt_phase() -> void:
 	var mole:bool=story.id()=="mole_candles"
 	match story.part:
 		0:
-			story.say("mole_intro" if mole else "nest_ask")
+			story.say("mole_intro" if mole else "nest_total")
 			story.button("Dalej",story.go_to.bind(story.id(),1))
 		1:
 			restore_numbers(story.marks)
@@ -111,11 +127,13 @@ func prompt_phase() -> void:
 		2:
 			restore_numbers((1<<tokens.size())-1)
 			story.say("mole_ask" if mole else "nest_ask")
-			var choices:=[4,5,6] if mole else [1,2,3]
+			var missing:=unlit.size()
+			var choices:=[missing-1,missing,missing+1] if mole else [1,2,3]
 			choices.shuffle()
 			for n in choices: story.button(str(n),answer.bind(n))
 		3:
-			story.say("mole_done" if mole else "nest_hug")
+			if mole: story.say("mole_done")
+			else: story.say("nest_hug_two" if empty_seats.size()==2 else "nest_hug")
 			story.button("Dalej",story.advance)
 
 func _input(event:InputEvent) -> void:
@@ -143,31 +161,30 @@ func restore_numbers(mask:int) -> void:
 	var order:Array=story.touch_order(mask,tokens.size())
 	for i in order: Count.mark(tokens[i],order.find(i)+1,false,.65)
 
-func highlight_mask(mask:int) -> void:
-	for i in tokens.size():
-		var mat:=tokens[i].material_override as StandardMaterial3D
-		mat.emission_enabled=(mask & (1<<i))!=0
-		mat.emission=Color("#dd993d")
+func reset_lights() -> void:
+	for i in lights.size(): lights[i].visible=(initial_lights & (1<<i))!=0
 
 func hint(count:int) -> void:
-	if story.id()=="mole_candles": highlight_mask((1<<count)-1)
-	else:
-		empty_seat.material_override.emission_enabled=count>0
-		empty_seat.material_override.emission=Color.GOLD
+	if story.id()=="mole_candles":
+		reset_lights()
+		if count>0: Count.mark(tokens[unlit[count-1]],count,true,.65)
+	elif count>0:
+		Count.mark(empty_seats[count-1],count,true,.6)
 
 func answer(n:int) -> void:
 	if game.paused or trial!=0 or story.part!=2: return
 	if story.id()=="dragon_nest":
-		if n==1: story.go_to("dragon_nest",3)
+		if n==empty_seats.size(): story.go_to("dragon_nest",3)
 		else:
-			empty_seat.create_tween().tween_property(empty_seat,"scale:y",.64,.24).from(.38)
+			for seat in empty_seats: seat.create_tween().tween_property(seat,"scale:y",.64,.24).from(.38)
 			story.say("nest_retry")
-			story.hint_miss(1,hint)
+			story.hint_miss(empty_seats.size(),hint)
 		return
 	trial=n
 	sneezes=0
 	timer=0
-	for light in lights: light.hide()
+	if story.hint_total>0: story.clear_hint()
+	reset_lights()
 	hat.rotation.z=0
 	hat.material_override.albedo_color=Color.DARK_CYAN
 	for b in story.options.get_children():
@@ -184,7 +201,7 @@ func _process(dt:float) -> void:
 	timer-=dt
 	if timer>0: return
 	if sneezes<trial:
-		var target:Node3D=lights[sneezes] if sneezes<lights.size() else hat
+		var target:Node3D=lights[unlit[sneezes]] if sneezes<unlit.size() else hat
 		dragon.look_at(Vector3(target.global_position.x,dragon.global_position.y,target.global_position.z),Vector3.UP,true)
 		var puff=game.orb(self,to_local(spark.global_position),.20,Color.ORANGE_RED,true)
 		var flight=puff.create_tween()
@@ -192,17 +209,19 @@ func _process(dt:float) -> void:
 		if target==hat:
 			flight.tween_callback(func(): hat.material_override.albedo_color=Color("#403533"))
 			flight.tween_property(hat,"rotation:z",.48,.12)
-		else: flight.tween_callback(target.show)
+		else:
+			flight.tween_callback(target.show)
+			flight.tween_callback(story.effect.bind("count_%d"%(sneezes+1)))
 		flight.tween_callback(puff.queue_free)
 		sneezes+=1
 		timer=SNEEZE_INTERVAL
 	else:
 		var result:=trial
 		trial=0
-		if result==5: story.go_to("mole_candles",3)
+		if result==unlit.size(): story.go_to("mole_candles",3)
 		else:
-			story.say("mole_low" if result<5 else "mole_high")
-			story.hint_miss(5,hint)
+			story.say("mole_low" if result<unlit.size() else "mole_high")
+			story.hint_miss(unlit.size(),hint)
 			for b in story.options.get_children(): b.disabled=false
 
 func build_flight() -> void:

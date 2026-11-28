@@ -32,8 +32,8 @@ CAST = {
     "Burczyk": "quarrel_doubt quarrel_three quarrel_four quarrel_six dawn_accept dawn_rocks dawn_rocks_alt dawn_skewer dawn_skewer_alt dawn_sausages",
     "Chrapek": "quarrel_nose quarrel_no_four quarrel_no_five quarrel_no_seven dawn_sun",
     "Bilbo": "dawn_bet map_wonder",
-    "mama smoczyca": "nest_count nest_ask nest_retry nest_hug dragon_flight",
-    "Iskierka": "dragon_lost dragon_near dragon_fire dragon_warm dragon_share dragon_less dragon_hint dragon_full mountain_coal mountain_cold mountain_warm",
+    "mama smoczyca": "nest_total nest_count nest_ask nest_retry nest_hug nest_hug_two dragon_flight",
+    "Iskierka": "dragon_lost dragon_demo dragon_near dragon_fire dragon_warm dragon_share dragon_less dragon_hint dragon_full mountain_coal mountain_cold mountain_warm",
     UNKNOWN: "homecoming dawn_dishes dawn_argue_rocks dawn_argue_rocks_alt dawn_argue_food dawn_argue_food_alt dawn_argue_cones dawn_argue_cones_alt",
 }
 

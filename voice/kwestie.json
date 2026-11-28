@@ -510,9 +510,14 @@
     "tekst": "Proszę, Bilbo, pomóż mi! Woda zniszczyła most. Weź narzędzia i chodź za mną."
   },
   {
+    "plik": "audio/story/route_dragon_demo.mp3",
+    "postać": "Iskierka",
+    "tekst": "Patrz! Umiem kichać ogniem!"
+  },
+  {
     "plik": "audio/story/route_dragon_fire.mp3",
     "postać": "Iskierka",
-    "tekst": "Dotknij płomyka, żebym kichnęła ogniem."
+    "tekst": "Dotknij płomyka, a ja kichnę."
   },
   {
     "plik": "audio/story/route_dragon_flight.mp3",
@@ -547,7 +552,7 @@
   {
     "plik": "audio/story/route_dragon_near.mp3",
     "postać": "Iskierka",
-    "tekst": "Podejdź ze mną do latarni."
+    "tekst": "Chodź za mną do latarni."
   },
   {
     "plik": "audio/story/route_dragon_share.mp3",
@@ -562,7 +567,7 @@
   {
     "plik": "audio/story/route_dragon_warm.mp3",
     "postać": "Iskierka",
-    "tekst": "Apsik! Świeci! Aż zgłodniałam."
+    "tekst": "Świeci! Aż zgłodniałam. Chodźmy do krzaka z jagodami."
   },
   {
     "plik": "audio/story/route_drawstring.mp3",
@@ -697,7 +702,7 @@
   {
     "plik": "audio/story/route_mole_ask.mp3",
     "postać": "kret",
-    "tekst": "Ile razy musi kichnąć Iskierka?"
+    "tekst": "Ile razy musi kichnąć Iskierka, żeby paliło się wszystkie pięć?"
   },
   {
     "plik": "audio/story/route_mole_count.mp3",
@@ -723,6 +728,16 @@
     "plik": "audio/story/route_mole_low.mp3",
     "postać": "kret",
     "tekst": "Ojej! Jedna świeczka jeszcze nie świeci."
+  },
+  {
+    "plik": "audio/story/route_mountain_approach.mp3",
+    "postać": "narrator",
+    "tekst": "Droga wolna! Idź w prawo do kamiennych schodów."
+  },
+  {
+    "plik": "audio/story/route_mountain_bramble.mp3",
+    "postać": "narrator",
+    "tekst": "Przejdź w prawo do krzaka jeżyn."
   },
   {
     "plik": "audio/story/route_mountain_burn.mp3",
@@ -797,7 +812,7 @@
   {
     "plik": "audio/story/route_nest_ask.mp3",
     "postać": "mama smoczyca",
-    "tekst": "Mam pięcioro dzieci, a w gnieździe są cztery. Kogo brakuje?"
+    "tekst": "Ile dzieci brakuje?"
   },
   {
     "plik": "audio/story/route_nest_count.mp3",
@@ -810,9 +825,19 @@
     "tekst": "Jednego! Iskierko, moje maleństwo!"
   },
   {
+    "plik": "audio/story/route_nest_hug_two.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Dwojga! Iskierko! Twój braciszek też wraca! Chodźcie do mamy!"
+  },
+  {
     "plik": "audio/story/route_nest_retry.mp3",
     "postać": "mama smoczyca",
     "tekst": "Spójrz, ile zostało pustych miejsc."
+  },
+  {
+    "plik": "audio/story/route_nest_total.mp3",
+    "postać": "mama smoczyca",
+    "tekst": "Mam pięcioro dzieci. Pomóż mi je policzyć."
   },
   {
     "plik": "audio/story/route_night_bridge.mp3",

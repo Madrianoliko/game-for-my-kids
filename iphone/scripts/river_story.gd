@@ -266,7 +266,7 @@ func prompt(clip:String,words:String) -> void:
 	voice=clip
 	caption.text=words
 	if host.sound: host.play_clip(host.narrator,"story/"+clip)
-	if active and id() in ["valley_intro","door","kids_arrive","homecoming","map_sleep","cave_descent","dragon_flight","whisper_exit","troll_cave"]:
+	if active and id() in ["valley_intro","door","kids_arrive","homecoming","map_sleep","cave_descent","dragon_flight","whisper_exit","troll_cave","dragon_orchard"]:
 		var stream:AudioStream=host.narrator.stream if host.sound else AudioStreamMP3.load_from_file("res://audio/story/"+clip+".mp3")
 		speech_end=age+stream.get_length()+.35
 
@@ -386,6 +386,9 @@ func stop() -> void:
 	reward.hide()
 	if is_instance_valid(camp) and not camp.is_queued_for_deletion(): camp.dispose()
 	camp=null
+	if active and dragon_walks() and is_instance_valid(iskierka):
+		numbers.dragon_walk_position=iskierka.to_local(host.leo.global_position)
+		checkpoint()
 	if active and id()=="village": checkpoint()
 	active=false
 	host.camera.projection=Camera3D.PROJECTION_PERSPECTIVE
@@ -415,15 +418,20 @@ func button(label:String,fn:Callable) -> Button:
 	Icons.apply(b,label)
 	return b
 
+func dragon_walks() -> bool:
+	return (id()=="dragon_orchard" and part!=3) or (id()=="mountain_fork" and part in [3,4]) or (id()=="mountain_steps" and marks==7)
+
 func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or id() in ["cross","night_bridge","dragon_orchard"] or (id()=="fork" and part!=2)) and not host.paused
+	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or dragon_walks() or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=(actions.visible and id()!="cross") or (active and id()=="troll_cave" and part==2 and not host.paused)
 	if id() in ["night_bridge","fork","chief_happy","dragon_orchard"]: actions.hide()
-	if id()=="dragon_orchard": replay.hide()
+	if dragon_walks() or id()=="dragon_orchard":
+		actions.hide()
+		replay.visible=active and not host.paused
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
 	actions.position=Vector2(host.pause_button.position.x+host.pause_button.size.x-actions.size.x,host.stick.position.y+48)
 	bow.disabled="Łuk" not in items
@@ -1283,7 +1291,10 @@ func _physics_process(dt:float) -> void:
 		if age>=speech_end and (id()!="valley_intro" or age>=7.5): advance()
 		return
 	if id()=="dragon_orchard":
-		if part<2: iskierka.walk(dt)
+		iskierka.walk(dt)
+		return
+	if dragon_walks():
+		iskierka.walk_mountain(dt)
 		return
 	if hint_lit<hint_total:
 		hint_delay-=dt
@@ -1466,6 +1477,7 @@ func draw_bow() -> void:
 		replay.hide()
 
 func go_to(stage:String,saved_part:=0,saved_marks:=0) -> void:
+	numbers.erase("dragon_walk_position")
 	index=Data.ROUTE.find(stage)
 	part=saved_part
 	marks=saved_marks

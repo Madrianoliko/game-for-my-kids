@@ -3,7 +3,7 @@ extends "res://scripts/iskierka.gd"
 const MISSING := [5,2,7]
 const ROCK := Color("#899395")
 const GOLD := Color("#ffbc40")
-const HOPS := [Vector3(-2.8,.15,.9),Vector3(-2.2,.16,-.15),Vector3(-2.8,.18,-1.25)]
+const HOPS := [Vector3(-2.8,.15,.9),Vector3(-1.8,.16,.25),Vector3(-.8,.18,-.35)]
 var rocks:Array[MeshInstance3D]=[]
 var sockets:Array[MeshInstance3D]=[]
 var piles:Array[Node3D]=[]
@@ -34,10 +34,15 @@ func setup(owner_story) -> void:
 		"mountain_fork": build_trails()
 		"mountain_steps": build_steps()
 		"warm_cave": build_cave()
+	if story.dragon_walks():
+		if story.numbers.has("dragon_walk_position"): place_pair(story.numbers.dragon_walk_position)
+		follow_camera()
 
 func build_trails() -> void:
 	game.hud.text="U stóp góry"
-	game.box(self,Vector3(-2.6,.02,-.5),Vector3(2.35,.06,5),Color("#599eaf"))
+	game.box(self,Vector3(-1.95,.02,0),Vector3(2.9,.06,12),Color("#599eaf"))
+	for i in 14:
+		game.orb(self,Vector3(-2.9+(i%3)*.85,.065,-5+i*.72),.32,Color("#a0d7db")).scale=Vector3(.8,.07,.28)
 	for at in HOPS:
 		var rock=game.orb(self,at,.58,ROCK)
 		rock.scale.y=.36
@@ -49,8 +54,8 @@ func build_trails() -> void:
 		var twig=game.orb(bush,Vector3((i-1)*.5,.55,(i%2)*.32),.7,Color("#506b43"))
 		for j in 3: game.orb(twig,Vector3((j-1)*.27,.43,.4),.115,Color("#47304e"))
 	match story.part:
-		0: story.say("mountain_choose")
-		1:
+		0,1:
+			place_pair(Vector3(-3.9,0,1.3))
 			story.say("mountain_jump")
 			if story.marks>0: place_pair(HOPS[story.marks-1])
 			tint(rocks[story.marks],GOLD)
@@ -58,6 +63,35 @@ func build_trails() -> void:
 			place_pair(bush.position+Vector3.BACK*1.15)
 			story.say("mountain_burn")
 			story.button("Płomień",burn)
+
+		3:
+			place_pair(HOPS.back())
+			story.say("mountain_bramble")
+			story.dock.hide()
+		4:
+			bush.scale.y=.08
+			place_pair(bush.position)
+			for i in 3: game.box(self,Vector3(5+i*.55,.1+i*.1,-.45),Vector3(.55,.2+i*.2,1.2),ROCK)
+			story.say("mountain_approach")
+			story.dock.hide()
+
+func walk_mountain(dt:float) -> void:
+	var motion:=walking_input()
+	var pos:=to_local(game.leo.global_position)
+	pos.x=clampf(pos.x+motion.x*SPEED*dt,-4.5,6.5)
+	if story.id()=="mountain_steps":
+		pos.z=slot_at(1).z
+		pos.y=clampf(.25+(pos.x-slot_at(1).x)*.085,0,1)
+	else:
+		pos.y=0
+		pos.z=clampf(pos.z+motion.y*SPEED*dt,-2,1.4)
+	place_pair(pos)
+	follow_camera()
+	if story.id()=="mountain_steps":
+		if pos.x>=4.36: story.advance()
+	elif story.part==3:
+		if pos.distance_to(bush.position)<.85: story.go_to("mountain_fork",2)
+	elif pos.distance_to(Vector3(5.6,0,-.45))<.65: story.advance()
 
 func place_pair(at:Vector3) -> void:
 	game.leo.global_position=to_global(at)
@@ -73,7 +107,7 @@ func burn() -> void:
 	var charred=create_tween()
 	charred.tween_interval(.3)
 	charred.tween_property(bush,"scale",Vector3(.9,.08,.9),.5)
-	charred.tween_callback(story.advance)
+	charred.tween_callback(story.go_to.bind("mountain_fork",4))
 
 func breathe(at:Vector3) -> void:
 	dragon.look_at(to_global(Vector3(at.x,dragon.position.y,at.z)),Vector3.UP,true)
@@ -92,7 +126,7 @@ func hop() -> void:
 		dragon.position=to_local(game.leo.global_position)+Vector3.LEFT*.72
 	,.0,1.0,.43)
 	jump.tween_callback(func():
-		if story.marks+1==HOPS.size(): story.advance()
+		if story.marks+1==HOPS.size(): story.go_to("mountain_fork",3)
 		else: story.go_to("mountain_fork",1,story.marks+1)
 	)
 
@@ -119,8 +153,11 @@ func build_steps() -> void:
 			var dot=game.orb(slab,Vector3((j%2-.5)*.37,.125,(floori(j/2.0)-(ceili(n/2.0)-1)*.5)*.23),.083,Color("#212730"))
 			dot.scale.y=.36
 	if story.marks==7:
+		place_pair(slot_at(1)+Vector3.LEFT*.6)
+		game.orb(self,Vector3(5.3,.68,-1.5),1.6,ROCK)
+		game.orb(self,Vector3(4.88,.82,-.85),1.05,Color("#302d38"))
 		story.say("mountain_ready")
-		story.button("Dalej",story.advance)
+		story.dock.hide()
 	else: story.say("mountain_steps")
 
 func light_step(rock:MeshInstance3D) -> void:
@@ -219,10 +256,7 @@ func _input(event:InputEvent) -> void:
 		match story.id():
 			"mountain_fork":
 				var stone:=nearest(rocks,event.position,45)
-				if story.part==0:
-					if stone>=0: story.go_to("mountain_fork",1)
-					elif nearest([bush],event.position,65)==0: story.go_to("mountain_fork",2)
-				elif story.part==1 and stone==story.marks: hop()
+				if story.part in [0,1] and stone==story.marks: hop()
 			"mountain_steps":
 				var i:=MISSING.find(nearest(rocks,event.position,32)+1)
 				if i>=0 and (story.marks & (1<<i))==0:

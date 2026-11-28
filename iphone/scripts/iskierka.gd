@@ -1,8 +1,12 @@
 extends Node3D
 
 const SHRUB := Vector3(-2,0,-1.4)
-const LANTERN := Vector3(2.6,0,-1.0)
-const REACH := 1.85
+const LANTERN := Vector3(7,0,-1.4)
+const START := SHRUB + Vector3.LEFT * 37
+const BERRY_PATCH := LANTERN + Vector3.RIGHT * 9
+const SPEED := 3.4
+var demonstrated := false
+var fire_button:Button
 const LEAVES := [Vector3(-2.1,.28,-.9),Vector3(2.1,.28,-.9)]
 var story
 var game
@@ -82,68 +86,101 @@ func build_dragon() -> void:
 
 func build_orchard() -> void:
 	game.hud.text="Ślady w sadzie"
-	game.leo.global_position=to_global(Vector3(-.2,0,1.8) if story.part==0 else SHRUB+Vector3.RIGHT*.7)
-	for i in 5:
-		var at:=Vector3(-.3-i*.32,.05,1.25-i*.48)
-		game.orb(self,at,.13,Color("#564432")).scale=Vector3(.72,.18,1)
-		game.orb(self,at+Vector3(.28,0,-.17),.095,Color("#564432")).scale.y=.2
-	for x in [.25,.75]:
-		game.orb(self,Vector3(x,.16,1.35),.13,Color("#63523d")).scale.y=1.5
-		for y in [.08,.34]: game.orb(self,Vector3(x,y,1.35),.16,Color("#663e30")).scale.y=.4
+	game.box(self,Vector3(-11,-.2,-1),Vector3(66,.36,12),Color("#91aa63"))
+	for x in range(-40,19,4):
+		game.box(self,Vector3(x,.9,-4),Vector3(.4,1.8,.45),Color.SADDLE_BROWN)
+		game.orb(self,Vector3(x,2,-4),1.2,Color.DARK_OLIVE_GREEN)
+		for i in 3: game.orb(self,Vector3(x-.5+i*.5,2,-3),.15,Color.INDIAN_RED)
+	for i in 40:
+		var at:=START+Vector3(i*.91,.04,.32 if i%2 else -.12)
+		game.orb(self,at,.15,Color("#594431")).scale=Vector3(1,.2,.8)
+		for toe in [-1,0,1]:
+			game.orb(self,at+Vector3(.14,0,toe*.09),.055,Color("#594431")).scale.y=.35
+	game.orb(self,BERRY_PATCH,.85,Color.DARK_OLIVE_GREEN)
+	for i in 6: game.orb(self,BERRY_PATCH+Vector3((i%3-1)*.33,.3+floori(i/3.0)*.3,.6),.15,Color.DARK_SLATE_BLUE)
 	game.box(self,LANTERN+Vector3.UP*.55,Vector3(.18,1.1,.18),Color.SADDLE_BROWN)
 	flame=game.orb(self,LANTERN+Vector3.UP*1.25,.26,Color.GOLD,true)
 	flame.visible=story.part==2
 	game.orb(self,LANTERN+Vector3.UP*1.05,.33,Color("#67563d")).scale.y=.45
+	var start:=START
 	match story.part:
 		0: story.say("dragon_tracks")
 		1:
+			start=SHRUB
 			story.say("dragon_lost")
-			story.button("Płomień",sneeze)
 		2:
+			start=LANTERN
 			story.say("dragon_warm")
-			story.button("Dalej",story.advance)
+		3:
+			start=LANTERN
+			story.say("dragon_demo")
+	if story.part in [2,3]: dragon.position=LANTERN+Vector3.LEFT
+	start=story.numbers.get("dragon_walk_position",start)
+	if story.part in [1,2]: dragon.position=start+Vector3.LEFT*.8
+	game.leo.global_position=to_global(start)
+	follow_camera()
+	story.dock.hide()
 
-	if story.part==1:
-		story.button("Płomień",sneeze)
-		story.say("dragon_lost")
-	elif story.part==2:
-		game.leo.global_position=to_global(LANTERN+Vector3.RIGHT)
-		dragon.position=LANTERN+Vector3.LEFT
-		flame.show()
-		story.button("Dalej",story.advance)
-		story.say("dragon_warm")
-	else: story.say("dragon_tracks")
+func follow_camera() -> void:
+	var focus:Vector3=game.leo.global_position+Vector3.RIGHT*1.35
+	game.camera.look_at_from_position(focus+Vector3(0,9,6),focus,Vector3.UP)
 
-func walk(dt:float) -> void:
-	if story.part==2: return
+func walking_input() -> Vector2:
 	var motion:Vector2=game.stick.vector
 	if motion.is_zero_approx(): motion=Input.get_vector("ui_left","ui_right","ui_up","ui_down")
-	var pos:=to_local(game.leo.global_position)+Vector3(motion.x,0,motion.y)*dt*3.4
-	pos.x=clampf(pos.x,-3.65,3.65)
-	pos.z=clampf(pos.z,-2.5,2.5)
-	game.leo.global_position=to_global(pos)
 	if motion.length()>.1: game.leo.rotation.y=atan2(-motion.x,-motion.y)
-	if story.part==0:
-		if pos.distance_to(SHRUB)<1.2: story.go_to("dragon_orchard",1)
-	elif dragon.position.distance_to(pos)>.75:
-		dragon.position=dragon.position.move_toward(pos,dt*3.6)
-		dragon.look_at(to_global(pos),Vector3.UP,true)
-	if story.part==1 and story.voice=="route_dragon_lost" and story.age>6: story.say("dragon_near")
-	if story.part==1 and story.voice=="route_dragon_near" and dragon.position.distance_to(LANTERN)<=REACH: story.say("dragon_fire")
+	return motion.limit_length()
+
+func walk(dt:float) -> void:
+	if story.part==3:
+		if not demonstrated and story.age>=story.speech_end:
+			demonstrated=true
+			var show_fire=create_tween()
+			puff_at(dragon.position+Vector3.UP*1.9)
+			show_fire.tween_interval(.65)
+			show_fire.tween_callback(offer_fire)
+		return
+	var motion:=walking_input()
+	var pos:=to_local(game.leo.global_position)+Vector3(motion.x,0,motion.y)*dt*SPEED
+	pos.x=clampf(pos.x,START.x-1,BERRY_PATCH.x+1)
+	pos.z=clampf(pos.z,-3,.4)
+	game.leo.global_position=to_global(pos)
+	follow_camera()
+	match story.part:
+		0:
+			if pos.distance_to(SHRUB)<.65: story.go_to("dragon_orchard",1)
+		1:
+			if story.voice=="route_dragon_lost" and story.age>=story.speech_end: story.say("dragon_near")
+			var lead:=Vector3(clampf(pos.x+2,SHRUB.x,LANTERN.x-.8),0,LANTERN.z)
+			dragon.position=dragon.position.move_toward(lead,dt*(SPEED+.6))
+			if lead.distance_to(dragon.position)>.01: dragon.look_at(to_global(lead),Vector3.UP,true)
+			if pos.distance_to(LANTERN)<.7 and dragon.position.distance_to(LANTERN)<1.5 and story.voice=="route_dragon_near" and story.age>=story.speech_end:
+				story.go_to("dragon_orchard",3)
+		2:
+			dragon.position=dragon.position.move_toward(pos+Vector3.LEFT*.8,dt*SPEED)
+			if pos.distance_to(BERRY_PATCH)<.65: story.advance()
+
+func puff_at(target:Vector3) -> void:
+	var puff=game.orb(self,to_local(spark.global_position),.27,Color.ORANGE_RED,true)
+	var flight=create_tween()
+	flight.tween_property(puff,"position",target,.32)
+	flight.tween_callback(puff.queue_free)
+
+func offer_fire() -> void:
+	story.say("dragon_fire")
+	story.dock.show()
+	fire_button=story.button("Płomień",sneeze)
+	var pulse=fire_button.create_tween().set_loops()
+	pulse.tween_property(fire_button,"self_modulate",Color(1,.82,.62),.55)
+	pulse.tween_property(fire_button,"self_modulate",Color.WHITE,.55)
 
 func sneeze() -> void:
-	if story.part!=1 or game.paused: return
-	var puff=game.orb(self,dragon.position+Vector3.UP,.24,Color.ORANGE_RED,true)
-	var toward:=dragon.position.direction_to(LANTERN)
-	var flight=puff.create_tween()
-	flight.tween_property(puff,"position",puff.position+toward*REACH,.3)
-	flight.tween_callback(puff.queue_free)
-	if dragon.position.distance_to(LANTERN)<=REACH:
-		flame.show()
-		story.part=2
-		story.checkpoint()
-		flight.tween_callback(story.render)
-	else: story.say("dragon_near")
+	if story.part!=3 or game.paused or fire_button.disabled: return
+	fire_button.disabled=true
+	puff_at(LANTERN+Vector3.UP*1.25)
+	var flight=create_tween()
+	flight.tween_interval(.32)
+	flight.tween_callback(story.go_to.bind("dragon_orchard",2))
 
 func build_berries() -> void:
 	game.hud.text="Jagody dla Iskierki"
