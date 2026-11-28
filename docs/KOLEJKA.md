@@ -172,6 +172,7 @@ Zaczynaj dopiero, gdy w `docs/UWAGI_Z_TESTOW.md` jest wybór głosów z próbek 
 
 ### [ ] Z12 — Rozdział 5, część 1: śnieżyca i wóz z drewnem
 Plan: rozdział 5. Przycisk w menu (obrazek płatka śniegu) po ukończeniu rozdziału 4.
+- Rozdział 5 zaczyna się płynnie po rozdziale 4 (zasada 16): krok `continued` z zapowiedzią „Ciąg dalszy nastąpi” zamień na scenkę wyjścia z jaskini prosto w padający śnieg. Zapisy stojące na `continued` mają wczytać się na początku rozdziału 5.
 - Dolina w śniegu (biała tekstura terenu, padające płatki). Bóbr: „Idzie śnieżyca! Domy nie mają drewna na zimę!”.
 - Nowa mechanika: kucyk Toba ciągnie wóz za Bilbem. Na wozie widać 10 miejsc jak w ramce do liczenia. Polana przeciąga się palcem ze stosu na wóz.
 - Zagadka „Pełny wóz”: na wozie leży 7 polan, „Ile jeszcze się zmieści?”. Za dużo i ostatnie spada w śnieg z „bęc”.
