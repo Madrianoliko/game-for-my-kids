@@ -3,15 +3,17 @@ extends Node3D
 const Props := preload("res://scripts/river_props.gd")
 const Icons := preload("res://scripts/river_icons.gd")
 const PATROL_CENTER := Vector3(0,0,-4)
-const PATROL_RADIUS := 3.0
-const PATROL_SPEED := 2.85
+const PATROL_SPEED := 1.425
+const PATROL_RADIUS := 1.8
+const CORNER_TIME := 1.25
+const LEG_TIME := 2*PATROL_RADIUS/PATROL_SPEED
 const LOOK_RANGE := 5.0
 const LOOK_ANGLE := 80.0
 const DEMO_TIME := 1.8
 const HAY_RADIUS := 1.0
 const PARK_DISTANCE := 1.55
 const HIDE_TIME := .22
-const FLY_TIME := 2.4
+const FLY_TIME := 1.2
 const WALK_SPEED := 3.0
 const FOLLOW_DISTANCE := 1.0
 const HAND_REACH := 1.5
@@ -42,8 +44,8 @@ const EXPOSURE := .55
 const WORDS := {
 	"intro_stolen":"Bilbo! Troll Gapa ukradł moje kucyki!",
 	"intro_there":"Tam są! Przy drzewie, przy wozie i obok ogniska.",
-	"intro_run":"To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!",
-	"intro_first":"Wejdź do stogu.",
+	"intro_run":"To Gapa. Widzi tam, gdzie świeci latarnią.",
+	"intro_first":"Wejdź do stogu. W sianie jesteś bezpieczny.",
 	"intro_safe":"Widzisz? Nie zobaczył cię!",
 	"caught":"Aha! Widzę cię! Wracaj do stogu!",
 	"caught_again":"Znowu ty? Hi, hi!",
@@ -81,7 +83,7 @@ var fade:=ColorRect.new()
 var stacks:Array[Node3D]=[]
 var eyes:=Node3D.new()
 var cone:=MeshInstance3D.new()
-var patrol_angle:=PI/2
+var patrol_time:=0.0
 var catch_origin:=WATCH
 var rustle:=AudioStreamPlayer.new()
 var ground:=START
@@ -91,13 +93,12 @@ var rustle_left:=0.0
 var park_at:=Vector3.ZERO
 var cap:=Node3D.new()
 var intro_step:=0
-const INTRO := ["intro_stolen","intro_there","intro_run"]
+const INTRO := ["intro_run","intro_first"]
 
 var camera := Camera3D.new()
 var controls := Control.new()
 var hand:Button
 var replay:Button
-var back:Button
 
 var caption := Label.new()
 var message := "intro_stolen"
@@ -136,7 +137,6 @@ func begin(game, saved_mask:int, pony_mask:=7) -> void:
 	camera.environment=sky
 	camera.make_current()
 	build_controls()
-	back.disabled=true
 	add_child(rustle)
 	rustle.stream=AudioStreamMP3.load_from_file("res://audio/story/camp_rustle.mp3")
 	var hat:=CylinderMesh.new()
@@ -148,7 +148,6 @@ func begin(game, saved_mask:int, pony_mask:=7) -> void:
 	if rescued_mask==available:
 		finish_camp()
 	elif rescued_mask!=0:
-		back.disabled=false
 		ground=STACKS[0]
 		begin_patrol()
 		speak("two" if count_rescued()==2 else "one")
@@ -295,9 +294,9 @@ func build_controls() -> void:
 	hand.disabled=true
 	replay=host.button(controls,"Posłuchaj",func(): speak(message))
 	Icons.apply(replay,"Posłuchaj")
-	back=host.button(controls,"Wróć do mapy",leave)
-	Icons.apply(back,"Wróć do mapy")
 	controls.add_child(caption)
+	caption.visible=host.subtitles
+	host.subtitles_changed.connect(caption.set_visible)
 	caption.add_theme_stylebox_override("normal",host.plate(Color("#162535ed")))
 	caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	caption.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -311,11 +310,11 @@ func build_controls() -> void:
 
 func layout() -> void:
 	var inset:Vector2=host.hud.position
-	back.position=inset
-	replay.position=Vector2(controls.size.x-inset.x-replay.size.x,inset.y)
+	replay.position=Vector2(host.pause_button.position.x-12-replay.size.x,inset.y)
 	hand.position=controls.size-inset-hand.size
-	caption.position=Vector2(host.stick.position.x+host.stick.size.x+8,controls.size.y-inset.y-back.size.y)
-	caption.size=Vector2(hand.position.x-caption.position.x-8,back.size.y)
+	caption.position=Vector2(inset.x,inset.y)
+	caption.size=Vector2(replay.position.x-inset.x-12,46)
+	caption.mouse_filter=Control.MOUSE_FILTER_IGNORE
 
 func speak(key:String) -> void:
 	if available!=7:
@@ -332,14 +331,27 @@ func speak(key:String) -> void:
 
 func begin_patrol() -> void:
 	phase=Phase.PATROL
+	if not following: mark_next_pony()
 	elapsed=0
 	watching(true)
 	update_patrol(0)
 
 func update_patrol(dt:float) -> void:
-	patrol_angle=fmod(patrol_angle+dt*PATROL_SPEED/PATROL_RADIUS,TAU)
-	gapa.position=PATROL_CENTER+Vector3(cos(patrol_angle),0,sin(patrol_angle))*PATROL_RADIUS
-	face_light(Vector3(-sin(patrol_angle),0,cos(patrol_angle)))
+	patrol_time=fmod(patrol_time+dt,4*(LEG_TIME+CORNER_TIME))
+	var pose:=patrol_pose(patrol_time)
+	gapa.position=pose.origin
+	face_light(pose.basis.z)
+
+static func patrol_pose(time:float) -> Transform3D:
+	var side:=floori(time/(LEG_TIME+CORNER_TIME))%4
+	var elapsed_on_side:=fmod(time,LEG_TIME+CORNER_TIME)
+	var corners:=[Vector3(-1,0,1),Vector3(-1,0,-1),Vector3(1,0,-1),Vector3(1,0,1)]
+	var from:Vector3=PATROL_CENTER+corners[side]*PATROL_RADIUS
+	var toward:Vector3=PATROL_CENTER+corners[(side+1)%4]*PATROL_RADIUS
+	var at:=from.move_toward(toward,minf(elapsed_on_side,LEG_TIME)*PATROL_SPEED)
+	var turn:=clampf((elapsed_on_side-LEG_TIME)/CORNER_TIME,0,1)
+	var angle:=side*PI/2+turn*PI/2+deg_to_rad(65)*sin(TAU*turn)
+	return Transform3D(Basis(Vector3.UP,PI-angle),at)
 
 func cover(at:Vector3) -> int:
 	for i in stacks.size():
@@ -368,27 +380,23 @@ func show_cover(dt:float) -> void:
 
 func introduction() -> void:
 	var t:=smoothstep(0,1,minf(1,elapsed/FLY_TIME))
-	if intro_step==1: frame_path(START.lerp(TETHER,t))
-	elif intro_step==2:
-		frame_path(TETHER.lerp(START,t))
-		if elapsed>=FLY_TIME and message in ["intro_there","tree_pair","cart_pair"]:
-			speak("intro_run")
-			return
-	if speech_left>0 or (intro_step in [1,2] and elapsed<FLY_TIME): return
+	frame_path(START.lerp(TETHER,t) if intro_step==0 else TETHER.lerp(START,t))
+	if speech_left>0 or elapsed<FLY_TIME: return
 	elapsed=0
 	intro_step+=1
 	if intro_step==INTRO.size():
 		phase=Phase.FIRST
 		host.stick.reset()
-		speak("intro_first")
-	elif intro_step!=2: speak(INTRO[intro_step])
+		host.mark_goal(to_global(STACKS[0]+Vector3.UP*1.9))
+	else: speak(INTRO[intro_step])
 
 func untie() -> void:
-	if following or phase!=Phase.PATROL: return
+	if host.paused or following or phase!=Phase.PATROL: return
 	chosen=nearby_pony()
 	if chosen<0: return
 	pony=ponies[chosen]
 	following=true
+	host.mark_goal(to_global(TOBO+Vector3.UP*2))
 	ropes[chosen].hide()
 	host.box(self,TETHERS[chosen]+Vector3.UP*.16,Vector3(.5,.32,.45),Color.GOLD)
 	hand.disabled=true
@@ -434,7 +442,6 @@ func _physics_process(dt:float) -> void:
 	if phase==Phase.DEMO:
 		show_cover(dt)
 		if elapsed>=DEMO_TIME and speech_left<=0:
-			back.disabled=false
 			begin_patrol()
 		return
 	if phase==Phase.CAUGHT:
@@ -465,11 +472,11 @@ func _physics_process(dt:float) -> void:
 	show_cover(dt)
 	frame_path(at)
 	if phase==Phase.FIRST:
-		if inside==0 and in_light(at):
+		if inside==0:
 			phase=Phase.DEMO
 			elapsed=0
 			watching(true)
-			speak("intro_safe")
+			face_light(at-gapa.position)
 		return
 	if inside<0 and phase==Phase.PATROL and in_light(at):
 		caught(at)
@@ -483,12 +490,14 @@ func _physics_process(dt:float) -> void:
 			pony.rotation.y=atan2(gap.x,gap.z)
 		if at.distance_to(TOBO)<=HOME_REACH and pony.position.distance_to(TOBO)<=HOME_REACH+FOLLOW_DISTANCE:
 			following=false
+			host.marker.hide()
 			rescued_mask|=1<<chosen
 			park_pony(chosen)
 			rescued.emit(rescued_mask)
 			if rescued_mask==available: finish_camp()
 			else:
 				near_pony=false
+				mark_next_pony()
 				host.stick.reset()
 				speak("one" if count_rescued()==1 else "two")
 
@@ -498,6 +507,13 @@ func _physics_process(dt:float) -> void:
 		hand.modulate=Color.GOLD if reachable else Color.WHITE
 		if reachable and not near_pony: speak("pony")
 		near_pony=reachable
+
+func mark_next_pony() -> void:
+	var target:=-1
+	for i in TETHERS.size():
+		if available & (1<<i) and not (rescued_mask & (1<<i)):
+			if target<0 or ground.distance_to(TETHERS[i])<ground.distance_to(TETHERS[target]): target=i
+	if target>=0: host.mark_goal(to_global(TETHERS[target]+Vector3.UP*1.9))
 
 func nearby_pony() -> int:
 	for i in TETHERS.size():
@@ -529,6 +545,7 @@ func leave(complete:=false) -> void:
 	closed.emit(complete)
 
 func dispose() -> void:
+	host.marker.hide()
 	cap.queue_free()
 	hero.transform=original_pose
 	for limb in host.limbs: limb.rotation.x=0

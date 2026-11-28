@@ -2,6 +2,8 @@ extends Node3D
 
 enum State { HOME, WALK, STORY }
 var state := State.HOME
+var subtitles := false
+signal subtitles_changed(enabled:bool)
 var sound := true
 var paused := false
 var targets: Array[Vector3] = []
@@ -62,6 +64,7 @@ func _ready() -> void:
 	if save.has_section_key("valley","stars"):
 		save.erase_section_key("valley","stars")
 		save.save("user://valley.cfg")
+	subtitles=bool(save.get_value("valley","subtitles",false))
 	sound = bool(save.get_value("valley","sound",true))
 	var landscape := preload("res://art/valley.glb").instantiate()
 	add_child(landscape)
@@ -321,6 +324,7 @@ func open_story(start_step:="valley_intro") -> void:
 	confirm.popup_centered()
 
 func home() -> void:
+	marker.hide()
 	bystra.stop()
 	atlas.can_resume=bystra.saved
 	atlas.unlocked_chapter_two=bystra.chapters>=1
@@ -359,6 +363,10 @@ func walk(points: Array, objective: String) -> void:
 	if sound and objective=="Przejdź przez most": play_clip(narrator,"crossing")
 	move_marker()
 
+func mark_goal(at:Vector3) -> void:
+	marker.global_position=at
+	marker.show()
+
 func move_marker() -> void:
 	marker.position=targets[0]+Vector3.UP*.39
 	marker.visible=true
@@ -392,7 +400,7 @@ func pause_game() -> void:
 		stick.visible=state==State.WALK
 		if bystra.active: bystra.show_controls()
 		pause_button.show()
-	for key in ["Wznów","Głośnik","Menu","Wyjście"]:
+	for key in ["Wznów","Głośnik","Napisy","Menu","Wyjście"]:
 		var b:=Button.new()
 		b.name=key
 		row.add_child(b)
@@ -406,6 +414,16 @@ func pause_game() -> void:
 				b.pressed.connect(func():
 					toggle_sound()
 					b.icon=icons.picture("Głośnik" if sound else "Cisza"))
+			"Napisy":
+				b.toggle_mode=true
+				b.button_pressed=subtitles
+				b.modulate=Color.WHITE if subtitles else Color.LIGHT_SLATE_GRAY
+				b.toggled.connect(func(enabled:bool):
+					subtitles=enabled
+					b.modulate=Color.WHITE if enabled else Color.LIGHT_SLATE_GRAY
+					save.set_value("valley","subtitles",enabled)
+					save.save("user://valley.cfg")
+					subtitles_changed.emit(enabled))
 			"Menu": b.pressed.connect(func(): menu.queue_free(); home())
 			"Wyjście": b.pressed.connect(exit_game)
 

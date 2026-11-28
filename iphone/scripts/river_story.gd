@@ -189,10 +189,19 @@ func setup(game) -> void:
 	dock.offset_bottom=-12
 	var column:=VBoxContainer.new()
 	dock.add_child(column)
-	column.add_child(caption)
+	host.ui.add_child(caption)
+	caption.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	caption.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	caption.offset_left=-215
+	caption.offset_right=215
+	caption.offset_top=8
+	caption.add_theme_color_override("font_outline_color",Color.BLACK)
+	caption.add_theme_constant_override("outline_size",5)
+	caption.hide()
+	host.subtitles_changed.connect(func(enabled:bool): caption.visible=enabled and active and id()!="camp" and not host.overlay.visible)
 	caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	caption.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	caption.custom_minimum_size=Vector2(650,48)
+	caption.custom_minimum_size=Vector2(430,48)
 	caption.add_theme_font_size_override("font_size",21)
 	column.add_child(options)
 	options.alignment=BoxContainer.ALIGNMENT_CENTER
@@ -265,6 +274,7 @@ func control_button(icon:String,fn:Callable) -> Button:
 func prompt(clip:String,words:String) -> void:
 	voice=clip
 	caption.text=words
+	caption.visible=host.subtitles and active and id()!="camp" and not host.overlay.visible
 	if host.sound: host.play_clip(host.narrator,"story/"+clip)
 	if active and id() in ["valley_intro","door","kids_arrive","homecoming","map_sleep","cave_descent","dragon_flight","whisper_exit","troll_cave","dragon_orchard"]:
 		var stream:AudioStream=host.narrator.stream if host.sound else AudioStreamMP3.load_from_file("res://audio/story/"+clip+".mp3")
@@ -371,6 +381,7 @@ func begin(resume:bool, start_step:="valley_intro") -> void:
 	render()
 
 func stop() -> void:
+	caption.hide()
 	clear_hint()
 	host.camera.environment=null
 	host.camera.v_offset=0
@@ -386,6 +397,9 @@ func stop() -> void:
 	reward.hide()
 	if is_instance_valid(camp) and not camp.is_queued_for_deletion(): camp.dispose()
 	camp=null
+	if active and return_walks():
+		numbers.return_position=host.leo.global_position
+		checkpoint()
 	if active and dragon_walks() and is_instance_valid(iskierka):
 		numbers.dragon_walk_position=iskierka.to_local(host.leo.global_position)
 		checkpoint()
@@ -418,6 +432,9 @@ func button(label:String,fn:Callable) -> Button:
 	Icons.apply(b,label)
 	return b
 
+func return_walks() -> bool:
+	return (id()=="troll_dawn" and part==preload("res://scripts/troll_dawn.gd").Beat.END) or (id()=="troll_cave" and part in [0,1]) or id()=="chief_happy"
+
 func dragon_walks() -> bool:
 	return (id()=="dragon_orchard" and part!=3) or (id()=="mountain_fork" and part in [3,4]) or (id()=="mountain_steps" and marks==7)
 
@@ -425,11 +442,11 @@ func show_controls() -> void:
 	if active and id()=="camp" and is_instance_valid(camp):
 		host.stick.visible=not host.paused and camp.phase!=camp.Phase.DONE
 		return
-	host.stick.visible=active and (roaming() or traveling or (id()=="chief_happy" and part==2) or dragon_walks() or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
+	host.stick.visible=active and (roaming() or traveling or return_walks() or dragon_walks() or id() in ["cross","night_bridge"] or (id()=="fork" and part!=2)) and not host.paused
 	actions.visible=active and not host.paused and (host.stick.visible or (id()=="range" and not field.visible))
 	replay.visible=(actions.visible and id()!="cross") or (active and id()=="troll_cave" and part==2 and not host.paused)
 	if id() in ["night_bridge","fork","chief_happy","dragon_orchard"]: actions.hide()
-	if dragon_walks() or id()=="dragon_orchard":
+	if return_walks() or dragon_walks() or id()=="dragon_orchard":
 		actions.hide()
 		replay.visible=active and not host.paused
 	replay.position=host.pause_button.position-Vector2(replay.size.x+12,0)
@@ -465,6 +482,7 @@ func refresh_bag() -> void:
 		ingredient_ticks[food].get_parent().modulate=Color.WHITE if collected else Color(.52,.52,.52,.8)
 
 func render() -> void:
+	caption.hide()
 	clear_hint()
 	host.camera.environment=null
 	host.camera.v_offset=0
@@ -521,9 +539,10 @@ func render() -> void:
 	origin=host.cottage.room.position if indoors else host.point(8.6)
 	if id() in ["guard","chief"]: origin=host.point(4.4)
 	if id() in ["dragon_orchard","dragon_berries","mountain_fork","mountain_steps","warm_cave","mole_candles","dragon_nest","whisper_cave","crystal_hall","drip_tunnel","pattern_door","fish_pool","whisper_hands","whisper_legs","whisper_exit"]: origin=Vector3(400,0,90)
-	if id()=="troll_cave": origin=Vector3(324,0,100)
-	if id()=="chief_happy": origin=host.point(-7)
-	if id()=="troll_dawn": origin=Vector3(310,0,100)
+	if id() in ["chief_happy","troll_cave","troll_dawn"]:
+		origin=host.point(ReturnTrip.CHIEF_Z)
+		if id()!="chief_happy": origin+=ReturnTrip.TRAIL_START-ReturnTrip.CAVE_DOOR
+		if id()=="troll_dawn": origin+=ReturnTrip.CAVE_DOOR-ReturnTrip.DAWN_DOOR
 	if id()=="fork": origin=Vector3(260,0,90)
 	if id()=="chief_sad": origin=host.point(-7)
 	if id()=="tobo": origin=host.point(1.25,-1.5)
@@ -795,13 +814,17 @@ func render() -> void:
 			dawn=preload("res://scripts/troll_dawn.gd").new()
 			scene.add_child(dawn)
 			dawn.setup(self)
+			if return_walks():
+				return_trip=ReturnTrip.new()
+				scene.add_child(return_trip)
+				return_trip.setup(self)
 		"chief_sad": render_apple_chief()
 		"stable","stable_home":
 			render_stable()
 		"camp":
 			dock.hide()
 			host.hud.hide()
-			host.pause_button.hide()
+			host.pause_button.show()
 			camp=preload("res://scripts/troll_camp.gd").new()
 			add_child(camp)
 			camp.rescued.connect(func(mask): marks=mask; checkpoint())
@@ -874,6 +897,8 @@ func show_count() -> void:
 	host.clear_panel()
 	host.label_line("Most dla Pestki",28)
 	var repair:=Repair.new()
+	repair.instruction.visible=host.subtitles
+	host.subtitles_changed.connect(repair.instruction.set_visible)
 	repair.on_hand=5-numbers.get("boards",3)
 	repair.story_order=true
 	repair.wrong.connect(func(): hint_miss(repair.SPANS-repair.on_hand,repair.highlight_gaps))
@@ -1135,6 +1160,7 @@ func stable_tick() -> void:
 		advance()
 
 func advance() -> void:
+	numbers.erase("return_position")
 	if id()=="valley_intro":
 		host.save.set_value("valley","seen_bilbo_intro",true)
 		host.save.save("user://valley.cfg")
@@ -1303,7 +1329,8 @@ func _physics_process(dt:float) -> void:
 			hint_display.call(hint_lit)
 			effect("count_%d"%hint_lit)
 			hint_delay=.85
-	if id()=="chief_happy" and part==2:
+	if return_walks():
+		if id()=="troll_dawn": dawn.tick(dt)
 		return_trip.tick(dt)
 		return
 	if id()=="troll_dawn":
@@ -1378,9 +1405,21 @@ func _physics_process(dt:float) -> void:
 	host.leo.position=origin+pos
 	if motion.length()>.05: host.leo.rotation.y=atan2(-motion.x,-motion.y)
 	for i in host.limbs.size(): host.limbs[i].rotation.x=sin(age*12)*(1 if i in [0,3] else -1)*motion.length()*.44
+	if id()=="dummy":
+		for dummy in actors:
+			if dummy.visible:
+				host.mark_goal(dummy.global_position+Vector3.UP*1.8)
+				break
+	if id()=="guard" or (id()=="coop" and part==0): host.mark_goal(foe.global_position+Vector3.UP*1.9)
+	if id()=="stable": host.mark_goal(stable.global_position+PROVISIONS+Vector3.UP*.8)
+	if id()=="delivery": host.mark_goal(visitor.global_position+Vector3.UP*1.6)
+	if Square.FOOD.has(id()):
+		if Square.FOOD[id()] in items: host.mark_goal(origin+Vector3(0,.28,2.13))
+		elif not food_models.is_empty() and (part==2 or (id()=="coop" and part==1)):
+			host.mark_goal(food_models[0].global_position+Vector3.UP*.8)
 	if id()=="pack":
 		host.marker.hide()
-		var nearest_distance:=1.25
+		var nearest_distance:=INF
 		for i in pickups.size():
 			var d:float=pickups[i].global_position.distance_to(host.leo.position)
 			if pickups[i].visible and d<nearest_distance:
@@ -1388,7 +1427,8 @@ func _physics_process(dt:float) -> void:
 				host.marker.show()
 				host.hud.text="%s    %d / 7"%[Data.GEAR[i],items.size()]
 				nearest_distance=d
-		if not host.marker.visible: host.hud.text="Plecak   %d / 7"%items.size()
+		if items.size()==7: host.mark_goal(visitor.global_position+Vector3.UP*1.5)
+		if nearest_distance>1.25: host.hud.text="Plecak   %d / 7"%items.size()
 	held_shield.visible=blocking and "Tarcza" in items
 	if id()=="guard":
 		var phase:=fmod(age,4.5)
@@ -1477,6 +1517,7 @@ func draw_bow() -> void:
 		replay.hide()
 
 func go_to(stage:String,saved_part:=0,saved_marks:=0) -> void:
+	numbers.erase("return_position")
 	numbers.erase("dragon_walk_position")
 	index=Data.ROUTE.find(stage)
 	part=saved_part
@@ -1500,6 +1541,14 @@ func ingredients_ready() -> bool:
 	return true
 
 func village_hint() -> void:
+	var nearest:String="delivery"
+	var best:=INF
+	for place in Square.FOOD:
+		var distance:=village_pos.distance_to(Square.DOORS[place])
+		if Square.FOOD[place] not in items and distance<best:
+			nearest=place
+			best=distance
+	host.mark_goal(origin+Square.DOORS[nearest]+Vector3.UP*1.95)
 	var door:=square.near_door(village_pos)
 	if blocked_door!="" and door!=blocked_door: blocked_door=""
 	if door==blocked_door: door=""

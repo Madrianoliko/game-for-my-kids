@@ -77,7 +77,6 @@ func setup(owner_story) -> void:
 	if beat in [Beat.ROCKS,Beat.SKEWER,Beat.SAUSAGES,Beat.CONES]: build_objects()
 	if answers.has(beat):
 		for n in story.Data.number_choices(answers[beat]): story.button(str(n),answer.bind(n))
-	if beat==Beat.END: story.button("Dalej",story.advance)
 	narrate()
 	if answers.has(beat) and story.marks>0:
 		story.hint_errors=1

@@ -1,6 +1,7 @@
 extends RefCounted
 
 const MARKS := {
+	"Napisy": '<path fill="#ffdf92" d="M2 5h36v23H17L7 36v-8H2z"/><path fill="none" stroke="#334858" stroke-width="3" d="m9 22 5-12 5 12m-9-4h8m4-5h10m-10 6h8"/>',
 	"Menu": '<path fill="#ffdf92" d="m2 18 18-15 18 15-4 4-3-2v16H9V20l-3 2z"/><path fill="#454954" d="M17 25h7v11h-7z"/>',
 	"Wyjście": '<path fill="none" stroke="#ffb99b" stroke-width="4" d="M19 5H6v30h13"/><path fill="#ffb99b" d="M14 16h12V8l12 12-12 12v-8H14Z"/>',
 	"Wznów": '<path fill="#92ef98" d="M9 4v32l25-16Z"/>',

@@ -8,15 +8,24 @@ const PONY_GAP := 1.8
 const SPEED := 2.65
 const BRIDGE_START := -3.75
 const HERO_START := -5.15
+const CHIEF_Z := -15.0
+const TRAIL_START := Vector3(-1,0,-7)
+const CAVE_DOOR := Vector3(0,0,3.8)
+const DAWN_DOOR := Vector3(4.4,0,-3.8)
 var story
 var game
 var ponies:Array[Node3D]=[]
 var hero_z:float
+var target:Vector3
+var interact_button:Button
+var at_target:=false
 
 func setup(owner_story) -> void:
 	story=owner_story
 	game=story.host
-	if story.id()=="troll_cave": build_cave()
+	if story.id()=="troll_dawn":
+		start_walk(to_local(game.leo.global_position),DAWN_DOOR,"dawn_end")
+	elif story.id()=="troll_cave": build_cave()
 	elif story.part==2: build_crossing()
 	else: meet_chief()
 
@@ -40,8 +49,8 @@ func build_cave() -> void:
 	game.leo.position=global_position+Vector3(-1.9,0,.4)
 	game.camera.look_at_from_position(global_position+Vector3(.2,3.5,5.8),global_position+Vector3(0,.35,.8),Vector3.UP)
 	if story.part==0:
-		story.button("Ręka",open_chest)
-		story.say("cave_open")
+		start_walk(CAVE_DOOR,Vector3(.3,0,.95),"cave_approach")
+		interact_button=story.button("Ręka",open_chest)
 	elif story.part==2:
 		lid.rotation.x=-1.85
 		story.dock.hide()
@@ -72,11 +81,13 @@ func build_cave() -> void:
 		story.say("cave_find")
 	else:
 		lid.rotation.x=-1.85
-		story.button("Dalej",story.advance)
-		story.say("map_packed")
+		for i in 7:
+			var angle:=PI*i/6
+			game.orb(self,CAVE_DOOR+Vector3(1.4*cos(angle),1.9*sin(angle),0),.56,Color("#625f68"))
+		start_walk(Vector3(.3,0,.95),CAVE_DOOR,"map_packed")
 
 func open_chest() -> void:
-	if story.id()!="troll_cave" or story.part!=0: return
+	if game.paused or not at_target or story.id()!="troll_cave" or story.part!=0: return
 	story.items.append(APPLES)
 	story.go_to("troll_cave",3)
 
@@ -84,7 +95,7 @@ func meet_chief() -> void:
 	game.hud.text="Jabłka herszta"
 	story.actor("chief",Vector3(1.05,0,-.4))
 	for i in COATS.size():
-		if story.numbers.get("camp",7) & (1<<i): Pony.make(game,self,Vector3(-2.6+i*1.7,0,-2.1),COATS[i])
+		if story.numbers.get("camp",7) & (1<<i): ponies.append(Pony.make(game,self,Vector3.ZERO,COATS[i]))
 	for row in 4:
 		var rim:=TorusMesh.new()
 		rim.inner_radius=.52+row*.045
@@ -93,18 +104,62 @@ func meet_chief() -> void:
 	for i in 3:
 		story.make_apple(Vector3((-.92 if story.part==0 else .56)+i*.4,.62,.68))
 	if story.part==0:
-		story.button("Ręka",give_apples)
-		story.say("chief_give")
+		start_walk(TRAIL_START,Vector3(.5,0,.65),"chief_approach")
+		interact_button=story.button("Ręka",give_apples)
 	else:
-		story.button("Dalej",func(): story.go_to("chief_happy",2))
-		story.say("chief_happy")
+		start_walk(Vector3(.5,0,.65),to_local(game.point(HERO_START)),"chief_happy")
 
 func give_apples() -> void:
-	if story.id()!="chief_happy" or story.part!=0: return
+	if game.paused or not at_target or story.id()!="chief_happy" or story.part!=0: return
 	var slot:int=story.items.find(APPLES)
 	if slot<0: return
 	story.items.remove_at(slot)
 	story.go_to("chief_happy",1)
+
+func start_walk(start:Vector3,goal:Vector3,cue:String) -> void:
+	target=to_global(goal)
+	game.leo.global_position=story.numbers.get("return_position",to_global(start))
+	story.dock.hide()
+	game.mark_goal(target+Vector3.UP*.35)
+	game.camera.v_offset=0
+	game.camera.projection=Camera3D.PROJECTION_ORTHOGONAL
+	game.camera.size=10
+	walk_camera()
+	for i in ponies.size(): ponies[i].global_position=game.leo.global_position+Vector3.FORWARD*(i+1)*1.3
+	if story.id()!="troll_dawn": story.say(cue)
+
+func walk_camera() -> void:
+	var center:Vector3=game.leo.global_position.lerp(target,.28)
+	game.camera.look_at_from_position(center+Vector3(0,8,6),center,Vector3.UP)
+
+func walk_to_goal(dt:float) -> void:
+	var input:Vector2=game.stick.vector
+	if input.is_zero_approx(): input=Input.get_vector("ui_left","ui_right","ui_up","ui_down")
+	var motion:=Vector3(input.x,0,input.y).limit_length()
+	var pos:Vector3=to_local(game.leo.global_position)+motion*SPEED*dt
+	pos.x=clampf(pos.x,-5,6)
+	pos.z=clampf(pos.z,-8,11 if story.id()=="chief_happy" else 4.4)
+	game.leo.global_position=to_global(pos)
+	if motion.length()>.05: game.leo.rotation.y=atan2(-motion.x,-motion.z)
+	for i in game.limbs.size(): game.limbs[i].rotation.x=.38*sin(story.age*10+i*PI)*motion.length()
+	var lead:Vector3=game.leo.global_position
+	for pony in ponies:
+		var gap:Vector3=lead-pony.global_position
+		if gap.length()>1.25:
+			pony.global_position=pony.global_position.move_toward(lead,minf(SPEED*dt,gap.length()-1.25))
+			pony.rotation.y=atan2(gap.x,gap.z)
+		lead=pony.global_position
+	walk_camera()
+	var close:bool=target.distance_to(game.leo.global_position)<1.1
+	if interact_button:
+		if close!=at_target:
+			story.dock.visible=close
+			story.replay.show()
+			if close: story.say("cave_open" if story.id()=="troll_cave" else "chief_give")
+		at_target=close
+	elif close:
+		if story.id()=="chief_happy": story.go_to("chief_happy",2)
+		else: story.advance()
 
 func build_crossing() -> void:
 	game.hud.text="Kucyki wracają do stajni"
@@ -114,8 +169,13 @@ func build_crossing() -> void:
 	var center:Vector3=game.point(-1.5)
 	game.camera.look_at_from_position(center+Vector3(0,13,9),center,Vector3.UP)
 	hero_z=HERO_START if story.marks==0 else BRIDGE_START+story.marks*PONY_GAP
+	if story.numbers.has("return_position"): hero_z=story.numbers.return_position.z
 	for i in COATS.size():
 		if story.numbers.get("camp",7) & (1<<i): ponies.append(Pony.make(game,self,Vector3.ZERO,COATS[i]))
+	var finish:Vector3=game.point(1.8+ponies.size()*PONY_GAP)
+	for side in [-1,1]:
+		game.box(self,to_local(finish)+Vector3(side*1.4,1.05,.7),Vector3(.3,2.1,.35),Color.SADDLE_BROWN)
+	game.box(self,to_local(finish)+Vector3(0,2.2,.7),Vector3(3.4,.36,2),Color("#914c38"))
 	game.marker.global_position=game.point(1.8+ponies.size()*PONY_GAP)+Vector3.UP*.22
 	game.marker.show()
 	position_party()
@@ -133,6 +193,9 @@ func trail_point(z:float) -> Vector3:
 	return game.point(z)+Vector3.UP*(.34 if absf(z+2)<1.9 else .04)
 
 func tick(dt:float) -> void:
+	if story.id()!="chief_happy" or story.part!=2:
+		walk_to_goal(dt)
+		return
 	var input:Vector2=game.stick.vector
 	if input.is_zero_approx(): input=Input.get_vector("ui_left","ui_right","ui_up","ui_down")
 	var stride:=maxf(0,input.y)

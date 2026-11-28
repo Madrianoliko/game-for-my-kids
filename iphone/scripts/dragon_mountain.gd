@@ -35,6 +35,9 @@ func setup(owner_story) -> void:
 		"mountain_steps": build_steps()
 		"warm_cave": build_cave()
 	if story.dragon_walks():
+		var goal:=Vector3(4.8,1.55,-1.25)
+		if story.id()=="mountain_fork": goal=bush.position+Vector3.UP*1.3 if story.part==3 else Vector3(5.6,.8,-.45)
+		game.mark_goal(to_global(goal))
 		if story.numbers.has("dragon_walk_position"): place_pair(story.numbers.dragon_walk_position)
 		follow_camera()
 

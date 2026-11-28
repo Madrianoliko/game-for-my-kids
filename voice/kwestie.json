@@ -192,12 +192,12 @@
   {
     "plik": "audio/story/camp_intro_first.mp3",
     "postać": "Tobo",
-    "tekst": "Wejdź do stogu."
+    "tekst": "Wejdź do stogu. W sianie jesteś bezpieczny."
   },
   {
     "plik": "audio/story/camp_intro_run.mp3",
     "postać": "Tobo",
-    "tekst": "To Gapa. Widzisz to światło przed nim? Tam, gdzie świeci, on widzi. Chowaj się w stogach, kiedy idzie w twoją stronę!"
+    "tekst": "To Gapa. Widzi tam, gdzie świeci latarnią."
   },
   {
     "plik": "audio/story/camp_intro_safe.mp3",
@@ -278,6 +278,11 @@
     "plik": "audio/story/route_birthday_surprise.mp3",
     "postać": "narrator",
     "tekst": "Niespodzianka!"
+  },
+  {
+    "plik": "audio/story/route_cave_approach.mp3",
+    "postać": "narrator",
+    "tekst": "Podejdź do skrzyni trolli."
   },
   {
     "plik": "audio/story/route_cave_boots.mp3",
@@ -380,6 +385,11 @@
     "tekst": "Dość pojedynku! Dwa jabłka tutaj i jeszcze dwa. Ile razem?"
   },
   {
+    "plik": "audio/story/route_chief_approach.mp3",
+    "postać": "narrator",
+    "tekst": "Idź traktem do herszta."
+  },
+  {
     "plik": "audio/story/route_chief_give.mp3",
     "postać": "narrator",
     "tekst": "Dotknij dłoni, żeby oddać jabłka hersztowi."
@@ -387,7 +397,7 @@
   {
     "plik": "audio/story/route_chief_happy.mp3",
     "postać": "herszt",
-    "tekst": "Moje jabłka! Bilbo, jesteś najdzielniejszym hobbitem w dolinie!"
+    "tekst": "Moje jabłka! Dziękuję, Bilbo. Zaprowadź kucyki na most."
   },
   {
     "plik": "audio/story/route_continued.mp3",
@@ -462,7 +472,7 @@
   {
     "plik": "audio/story/route_dawn_end.mp3",
     "postać": "narrator",
-    "tekst": "Trolle zmieniły się w kamień!"
+    "tekst": "Trolle zmieniły się w kamień! Wejdź do jaskini."
   },
   {
     "plik": "audio/story/route_dawn_rocks.mp3",

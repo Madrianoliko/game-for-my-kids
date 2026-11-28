@@ -27,6 +27,7 @@ func setup(owner_story) -> void:
 		game.orb(self,EDGE+Vector3(x,.48,0),.8,Color("#507348"))
 	var start:=START
 	if story.fork_path=="long": start=FAR_BANK if story.part==1 else LONG[1]
+	game.mark_goal(to_global(EDGE if story.part==1 else STREAM)+Vector3.UP*.24)
 	game.leo.global_position=to_global(start)
 	game.camera.projection=Camera3D.PROJECTION_ORTHOGONAL
 	game.camera.size=maxf(13.8,14.0/game.ui.size.aspect())

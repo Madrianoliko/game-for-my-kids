@@ -115,6 +115,8 @@ func build_orchard() -> void:
 			start=LANTERN
 			story.say("dragon_demo")
 	if story.part in [2,3]: dragon.position=LANTERN+Vector3.LEFT
+	if story.part!=3:
+		game.mark_goal(to_global([SHRUB,LANTERN,BERRY_PATCH][story.part])+Vector3.UP*1.55)
 	start=story.numbers.get("dragon_walk_position",start)
 	if story.part in [1,2]: dragon.position=start+Vector3.LEFT*.8
 	game.leo.global_position=to_global(start)
