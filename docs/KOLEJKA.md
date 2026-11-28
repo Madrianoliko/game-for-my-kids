@@ -13,7 +13,7 @@ Plany fabuły, z których korzystają zadania:
 1. **Uwagi z testów mają pierwszeństwo.** Zanim zaczniesz zadanie, przeczytaj `docs/UWAGI_Z_TESTOW.md`. Jeśli są tam nowe wpisy (bez dopisku „uwzględnione”), najpierw je wprowadź w osobnym commicie i dopisz przy nich „uwzględnione (data, commit)”.
 2. **Jedno zadanie na sesję.** Nie zaczynaj następnego zadania z kolejki.
 3. **Zapisy gry muszą działać.** Zapis pamięta nazwę kroku ROUTE (`route`), więc nowe kroki można wstawiać w dowolne miejsce trasy. Nie zmieniaj nazw istniejących kroków i nie usuwaj ich. Każde zadanie, które zmienia ROUTE, dodaje test wczytania zapisu z kroku sprzed zmiany.
-4. **Dziecko ma 5 lat i nie czyta.** Każde polecenie jest wypowiadane polskim głosem (Zosia, tą samą metodą co dotąd) i ma przycisk „Posłuchaj”. Jedna kwestia prosi o jedną czynność. Przyciski mają obrazki zamiast napisów.
+4. **Dziecko ma 5 lat i nie czyta.** Każde polecenie jest wypowiadane polskim głosem (Zosia, tą samą metodą co dotąd) i ma przycisk „Posłuchaj”. Jedna kwestia prosi o jedną czynność. Przyciski mają obrazki zamiast napisów. Napisy dialogów są domyślnie wyłączone (od U07) i nie mogą zasłaniać postaci ani celu.
 5. **Zasady zagadek** z `docs/PLAN_PRZYGOD.md`, część 1: odpowiedź zmienia świat, liczone przedmioty widać i można ich dotknąć, pomyłka pokazuje skutek, po dwóch pomyłkach jest pomoc, przyciski z liczbami mają kropki, a poprawna odpowiedź stoi na losowej pozycji.
 6. **Zakres matematyki:** liczenie do 15, dodawanie i odejmowanie do 10, w dodawaniu składniki mniejsze niż 8.
 7. **Pomyłka nigdy nie karze.** Nie ma żyć, punktów ujemnych ani cofania postępu. Po złapaniu lub pomyłce dziecko od razu próbuje jeszcze raz.
@@ -162,6 +162,16 @@ Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-27).
 - **Świeczki kreta:** jest 5 świeczek, część już się pali (losowo, np. 1. i 3.). Pytanie: „Ile razy musi kichnąć Iskierka, żeby paliło się wszystkie pięć?”. Przyciski z kropkami. Dobra odpowiedź: Iskierka kicha tyle razy, a świeczki zapalają się po kolei z liczeniem. Pomyłki jak dotąd (za mało: jedna zostaje zgaszona, za dużo: przypalona czapka).
 - **Gniazdo:** dotknięte smoczątko lekko się podświetla i ma numerek (zasada 14). Pytanie: „Ile dzieci brakuje?” z przyciskami z kropkami (losowo: 1 lub 2 brakujące, mama mówi, ile ma dzieci razem).
 
+### [ ] U07 — Uwagi z drugiego testu: obóz, napisy i chodzenie w rozdziale 2
+Szczegóły w `docs/UWAGI_Z_TESTOW.md` (test z 2026-11-28).
+- **Napisy:** domyślnie wyłącz napisy dialogów w całej grze. Głos i przycisk „Posłuchaj” zostają. W pauzie dodaj dla rodzica przełącznik napisów z obrazkiem (np. dymek z literami), domyślnie wyłączony i zapamiętywany w ustawieniach. Kiedy mówi postać, nad jej głową może na chwilę pojawić się mała ikonka dymka, żeby było widać, kto mówi. Nic nie może zasłaniać celu, do którego dziecko ma iść.
+- **Cel „Wracaj do Toba”:** nad Tobem (i nad każdym celem marszu w grze, jeśli go jeszcze nie ma) widoczny znacznik, np. pulsujący złoty krąg albo strzałka nad głową.
+- **Zielona strzałka w lewym górnym rogu:** ustal, co to za przycisk w obozie (prawdopodobnie ikona wyjścia albo „Dalej”), i usuń go z rozgrywki. Do menu prowadzi tylko pauza.
+- **Wstęp w obozie:** skróć do 2 krótkich kwestii Toba (kim jest Gapa i że w stogu jesteś bezpieczny) i pokazu w pierwszym stogu. Przelot kamery skróć mniej więcej o połowę.
+- **Ruch Gapy:** wolniej (zacznij od mniej więcej połowy obecnej prędkości 2,85 m/s) i nie po kole. Gapa chodzi po kwadracie albo prostokącie wokół stogów, a na rogach zatrzymuje się na 1–2 sekundy i rozgląda (stożek obraca się w miejscu). Na niektórych odcinkach może losowo zawrócić, żeby był trochę nieprzewidywalny. Zachowaj średnio ok. 5 sekund bezpiecznego biegu między stogami i opisz wynik symulacji w raporcie.
+- **Chodzenie zamiast przeskoków (zasada 16) w końcówce rozdziału 2:** po świcie Bilbo sam wchodzi gałką do jaskini trolli i podchodzi do skrzyni. Z jaskini sam idzie traktem do herszta, a potem z kucykami przez most do stajni. Przejścia ekranem albo scenką zostają tylko tam, gdzie zmienia się pora dnia.
+- Testy: napisy domyślnie ukryte i przełącznik działa, w obozie nie ma przycisku wyjścia do menu, Gapa zatrzymuje się na rogach, przejście jaskini i traktu odbywa się chodzeniem.
+
 ### [ ] G02 — Głosy z OpenAI: podmiana nagrań w grze
 Zaczynaj dopiero, gdy w `docs/UWAGI_Z_TESTOW.md` jest wybór głosów z próbek (np. „Gapa: onyx, Iskierka: shimmer…”). Jeśli wyboru jeszcze nie ma, pomiń to zadanie (zostaw je jako `[ ]`) i weź następne zadanie z kolejki. Wróć do G02, gdy wybór się pojawi.
 - Ustaw wybrane głosy w `voice/postacie.json` i wygeneruj wszystkie kwestie (`--wszystko`) pod tymi samymi nazwami plików, więc kod gry się nie zmienia.
@@ -170,7 +180,35 @@ Zaczynaj dopiero, gdy w `docs/UWAGI_Z_TESTOW.md` jest wybór głosów z próbek 
 - Do zasady 4 dopisz: nowe kwestie generuje się skryptem `tools/generuj_glosy.py` głosem przypisanej postaci.
 - Eksport, testy, raport z rozmiarem `.pck` i liczbą wygenerowanych kwestii.
 
-### [ ] Z12 — Rozdział 5, część 1: śnieżyca i wóz z drewnem
+### [ ] A01 — Grafika: rejestr wyglądu, skala i spis modeli
+Plan: `docs/GRAFIKA.md` (decyzje 1–3). Bez widocznych zmian w grze.
+- Spisz w `assets/SPIS.md` wszystkie rodzaje postaci, zwierząt, budynków i przedmiotów tworzonych dziś z brył (m.in. `river_props.gd`, `troll_camp.gd`, sceny rozdziałów 1–4): nazwa `kind`, gdzie używany, obecny rozmiar, docelowy rozmiar z `GRAFIKA.md`, potrzebne animacje (stój, idź, mów, radość), proponowane źródło (paczka Quaternius/Kenney albo Meshy).
+- Dodaj rejestr wyglądu (np. `scripts/visuals.gd`): `kind → ścieżka .tscn`, z powrotem do obecnej bryły, gdy pliku nie ma. Wszystkie miejsca tworzące postacie i ważne przedmioty mają przechodzić przez rejestr. Logika, kolizje i testy bez zmian.
+- Ujednolić skalę obecnych brył do wymiarów z `GRAFIKA.md`, jeśli odbiegają o więcej niż 20%, i sprawdzić testami, że rozgrywka (odległości, zasięgi dłoni, stogi) dalej działa. Zmienione wartości opisz w raporcie.
+
+### [ ] A02 — Grafika: światło, niebo, kolory i soczystość
+- Jedno spójne oświetlenie dla dnia, wieczoru i nocy: ciepłe słońce, miękkie cienie, delikatna mgła w oddali, ładne niebo z gradientem, wspólna paleta kolorów (zapisz ją w `GRAFIKA.md`). Sprawdź, że na iPhonie 12 (renderer Mobile) nie spada płynność.
+- Soczystość: każdy dotyk przedmiotu, który się liczy albo podnosi, daje krótki podskok, błysk i dźwięk. Dobra odpowiedź: gwiazdki albo konfetti i radosny dźwięk. Zebranie przedmiotu: lot ikonki do paska plecaka. Pomyłka: zabawny dźwięk, nigdy smutny.
+- Postacie, które mówią, lekko się kołyszą lub podskakują w rytmie kwestii.
+
+### [ ] A03 — Grafika: pierwsze modele (test całej drogi)
+- Pobierz paczki CC0 Quaternius z opengameart.org albo itch.io: zwierzęta gospodarskie (koń jako kucyk), zwierzęta, potwory, postacie RPG, natura. Rozpakuj do `assets_src/` (poza pakietem gry), w repozytorium zostaw tylko modele faktycznie używane, przekonwertowane do `.glb` w `iphone/art/models/`. Jeśli pobranie się nie uda, zapisz PYTANIE z listą linków do ręcznego pobrania.
+- Podmień przez rejestr 3 postacie: Bilbo, bóbr, kucyk. Bilbo: najbliższa postać z paczek w kreskówkowym stylu (zielona kamizelka, bose stopy, kręcone włosy przez kolor/teksturę) albo Meshy, jeśli jest `MESHY_API_KEY` (wtedy opisz prompt w `assets/ZRODLA.md`). Animacje stój i idź podpięte do ruchu.
+- Sprawdź skalę, kolizje, zasięg dłoni i płynność. Zapisz źródła i licencje w `assets/ZRODLA.md`.
+
+### [ ] A04 — Grafika: pozostałe postacie
+- Według `assets/SPIS.md`: Tobo, Wiewiórka, Tygrysek, mali hobbici, Pestka, herszt orków, ork, trolle (Gapa, Burczyk, Chrapek, także wersje kamienne), Iskierka, mama smoczyca, kret, Szeptek, krowa, kury, lis, pająki, rybki. Zwierzęta i smoki z paczek, postacie dwunożne z paczek albo Meshy. Animacje co najmniej stój i idź, dla mówiących także kołysanie przy mowie.
+- Każda postać ma rozpoznawalny kolor i sylwetkę (dziecko ma je rozróżniać z daleka).
+
+### [ ] A05 — Grafika: otoczenie
+- Drzewa, krzaki, kamienie, trawa (paczka natury), domy wioski z wyraźnymi cechami do rozpoznania (młyn z wielkim kołem, kurnik z kurami, obora ze snopkami, chatka Wiewiórki z zielonym dachem i żołędziem, stajnia z podkową), most z deskami, stogi siana, ognisko z cząsteczkami ognia i dymu, jaskinie z kryształami, wnętrza chatek.
+- Zachowaj stałe miejsca budynków i zasięgi drzwi. Sprawdź płynność; w raporcie wypisz sceny najcięższe dla telefonu.
+
+### [ ] A06 — Grafika: menu, ekran tytułowy i ikona
+- Ekran tytułowy z ładną sceną doliny w tle (Bilbo przed chatką, lekki ruch kamery), duże obrazkowe przyciski rozdziałów i „Wznów”, nowa ikona aplikacji w tym samym stylu.
+- Na koniec przejdź całą grę testami i wypisz w raporcie miejsca, gdzie nadal są stare bryły.
+
+### [ ] Z12 — Rozdział 5, część 1: śnieżyca i wóz z drewnem (po demo)
 Plan: rozdział 5. Przycisk w menu (obrazek płatka śniegu) po ukończeniu rozdziału 4.
 - Rozdział 5 zaczyna się płynnie po rozdziale 4 (zasada 16): krok `continued` z zapowiedzią „Ciąg dalszy nastąpi” zamień na scenkę wyjścia z jaskini prosto w padający śnieg. Zapisy stojące na `continued` mają wczytać się na początku rozdziału 5.
 - Dolina w śniegu (biała tekstura terenu, padające płatki). Bóbr: „Idzie śnieżyca! Domy nie mają drewna na zimę!”.

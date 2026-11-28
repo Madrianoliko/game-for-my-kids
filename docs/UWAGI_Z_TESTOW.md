@@ -36,3 +36,15 @@ Wpisz, co zauważyłeś podczas gry z synem. Codex uwzględni to przed następny
 30. Kichanie Iskierki to jednak fajny pomysł. Można je przerobić, np. palą się świeczki 1 i 3: ile razy Iskierka musi kichnąć, żeby paliło się wszystkie 5?
 31. Liczenie dzieci w gnieździe: zaznaczone dziecko powinno się lekko podświetlić i mieć na sobie numerek. — uwzględnione (2026-11-27, d512739)
 32. Na końcu nie „kogo brakuje”, tylko „ile dzieci brakuje”.
+
+## 2026-11-28 — drugi test Adriana na iPhonie (wersja po U05)
+
+**Przeniesione do kolejki jako zadanie U07 (`docs/KOLEJKA.md`). Nie wprowadzaj ich osobno według zasady 1.**
+
+1. Obóz trolli: wstęp jest trochę za długi.
+2. Troll porusza się za szybko. Fajnie, gdyby poruszał się trochę nieregularnie albo chodził w kwadrat, a nie w kółko.
+3. Po lewej stronie u góry pojawia się zielona strzałka, która wychodzi do menu. Nie wiadomo, po co tam jest.
+4. „Wracaj do Toba”: przez napisy dialogu nie widać, gdzie jest Tobo.
+5. Może napisów w ogóle nie powinno być? Zasłaniają ekran, a dziecko nie umie czytać.
+6. Powrót do herszta i przeszukiwanie jaskini trolli powinny odbywać się przez chodzenie gracza, a nie przez przeskakiwanie scen.
+7. Rozdział 3 jeszcze nie był poprawiany (czeka na U06).
